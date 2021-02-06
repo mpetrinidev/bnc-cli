@@ -8,7 +8,7 @@ from utils.api_time import ApiTime
 API_BINANCE = 'https://api.binance.com/api/v3/account'
 
 
-class Bnb:
+class Bnc:
     def __init__(self):
         pass
 
@@ -28,4 +28,4 @@ class Bnb:
 
 
 if __name__ == '__main__':
-    fire.Fire(Bnb)
+    fire.Fire(Bnc)

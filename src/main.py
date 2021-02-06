@@ -1,10 +1,10 @@
 import fire
-from bnb import Bnb
+from bnc import Bnc
 
 
 class Main(object):
     def __init__(self):
-        self.bnb = Bnb()
+        self.bnc = Bnc()
 
 
 if __name__ == '__main__':

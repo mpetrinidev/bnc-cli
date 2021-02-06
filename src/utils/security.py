@@ -18,21 +18,21 @@ class Security:
     @staticmethod
     def get_api_key():
         try:
-            return os.environ['BNB_CLI_API_KEY']
+            return os.environ['BNC_CLI_API_KEY']
         except Exception:
-            raise ValueError('You must set bnb api key to start using the CLI')
+            raise ValueError('You must set bnc api key to start using the CLI')
 
     @staticmethod
     def set_api_key(api_key: str):
-        os.environ['BNB_CLI_API_KEY'] = api_key
+        os.environ['BNC_CLI_API_KEY'] = api_key
 
     @staticmethod
     def get_secret_key():
         try:
-            return os.environ['BNB_CLI_SECRET_KEY']
+            return os.environ['BNC_CLI_SECRET_KEY']
         except Exception:
-            raise ValueError('You must set bnb secret key to start using the CLI')
+            raise ValueError('You must set bnc secret key to start using the CLI')
 
     @staticmethod
     def set_secret_key(secret_key: str):
-        os.environ['BNB_CLI_SECRET_KEY'] = secret_key
+        os.environ['BNC_CLI_SECRET_KEY'] = secret_key
