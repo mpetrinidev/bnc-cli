@@ -24,7 +24,14 @@ class Security:
 
     @staticmethod
     def set_api_key(api_key: str):
+        if api_key is None:
+            return
+
         os.environ['BNC_CLI_API_KEY'] = api_key
+
+    @staticmethod
+    def del_api_key():
+        del os.environ['BNC_CLI_API_KEY']
 
     @staticmethod
     def get_secret_key():
@@ -35,4 +42,10 @@ class Security:
 
     @staticmethod
     def set_secret_key(secret_key: str):
+        if secret_key is None:
+            return
         os.environ['BNC_CLI_SECRET_KEY'] = secret_key
+
+    @staticmethod
+    def del_secret_key():
+        del os.environ['BNC_CLI_SECRET_KEY']
