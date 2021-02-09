@@ -24,32 +24,39 @@ class Security:
         try:
             return os.environ['BNC_CLI_API_KEY']
         except Exception:
-            raise ValueError('You must set bnc api key to start using the CLI')
+            raise ValueError('You must set bnc api_key to start using the CLI')
 
     @staticmethod
     def set_api_key(api_key: str):
-        if api_key is None:
-            return
+        if len(api_key) == 0:
+            raise ValueError('api_key cannot be empty')
 
         os.environ['BNC_CLI_API_KEY'] = api_key
 
     @staticmethod
     def del_api_key():
-        del os.environ['BNC_CLI_API_KEY']
+        try:
+            del os.environ['BNC_CLI_API_KEY']
+        except:
+            pass
 
     @staticmethod
     def get_secret_key():
         try:
             return os.environ['BNC_CLI_SECRET_KEY']
         except Exception:
-            raise ValueError('You must set bnc secret key to start using the CLI')
+            raise ValueError('You must set bnc secret_key to start using the CLI')
 
     @staticmethod
     def set_secret_key(secret_key: str):
-        if secret_key is None:
-            return
+        if len(secret_key) == 0:
+            raise ValueError('secret_key cannot be empty')
+
         os.environ['BNC_CLI_SECRET_KEY'] = secret_key
 
     @staticmethod
     def del_secret_key():
-        del os.environ['BNC_CLI_SECRET_KEY']
+        try:
+            del os.environ['BNC_CLI_SECRET_KEY']
+        except:
+            pass
