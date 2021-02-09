@@ -5,8 +5,12 @@ import os
 
 class Security:
     @staticmethod
-    def get_hmac_hash(total_params: str) -> str:
-        secret = Security.get_secret_key()
+    def get_hmac_hash(total_params: str, secret: str) -> str:
+        if len(total_params) == 0:
+            raise ValueError('total_params cannot be empty')
+
+        if len(secret) == 0:
+            raise ValueError('secret cannot be empty')
 
         signature = hmac.new(str.encode(secret), str.encode(total_params), hashlib.sha256).hexdigest()
         return signature

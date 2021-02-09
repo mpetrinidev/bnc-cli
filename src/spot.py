@@ -29,10 +29,14 @@ class Spot:
         payload = {'recvWindow': kwargs['recvWindow'], 'timestamp': ApiTime.get_timestamp()}
         total_params = Utils.to_query_string_parameters(payload)
 
-        payload['signature'] = Security.get_hmac_hash(total_params)
+        payload['signature'] = Security.get_hmac_hash(total_params, Security.get_secret_key())
 
         headers = Security.get_api_key_header()
         r = requests.get(API_BINANCE + 'api/v3/account', headers=headers, params=payload)
+
+        if r.status_code != 200:
+            yield 'Wrong request: status_code: ' + str(r.status_code)
+            return
 
         results = r.json()
         results['balances'] = [x for x in results['balances'] if float(x['free']) > 0.0 or float(x['locked']) > 0.0]
