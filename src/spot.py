@@ -1,9 +1,9 @@
 import requests
 
-from utils.globals import *
-from utils.security import Security
-from utils.utils import Utils
-from utils.api_time import ApiTime
+from src.utils.globals import *
+from src.utils.security import Security
+from src.utils.utils import Utils
+from src.utils.api_time import ApiTime
 
 
 # Command: bnc spot <method_name>
@@ -11,20 +11,21 @@ class Spot:
     def __init__(self):
         pass
 
-    def validate(self, params):
+    def validate_account_info(self, params):
         if 'recvWindow' not in params:
-            params['recvWindow'] = 5000
+            params['recvWindow'] = 5_000
 
-        if 'recvWindow' in params and params['recvWindow'] > 60000:
+        if 'recvWindow' in params and int(params['recvWindow']) > 60_000:
             raise ValueError('recvWindow cannot exceed 60_000')
 
-        if 'locked_free' in params and (params['locked_free'] != 'L' or
-                                        params['locked_free'] != 'F' or
-                                        params['locked_free'] != 'B'):
-            raise ValueError('locked_free incorrect value. Possible values: L | F | B')
+        if 'locked_free' in params:
+            locked_free = str(params['locked_free']).upper()
+
+            if locked_free != 'L' or locked_free != 'F' or locked_free != 'B':
+                raise ValueError('locked_free incorrect value. Possible values: L | F | B')
 
     def account_info(self, **kwargs):
-        self.validate(kwargs)
+        self.validate_account_info(kwargs)
 
         payload = {'recvWindow': kwargs['recvWindow'], 'timestamp': ApiTime.get_timestamp()}
         total_params = Utils.to_query_string_parameters(payload)
