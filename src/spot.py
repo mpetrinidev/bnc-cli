@@ -1,4 +1,4 @@
-import requests
+import requests_async as requests
 
 from src.utils.globals import *
 from src.utils.security import Security
@@ -24,7 +24,7 @@ class Spot:
             if locked_free != 'L' or locked_free != 'F' or locked_free != 'B':
                 raise ValueError('locked_free incorrect value. Possible values: L | F | B')
 
-    def account_info(self, **kwargs):
+    async def account_info(self, **kwargs):
         self.validate_account_info(kwargs)
 
         payload = {'recvWindow': kwargs['recv_window'], 'timestamp': ApiTime.get_timestamp()}
@@ -33,11 +33,10 @@ class Spot:
         payload['signature'] = Security.get_hmac_hash(total_params, Security.get_secret_key())
 
         headers = Security.get_api_key_header()
-        r = requests.get(API_BINANCE + 'api/v3/account', headers=headers, params=payload)
+        r = await requests.get(API_BINANCE + 'api/v3/account', headers=headers, params=payload)
 
         if r.status_code != 200:
-            yield 'Wrong request: status_code: ' + str(r.status_code)
-            return
+            return 'Wrong request: status_code: ' + str(r.status_code)
 
         results = r.json()
         results['balances'] = [x for x in results['balances'] if float(x['free']) > 0.0 or float(x['locked']) > 0.0]
