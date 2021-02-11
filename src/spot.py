@@ -12,11 +12,11 @@ class Spot:
         pass
 
     def validate_account_info(self, params):
-        if 'recvWindow' not in params:
-            params['recvWindow'] = 5_000
+        if 'recv_window' not in params:
+            params['recv_window'] = 5_000
 
-        if 'recvWindow' in params and int(params['recvWindow']) > 60_000:
-            raise ValueError('recvWindow cannot exceed 60_000')
+        if 'recv_window' in params and int(params['recv_window']) > 60_000:
+            raise ValueError('recv_window cannot exceed 60_000')
 
         if 'locked_free' in params:
             locked_free = str(params['locked_free']).upper()
@@ -27,7 +27,7 @@ class Spot:
     def account_info(self, **kwargs):
         self.validate_account_info(kwargs)
 
-        payload = {'recvWindow': kwargs['recvWindow'], 'timestamp': ApiTime.get_timestamp()}
+        payload = {'recvWindow': kwargs['recv_window'], 'timestamp': ApiTime.get_timestamp()}
         total_params = Utils.to_query_string_parameters(payload)
 
         payload['signature'] = Security.get_hmac_hash(total_params, Security.get_secret_key())
