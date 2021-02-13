@@ -65,3 +65,5 @@ class TestSpotAsync(IsolatedAsyncioTestCase):
 
         self.assertIsNotNone(results)
         self.assertEqual(15, results["makerCommission"])
+
+

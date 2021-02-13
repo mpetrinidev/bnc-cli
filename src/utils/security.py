@@ -21,10 +21,12 @@ class Security:
 
     @staticmethod
     def get_api_key():
-        try:
-            return os.environ['BNC_CLI_API_KEY']
-        except Exception:
+        api_key = os.environ.get('BNC_CLI_API_KEY')
+
+        if api_key is None:
             raise ValueError('You must set bnc api_key to start using the CLI')
+
+        return api_key
 
     @staticmethod
     def set_api_key(api_key: str):
@@ -42,10 +44,12 @@ class Security:
 
     @staticmethod
     def get_secret_key():
-        try:
-            return os.environ['BNC_CLI_SECRET_KEY']
-        except Exception:
+        secret_key = os.environ.get('BNC_CLI_SECRET_KEY')
+
+        if secret_key is None:
             raise ValueError('You must set bnc secret_key to start using the CLI')
+
+        return secret_key
 
     @staticmethod
     def set_secret_key(secret_key: str):
