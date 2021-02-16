@@ -2,7 +2,7 @@ from setuptools import setup
 
 setup(
     name="bnc",
-    version="1.0",
+    version="1.0.0",
     packages=["src", "src.commands"],
     include_package_data=True,
     install_requires=["click"],

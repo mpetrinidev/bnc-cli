@@ -32,5 +32,5 @@ def remove(ctx):
     Security.del_secret_key()
     Security.del_api_key()
 
-    ctx.log("Binance CLI's credentials removed successfully")
-    ctx.log("Re-run <bnc credentials add> to start using again Binance CLI")
+    ctx.log("Binance CLI's credentials removed successfully. \n\nRe-run <bnc credentials add> to start using again "
+            "Binance CLI")
