@@ -11,8 +11,8 @@ def cli():
 
 
 @cli.command("add", short_help="Add Binance CLI's credentials (api_key and secret) to start using Binance CLI")
-@click.argument("api_key", required=True, type=str)
-@click.argument("secret", required=True, type=str)
+@click.option("-ak", "--api_key", required=True, type=click.types.STRING)
+@click.option("-s", "--secret", required=True, type=click.types.STRING)
 @pass_environment
 def add(ctx, api_key: str, secret: str):
     """Add Binance CLI's credentials (api_key and secret) to start using Binance CLI"""
