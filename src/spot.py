@@ -12,8 +12,6 @@ class Spot:
         pass
 
     async def account_info(self, **kwargs):
-        self.validate_account_info(kwargs)
-
         payload = {'recvWindow': kwargs['recv_window'], 'timestamp': ApiTime.get_timestamp()}
         total_params = Utils.to_query_string_parameters(payload)
 
@@ -43,15 +41,3 @@ class Spot:
 
         return balances
 
-    def validate_account_info(self, params):
-        if 'recv_window' not in params:
-            params['recv_window'] = 5_000
-
-        if 'recv_window' in params and int(params['recv_window']) > 60_000:
-            raise ValueError('recv_window cannot exceed 60_000')
-
-        if 'locked_free' in params:
-            locked_free = str(params['locked_free']).upper()
-
-            if locked_free not in ['L', 'F', 'B']:
-                raise ValueError('locked_free incorrect value. Possible values: L | F | B')

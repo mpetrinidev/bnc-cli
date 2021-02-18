@@ -1,5 +1,7 @@
 from unittest import TestCase
 
+from click import ClickException
+
 from src.utils.security import Security
 
 
@@ -14,10 +16,10 @@ SECRET_KEY = 'SET_YOUR_SECRET_KEY'
 
 class TestInit(TestSecurity):
     def test_get_hmac_hash_total_params_is_empty_string(self):
-        self.assertRaisesRegex(ValueError, 'total_params cannot be empty', Security.get_hmac_hash, '', 'secret')
+        self.assertRaisesRegex(ClickException, 'total_params cannot be empty', Security.get_hmac_hash, '', 'secret')
 
     def test_get_hmac_hash_secret_is_empty_string(self):
-        self.assertRaisesRegex(ValueError, 'secret cannot be empty', Security.get_hmac_hash, 'total_params', '')
+        self.assertRaisesRegex(ClickException, 'secret cannot be empty', Security.get_hmac_hash, 'total_params', '')
 
     def test_get_hmac_hash_secret_new_signature(self):
         total_params = "hello_world"
@@ -28,7 +30,7 @@ class TestInit(TestSecurity):
 
     def test_set_api_key_is_empty(self):
         api_key = ''
-        self.assertRaisesRegex(ValueError, 'api_key cannot be empty', Security.set_api_key, api_key)
+        self.assertRaisesRegex(ClickException, 'api_key cannot be empty', Security.set_api_key, api_key)
 
     def test_set_api_key_is_ok(self):
         Security.set_api_key(API_KEY)
@@ -38,7 +40,7 @@ class TestInit(TestSecurity):
 
     def test_get_api_key_raises_exception(self):
         Security.del_api_key()
-        self.assertRaisesRegex(ValueError, 'You must set bnc api_key to start using the CLI', Security.get_api_key)
+        self.assertRaisesRegex(ClickException, 'You must set bnc api_key to start using the CLI', Security.get_api_key)
 
     def test_get_api_key_is_ok(self):
         Security.set_api_key(API_KEY)
@@ -49,7 +51,7 @@ class TestInit(TestSecurity):
 
     def test_get_api_key_header_raises_exception(self):
         Security.del_api_key()
-        self.assertRaisesRegex(ValueError, 'You must set bnc api_key to start using the CLI',
+        self.assertRaisesRegex(ClickException, 'You must set bnc api_key to start using the CLI',
                                Security.get_api_key_header)
 
     def test_get_api_key_header_is_ok(self):
@@ -62,7 +64,7 @@ class TestInit(TestSecurity):
 
     def test_set_secret_key_is_empty(self):
         secret_key = ''
-        self.assertRaisesRegex(ValueError, 'secret_key cannot be empty', Security.set_secret_key, secret_key)
+        self.assertRaisesRegex(ClickException, 'secret_key cannot be empty', Security.set_secret_key, secret_key)
 
     def test_set_secret_key_is_ok(self):
         Security.set_secret_key(SECRET_KEY)
@@ -72,7 +74,7 @@ class TestInit(TestSecurity):
 
     def test_get_secret_key_raises_exception(self):
         Security.del_secret_key()
-        self.assertRaisesRegex(ValueError, 'You must set bnc secret_key to start using the CLI', Security.get_secret_key)
+        self.assertRaisesRegex(ClickException, 'You must set bnc secret_key to start using the CLI', Security.get_secret_key)
 
     def test_get_secret_key_is_ok(self):
         Security.set_secret_key(SECRET_KEY)

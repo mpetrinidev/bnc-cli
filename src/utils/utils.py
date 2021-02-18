@@ -1,10 +1,17 @@
-class Utils:
-    def __init__(self):
-        pass
+import asyncio
+from functools import wraps
 
-    @staticmethod
-    def to_query_string_parameters(values: {}) -> str:
-        if not values:
-            raise ValueError('values cannot be empty')
 
-        return '&'.join(key + '=' + str(val) for key, val in values.items())
+def coro(f):
+    @wraps(f)
+    def wrapper(*args, **kwargs):
+        return asyncio.run(f(*args, **kwargs))
+
+    return wrapper
+
+
+def to_query_string_parameters(values: {}) -> str:
+    if not values:
+        raise ValueError('values cannot be empty')
+
+    return '&'.join(key + '=' + str(val) for key, val in values.items())
