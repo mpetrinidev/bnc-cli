@@ -50,3 +50,4 @@ class BncCLI(click.MultiCommand):
 def cli(ctx, verbose):
     """Binance command line interface to interact with Binance API."""
     ctx.verbose = verbose
+
