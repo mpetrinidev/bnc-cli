@@ -3,6 +3,7 @@ import hmac
 import os
 
 from click import ClickException
+from src.utils.utils import read_credentials_config_file
 
 
 class Security:
@@ -24,6 +25,11 @@ class Security:
     @staticmethod
     def get_api_key():
         api_key = os.environ.get('BNC_CLI_API_KEY')
+
+        # read from credentials file if it's None
+        if api_key is None:
+            config_values = read_credentials_config_file()
+            api_key = config_values['api_key']
 
         if api_key is None:
             raise ClickException('You must set bnc api_key to start using the CLI')
