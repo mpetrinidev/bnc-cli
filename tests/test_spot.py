@@ -1,30 +1,29 @@
 from unittest import TestCase, IsolatedAsyncioTestCase
 from unittest.mock import Mock, patch
 
-from src.spot import Spot
+from src.commands.cmd_spot import account_info
 
 
 class TestSpot(TestCase):
     def setUp(self) -> None:
-        self.spot = Spot()
+        pass
 
     def test_validate_account_info_recv_window_greater_than_60000(self):
         params = {'recv_window': 60_001}
-        self.assertRaisesRegex(ValueError, 'recv_window cannot exceed 60_000', self.spot.validate_account_info, params)
+        self.assertRaisesRegex(ValueError, 'recv_window cannot exceed 60_000', account_info, params)
 
     def test_validate_account_info_recv_window_is_str_and_greater_than_60000(self):
         params = {'recv_window': '60_001'}
-        self.assertRaisesRegex(ValueError, 'recv_window cannot exceed 60_000', self.spot.validate_account_info, params)
+        self.assertRaisesRegex(ValueError, 'recv_window cannot exceed 60_000', account_info, params)
 
     def test_validate_account_info_locked_free_incorrect_value(self):
         params = {'locked_free': 'G'}
         self.assertRaisesRegex(ValueError, 'locked_free incorrect value. Possible values: L | F | B',
-                               self.spot.validate_account_info, params)
+                               account_info, params)
 
 
 class TestSpotAsync(IsolatedAsyncioTestCase):
     def setUp(self) -> None:
-        self.spot = Spot()
         self.account_info = {
             "makerCommission": 15,
             "takerCommission": 15,
@@ -61,10 +60,10 @@ class TestSpotAsync(IsolatedAsyncioTestCase):
         self.mock_account_info(mock_get_api_key_header, mock_get_secret_key, mock_request_get)
 
         params = {'recv_window': 5000}
-        results = await self.spot.account_info(**params)
+        results = await account_info.account_info(**params)
 
         self.assertIsNotNone(results)
-        self.assertDictEqual(self.account_info, results)
+        self.assertDictEqual(account_info, results)
 
     @patch('src.spot.requests.get')
     @patch('src.spot.Security.get_api_key_header')
@@ -73,7 +72,7 @@ class TestSpotAsync(IsolatedAsyncioTestCase):
         self.mock_account_info(mock_get_api_key_header, mock_get_secret_key, mock_request_get)
 
         params = {'locked_free': 'L'}
-        results = await self.spot.account_info(**params)
+        results = await account_info.account_info(**params)
 
         self.assertIsNotNone(results)
         self.assertEqual(1, len(results['balances']))
@@ -88,7 +87,7 @@ class TestSpotAsync(IsolatedAsyncioTestCase):
         self.mock_account_info(mock_get_api_key_header, mock_get_secret_key, mock_request_get)
 
         params = {'locked_free': 'F'}
-        results = await self.spot.account_info(**params)
+        results = await account_info(**params)
 
         self.assertIsNotNone(results)
         self.assertEqual(1, len(results['balances']))
@@ -99,11 +98,12 @@ class TestSpotAsync(IsolatedAsyncioTestCase):
     @patch('src.spot.requests.get')
     @patch('src.spot.Security.get_api_key_header')
     @patch('src.spot.Security.get_secret_key')
-    async def test_account_info_free_and_locked_balances(self, mock_get_secret_key, mock_get_api_key_header, mock_request_get):
+    async def test_account_info_free_and_locked_balances(self, mock_get_secret_key, mock_get_api_key_header,
+                                                         mock_request_get):
         self.mock_account_info(mock_get_api_key_header, mock_get_secret_key, mock_request_get)
 
         params = {'locked_free': 'B'}
-        results = await self.spot.account_info(**params)
+        results = await account_info(**params)
 
         self.assertIsNotNone(results)
         self.assertEqual(2, len(results['balances']))

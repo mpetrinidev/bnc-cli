@@ -3,18 +3,25 @@ import os
 
 from click import ClickException
 
+from src.exceptions import ConfigException
+
 BNC_CONFIG_PATH = os.path.expanduser("~") + "/.bnc"
 BNC_CONFIG_FILE_PATH = BNC_CONFIG_PATH + "/credentials"
+SECTION = 'api_credentials'
 config_parser = configparser.ConfigParser()
 
 
 def write_credentials(api_key: str, secret: str):
-    config_parser.add_section('api_credentials')
-    config_parser.set('api_credentials', 'BNC_CLI_API_KEY', api_key)
-    config_parser.set('api_credentials', 'BNC_CLI_SECRET_KEY', secret)
-
     if not os.path.isfile(BNC_CONFIG_FILE_PATH):
         os.makedirs(BNC_CONFIG_PATH, exist_ok=True)
+
+    config_parser.read(BNC_CONFIG_FILE_PATH)
+
+    if not config_parser.has_section(SECTION):
+        config_parser.add_section(SECTION)
+
+    config_parser.set(SECTION, 'BNC_CLI_API_KEY', api_key)
+    config_parser.set(SECTION, 'BNC_CLI_SECRET_KEY', secret)
 
     with open(BNC_CONFIG_FILE_PATH, 'w') as f:
         config_parser.write(f)
@@ -22,20 +29,20 @@ def write_credentials(api_key: str, secret: str):
 
 def read_credentials():
     if not os.path.isfile(BNC_CONFIG_FILE_PATH):
-        raise ClickException('Credentials file does not exists')
+        raise FileNotFoundError('Credentials file does not exists')
 
     config_parser.read(BNC_CONFIG_FILE_PATH)
 
-    if not config_parser.has_section('api_credentials'):
-        raise ClickException('api_credentials section cannot be found in credentials file')
+    if not config_parser.has_section(SECTION):
+        raise ConfigException('api_credentials section cannot be found in credentials file')
 
-    section = config_parser['api_credentials']
+    section = config_parser[SECTION]
 
-    if not config_parser.has_option('api_credentials', 'BNC_CLI_API_KEY'):
-        raise ClickException('BNC_CLI_API_KEY cannot be found in credentials file')
+    if not config_parser.has_option(SECTION, 'BNC_CLI_API_KEY'):
+        raise ConfigException('BNC_CLI_API_KEY cannot be found in credentials file')
 
-    if not config_parser.has_option('api_credentials', 'BNC_CLI_SECRET_KEY'):
-        raise ClickException('BNC_CLI_SECRET_KEY cannot be found in credentials file')
+    if not config_parser.has_option(SECTION, 'BNC_CLI_SECRET_KEY'):
+        raise ConfigException('BNC_CLI_SECRET_KEY cannot be found in credentials file')
 
     return {
         "api_key": section['BNC_CLI_API_KEY'],
@@ -45,12 +52,13 @@ def read_credentials():
 
 def remove_credentials():
     if not os.path.isfile(BNC_CONFIG_FILE_PATH):
-        raise ClickException('Credentials file does not exists')
+        raise FileNotFoundError('Credentials file does not exists')
 
     with open(BNC_CONFIG_FILE_PATH, "r") as f:
         config_parser.read_file(f)
 
-    config_parser.remove_section('api_credentials')
+    config_parser.remove_section(SECTION)
 
     with open(BNC_CONFIG_FILE_PATH, "w") as f:
         config_parser.write(f)
+

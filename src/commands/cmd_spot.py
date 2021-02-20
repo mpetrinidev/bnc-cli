@@ -2,10 +2,15 @@ import click
 import requests_async as requests
 
 from src.cli import pass_environment
-from src.utils.globals import *
-from src.utils.api_time import ApiTime
-from src.utils.security import Security
-from src.utils.utils import to_query_string_parameters, coro
+from src.utils.globals import API_BINANCE
+
+from src.utils.api_time import get_timestamp
+from src.utils.security import get_hmac_hash
+from src.utils.security import get_secret_key
+from src.utils.security import get_api_key_header
+
+from src.utils.utils import to_query_string_parameters
+from src.utils.utils import coro
 
 
 def validate_recv_window(ctx, param, value):
@@ -50,11 +55,11 @@ def cli():
 @coro
 async def account_info(ctx, recv_window, locked_free):
     """Get current account information"""
-    payload = {'recvWindow': recv_window, 'timestamp': ApiTime.get_timestamp()}
+    payload = {'recvWindow': recv_window, 'timestamp': get_timestamp()}
     total_params = to_query_string_parameters(payload)
 
-    payload['signature'] = Security.get_hmac_hash(total_params, Security.get_secret_key())
-    headers = Security.get_api_key_header()
+    payload['signature'] = get_hmac_hash(total_params, get_secret_key())
+    headers = get_api_key_header()
 
     r = await requests.get(API_BINANCE + 'api/v3/account', headers=headers, params=payload)
 

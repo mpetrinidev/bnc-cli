@@ -44,7 +44,6 @@ class BncCLI(click.MultiCommand):
 
 
 @click.command(cls=BncCLI, context_settings=CONTEXT_SETTINGS)
-@click.option("-v", "--verbose", is_flag=True, help="Enables verbose mode.")
 @click.version_option(message="Bnc %(version)s")
 @pass_environment
 def cli(ctx, verbose):
