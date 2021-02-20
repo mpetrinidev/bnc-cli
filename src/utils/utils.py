@@ -1,6 +1,8 @@
 import asyncio
 from functools import wraps
 
+import click
+
 
 def coro(f):
     @wraps(f)
@@ -8,6 +10,10 @@ def coro(f):
         return asyncio.run(f(*args, **kwargs))
 
     return wrapper
+
+
+def get_current_context():
+    return click.get_current_context()
 
 
 def to_query_string_parameters(values: {}) -> str:

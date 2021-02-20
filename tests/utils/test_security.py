@@ -49,7 +49,9 @@ def test_get_api_key_null_or_empty():
 
     remove_credentials()
 
-    with pytest.raises(SecurityException, match='api_key cannot be null or empty'):
+    with pytest.raises(SecurityException,
+                       match='Credentials are required. Run: bnc credentials add -ak="your_api_key" '
+                             '-s="your_secret_key" to start using the CLI or add credentials using env variables'):
         get_api_key()
 
 
@@ -71,7 +73,10 @@ def test_get_secret_null_or_empty():
 
     remove_credentials()
 
-    with pytest.raises(SecurityException, match='secret cannot be null or empty'):
+    with pytest.raises(SecurityException, match='Credentials are required. Run: bnc credentials add '
+                                                '-ak="your_api_key" '
+                                                '-s="your_secret_key" to start using the CLI or add credentials using '
+                                                'env variables'):
         get_secret_key()
 
 

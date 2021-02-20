@@ -1,8 +1,6 @@
 import configparser
 import os
 
-from click import ClickException
-
 from src.exceptions import ConfigException
 
 BNC_CONFIG_PATH = os.path.expanduser("~") + "/.bnc"

@@ -1,4 +1,7 @@
-class ConfigException(Exception):
+from click import ClickException
+
+
+class ConfigException(ClickException):
     """An exception that raises when an error occur in credentials config"""
 
     def __init__(self, message):
@@ -6,7 +9,7 @@ class ConfigException(Exception):
         self.message = message
 
 
-class SecurityException(Exception):
+class SecurityException(ClickException):
     """An exception that raises when an error occur related to security"""
 
     def __init__(self, message):
