@@ -10,6 +10,12 @@ config_parser = configparser.ConfigParser()
 
 
 def write_credentials(api_key: str, secret: str):
+    if len(api_key) == 0:
+        raise ValueError('api_key cannot be empty')
+
+    if len(secret) == 0:
+        raise ValueError('secret cannot be empty')
+
     if not os.path.isfile(BNC_CONFIG_FILE_PATH):
         os.makedirs(BNC_CONFIG_PATH, exist_ok=True)
 
