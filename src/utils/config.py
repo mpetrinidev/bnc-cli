@@ -3,8 +3,8 @@ import os
 
 from src.exceptions import ConfigException
 
-BNC_CONFIG_PATH = os.path.expanduser("~") + "/.bnc"
-BNC_CONFIG_FILE_PATH = BNC_CONFIG_PATH + "/credentials"
+BNC_CONFIG_PATH = os.path.join(os.path.expanduser("~"), '.bnc')
+BNC_CONFIG_FILE_PATH = os.path.join(BNC_CONFIG_PATH, 'credentials')
 SECTION = 'api_credentials'
 
 
