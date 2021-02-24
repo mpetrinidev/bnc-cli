@@ -3,13 +3,19 @@ import os
 
 from src.exceptions import ConfigException
 
-BNC_CONFIG_PATH = os.path.join(os.path.expanduser("~"), '.bnc')
-BNC_CONFIG_FILE_PATH = os.path.join(BNC_CONFIG_PATH, 'credentials')
 SECTION = 'api_credentials'
 
 
 def get_config_parser():
     return configparser.ConfigParser()
+
+
+def get_bnc_config_path():
+    return os.path.join(os.path.expanduser("~"), '.bnc')
+
+
+def get_bnc_config_file_path():
+    return os.path.join(get_bnc_config_path(), 'credentials')
 
 
 def write_credentials(api_key: str, secret: str):
@@ -19,11 +25,13 @@ def write_credentials(api_key: str, secret: str):
     if len(secret) == 0:
         raise ValueError('secret cannot be empty')
 
-    if not os.path.isfile(BNC_CONFIG_FILE_PATH):
-        os.makedirs(BNC_CONFIG_PATH, exist_ok=True)
+    bnc_config_file_path = get_bnc_config_file_path()
+
+    if not os.path.isfile(bnc_config_file_path):
+        os.makedirs(get_bnc_config_path(), exist_ok=True)
 
     config_parser = get_config_parser()
-    config_parser.read(BNC_CONFIG_FILE_PATH)
+    config_parser.read(bnc_config_file_path)
 
     if not config_parser.has_section(SECTION):
         config_parser.add_section(SECTION)
@@ -31,16 +39,18 @@ def write_credentials(api_key: str, secret: str):
     config_parser.set(SECTION, 'BNC_CLI_API_KEY', api_key)
     config_parser.set(SECTION, 'BNC_CLI_SECRET_KEY', secret)
 
-    with open(BNC_CONFIG_FILE_PATH, 'w') as f:
+    with open(bnc_config_file_path, 'w') as f:
         config_parser.write(f)
 
 
 def read_credentials():
-    if not os.path.isfile(BNC_CONFIG_FILE_PATH):
+    bnc_config_file_path = get_bnc_config_file_path()
+
+    if not os.path.isfile(bnc_config_file_path):
         raise FileNotFoundError('Credentials file does not exists')
 
     config_parser = get_config_parser()
-    config_parser.read(BNC_CONFIG_FILE_PATH)
+    config_parser.read(bnc_config_file_path)
 
     if not config_parser.has_section(SECTION):
         raise ConfigException('api_credentials section cannot be found in credentials file')
@@ -60,14 +70,16 @@ def read_credentials():
 
 
 def remove_credentials():
-    if not os.path.isfile(BNC_CONFIG_FILE_PATH):
+    bnc_config_file_path = get_bnc_config_file_path()
+
+    if not os.path.isfile(bnc_config_file_path):
         raise FileNotFoundError('Credentials file does not exists')
 
     config_parser = get_config_parser()
-    with open(BNC_CONFIG_FILE_PATH, "r") as f:
+    with open(bnc_config_file_path, "r") as f:
         config_parser.read_file(f)
 
     config_parser.remove_section(SECTION)
 
-    with open(BNC_CONFIG_FILE_PATH, "w") as f:
+    with open(bnc_config_file_path, "w") as f:
         config_parser.write(f)
