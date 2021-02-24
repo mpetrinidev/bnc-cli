@@ -9,6 +9,7 @@ from src.utils.config import get_config_parser
 from src.utils.config import BNC_CONFIG_FILE_PATH
 from src.utils.config import SECTION
 
+
 config.BNC_CONFIG_PATH = os.path.join(os.path.expanduser("~"), '.bnc-test')
 
 
