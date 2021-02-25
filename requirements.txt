@@ -2,3 +2,4 @@ requests_async~=0.6.2
 click~=7.1.2
 pytest~=6.2.2
 pytest-mock~=3.5.1
+pandas~=1.2.2

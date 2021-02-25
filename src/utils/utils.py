@@ -1,4 +1,7 @@
 import asyncio
+import json
+
+from pandas import json_normalize
 from functools import wraps
 
 import click
@@ -10,6 +13,14 @@ def coro(f):
         return asyncio.run(f(*args, **kwargs))
 
     return wrapper
+
+
+def json_to_str(value, indent: int = 2):
+    return json.dumps(value, indent=indent)
+
+
+def json_to_table(value):
+    return json_normalize(value, "balances", ['asset', 'free', 'locked'])
 
 
 def get_current_context():
