@@ -4,7 +4,6 @@ import click
 import requests_async as requests
 
 from src.cli import pass_environment
-from src.exceptions import BncException
 from src.utils.globals import API_BINANCE
 
 from src.utils.api_time import get_timestamp
@@ -31,11 +30,11 @@ def validate_locked_free(ctx, param, value):
     return value
 
 
-def filter_balances_account_info(balances: List, locked_free: str):
+def filter_balances(balances: List, locked_free: str = 'B'):
     locked_free = locked_free.upper()
 
     if balances is None:
-        raise BncException('Balances cannot be null')
+        return []
 
     if len(balances) == 0:
         return balances
@@ -58,8 +57,7 @@ def cli():
 @cli.command("account_info", short_help="Get current account information")
 @click.option("-rw", "--recv_window", default=5000, show_default=True, callback=validate_recv_window,
               type=click.types.INT)
-@click.option("-lf", "--locked_free", show_default=True, callback=validate_locked_free,
-              type=click.types.STRING)
+@click.option("-lf", "--locked_free", callback=validate_locked_free, type=click.types.STRING)
 @pass_environment
 @coro
 async def account_info(ctx, recv_window, locked_free):
@@ -76,6 +74,6 @@ async def account_info(ctx, recv_window, locked_free):
         return 'Wrong request: status_code: ' + str(r.status_code)
 
     results = r.json()
-    results['balances'] = filter_balances_account_info(results['balances'], locked_free)
+    results['balances'] = filter_balances(results['balances'], locked_free)
 
     ctx.log(json_to_str(results))
