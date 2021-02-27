@@ -16,6 +16,9 @@ from src.utils.utils import coro
 
 
 def validate_recv_window(ctx, param, value):
+    if value is None:
+        raise click.BadParameter('recv_window cannot be null')
+
     if int(value) > 60000:
         raise click.BadParameter(str(value) + '. Cannot exceed 60000')
 
@@ -23,14 +26,17 @@ def validate_recv_window(ctx, param, value):
 
 
 def validate_locked_free(ctx, param, value):
+    if value is None:
+        return
+
     value = str(value).upper()
     if value not in ['L', 'F', 'B']:
-        raise click.BadParameter(value + '. Possible values: L | F | B')
+        raise click.BadParameter(value + '. Possible values: A | L | F | B')
 
     return value
 
 
-def filter_balances(balances: List, locked_free: str = 'B'):
+def filter_balances(balances: List, locked_free: str = 'A'):
     locked_free = locked_free.upper()
 
     if balances is None:
@@ -74,6 +80,8 @@ async def account_info(ctx, recv_window, locked_free):
         return 'Wrong request: status_code: ' + str(r.status_code)
 
     results = r.json()
-    results['balances'] = filter_balances(results['balances'], locked_free)
+
+    if locked_free is not None:
+        results['balances'] = filter_balances(results['balances'], locked_free)
 
     ctx.log(json_to_str(results))
