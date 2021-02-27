@@ -7,6 +7,7 @@ from src.cli import pass_environment
 from src.utils.globals import API_BINANCE
 
 from src.utils.api_time import get_timestamp
+from src.utils.http import handle_response
 from src.utils.security import get_hmac_hash
 from src.utils.security import get_secret_key
 from src.utils.security import get_api_key_header
@@ -75,11 +76,10 @@ async def account_info(ctx, recv_window, locked_free):
     headers = get_api_key_header()
 
     r = await requests.get(API_BINANCE + 'api/v3/account', headers=headers, params=payload)
+    successful, results, headers_resp = handle_response(r=r)
 
-    if r.status_code != 200:
-        return 'Wrong request: status_code: ' + str(r.status_code)
-
-    results = r.json()
+    if not successful:
+        return
 
     if locked_free is not None:
         results['balances'] = filter_balances(results['balances'], locked_free)
