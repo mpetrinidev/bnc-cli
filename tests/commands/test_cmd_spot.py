@@ -1,4 +1,4 @@
-from unittest.mock import AsyncMock
+from unittest.mock import Mock
 
 import pytest
 from click import BadParameter
@@ -77,7 +77,7 @@ def test_account_info_locked_free_incorrect_value(runner, options):
 
 
 def test_account_info_is_ok(runner, mocker):
-    mock_response = AsyncMock(status_code=200)
+    mock_response = Mock(status_code=200)
     mock_response.json.return_value = get_account_info()
 
     mocker.patch('src.commands.cmd_spot.get_secret_key', return_value='SECRET_KEY')
