@@ -76,12 +76,13 @@ async def account_info(ctx, recv_window, locked_free):
     headers = get_api_key_header()
 
     r = await requests.get(API_BINANCE + 'api/v3/account', headers=headers, params=payload)
-    successful, results, headers_resp = handle_response(r=r)
+    res = handle_response(r=r)
 
-    if not successful:
+    if not res['successful']:
         return
 
     if locked_free is not None:
-        results['balances'] = filter_balances(results['balances'], locked_free)
+        res['results']['balances'] = filter_balances(res['results']['balances'], locked_free)
 
-    ctx.log(json_to_str(results))
+    if ctx.output == 'json':
+        ctx.log(json_to_str(res['results']))

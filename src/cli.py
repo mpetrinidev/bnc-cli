@@ -6,9 +6,18 @@ import click
 CONTEXT_SETTINGS = dict(auto_envvar_prefix="BNC")
 
 
+def validate_output_value(ctx, param, value):
+    value = str(value).lower()
+    if value not in ['json', 'table', 'yaml']:
+        raise click.BadParameter(value + '. Possible values: json | table | yaml')
+
+    return value
+
+
 class Environment:
     def __init__(self):
         self.verbose = False
+        self.output = 'json'
 
     def log(self, msg, *args):
         """Logs a message to stderr."""
@@ -45,9 +54,10 @@ class BncCLI(click.MultiCommand):
 
 @click.command(cls=BncCLI, context_settings=CONTEXT_SETTINGS)
 @click.option("-v", "--verbose", default=False, type=click.types.STRING)
+@click.option("-o", "--output", default='json', callback=validate_output_value, type=click.types.STRING)
 @click.version_option(message="Bnc %(version)s")
 @pass_environment
-def cli(ctx, verbose):
+def cli(ctx, verbose, output):
     """Binance command line interface to interact with Binance API."""
     ctx.verbose = verbose
-
+    ctx.output = output
