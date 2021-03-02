@@ -5,8 +5,6 @@ import yaml
 from pandas import json_normalize
 from functools import wraps
 
-import click
-
 from src.cli import pass_environment
 
 
@@ -24,10 +22,6 @@ def json_to_str(value, indent: int = 2):
 
 def json_to_table(value):
     return json_normalize(value, "balances", ['asset', 'free', 'locked'])
-
-
-def get_current_context():
-    return click.get_current_context()
 
 
 def to_query_string_parameters(values: {}) -> str:

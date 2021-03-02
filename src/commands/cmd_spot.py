@@ -3,7 +3,6 @@ from typing import List
 import click
 import requests_async as requests
 
-from src.cli import pass_environment
 from src.utils.globals import API_BINANCE
 
 from src.utils.api_time import get_timestamp
@@ -12,7 +11,7 @@ from src.utils.security import get_hmac_hash
 from src.utils.security import get_secret_key
 from src.utils.security import get_api_key_header
 
-from src.utils.utils import to_query_string_parameters, json_to_str, json_to_table, generate_output
+from src.utils.utils import to_query_string_parameters, generate_output
 from src.utils.utils import coro
 
 
@@ -65,9 +64,8 @@ def cli():
 @click.option("-rw", "--recv_window", default=5000, show_default=True, callback=validate_recv_window,
               type=click.types.INT)
 @click.option("-lf", "--locked_free", callback=validate_locked_free, type=click.types.STRING)
-@pass_environment
 @coro
-async def account_info(ctx, recv_window, locked_free):
+async def account_info(recv_window, locked_free):
     """Get current account information"""
     payload = {'recvWindow': recv_window, 'timestamp': get_timestamp()}
     total_params = to_query_string_parameters(payload)
