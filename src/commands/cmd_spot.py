@@ -12,7 +12,7 @@ from src.utils.security import get_hmac_hash
 from src.utils.security import get_secret_key
 from src.utils.security import get_api_key_header
 
-from src.utils.utils import to_query_string_parameters, json_to_str, json_to_table
+from src.utils.utils import to_query_string_parameters, json_to_str, json_to_table, generate_output
 from src.utils.utils import coro
 
 
@@ -84,5 +84,4 @@ async def account_info(ctx, recv_window, locked_free):
     if locked_free is not None:
         res['results']['balances'] = filter_balances(res['results']['balances'], locked_free)
 
-    if ctx.output == 'json':
-        ctx.log(json_to_str(res['results']))
+    generate_output(res['results'])
