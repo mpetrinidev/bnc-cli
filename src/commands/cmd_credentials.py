@@ -1,6 +1,7 @@
 import click
 
 from src.cli import pass_environment
+from src.exceptions import ConfigException
 from src.utils.config import write_credentials, remove_credentials, read_credentials
 
 
@@ -36,7 +37,12 @@ def remove(ctx):
 @pass_environment
 def show(ctx):
     """Show Binance CLI's credentials"""
-    credentials = read_credentials()
+    try:
+        credentials = read_credentials()
 
-    ctx.log(f'BNC_CLI_API_KEY: {credentials["api_key"]}')
-    ctx.log(f'BNC_CLI_SECRET_KEY: {credentials["secret"]}')
+        ctx.log(f'BNC_CLI_API_KEY: {credentials["api_key"]}')
+        ctx.log(f'BNC_CLI_SECRET_KEY: {credentials["secret"]}')
+    except ConfigException as e:
+        ctx.log('There was an error trying to read credentials. Enable --verbose for more information')
+
+        ctx.vlog(f'Error: {e.message}')

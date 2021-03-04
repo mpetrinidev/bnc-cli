@@ -1,8 +1,6 @@
 import pytest
 import os
 
-from click import FileError
-
 from src.exceptions import ConfigException
 from src.utils.config import write_credentials
 from src.utils.config import read_credentials
@@ -55,7 +53,7 @@ def test_write_credentials_is_ok(mocked_bnc_config_path):
 
 
 def test_read_credentials_file_not_found(mocked_bnc_config_path):
-    with pytest.raises(FileError, match='Credentials file does not exists'):
+    with pytest.raises(ConfigException, match='Credentials file does not exists'):
         read_credentials()
 
 
