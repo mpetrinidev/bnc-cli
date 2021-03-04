@@ -1,7 +1,7 @@
 import click
 
 from src.cli import pass_environment
-from src.utils.config import write_credentials, remove_credentials
+from src.utils.config import write_credentials, remove_credentials, read_credentials
 
 
 @click.group(short_help="Add or remove Binance CLI credentials (api_key and secret)")
@@ -30,3 +30,13 @@ def remove(ctx):
 
     ctx.log("Binance CLI's credentials removed successfully. \n\nRe-run <bnc credentials add> to start using again "
             "Binance CLI")
+
+
+@cli.command('show', short_help="Show credentials")
+@pass_environment
+def show(ctx):
+    """Show Binance CLI's credentials"""
+    credentials = read_credentials()
+
+    ctx.log(f'BNC_CLI_API_KEY: {credentials["api_key"]}')
+    ctx.log(f'BNC_CLI_SECRET_KEY: {credentials["secret"]}')

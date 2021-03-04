@@ -1,6 +1,8 @@
 import configparser
 import os
 
+from click import FileError
+
 from src.exceptions import ConfigException
 
 SECTION = 'api_credentials'
@@ -47,7 +49,7 @@ def read_credentials():
     bnc_config_file_path = get_bnc_config_file_path()
 
     if not os.path.isfile(bnc_config_file_path):
-        raise FileNotFoundError('Credentials file does not exists')
+        raise FileError(filename=bnc_config_file_path, hint='Credentials file does not exists')
 
     config_parser = get_config_parser()
     config_parser.read(bnc_config_file_path)
@@ -73,7 +75,7 @@ def remove_credentials():
     bnc_config_file_path = get_bnc_config_file_path()
 
     if not os.path.isfile(bnc_config_file_path):
-        raise FileNotFoundError('Credentials file does not exists')
+        raise FileError(filename=bnc_config_file_path, hint='Credentials file does not exists')
 
     config_parser = get_config_parser()
     with open(bnc_config_file_path, "r") as f:

@@ -1,6 +1,8 @@
 import pytest
 import os
 
+from click import FileError
+
 from src.exceptions import ConfigException
 from src.utils.config import write_credentials
 from src.utils.config import read_credentials
@@ -11,8 +13,11 @@ from src.utils.config import SECTION
 
 @pytest.fixture()
 def mocked_bnc_config_path(mocker):
-    mocker.patch('src.utils.config.get_bnc_config_path', return_value=os.path.join(os.path.expanduser("~")
-                                                                                   , '.bnc-tests'))
+    mocker.patch('src.utils.config.get_bnc_config_path', return_value=get_bnc_test_config_path())
+
+
+def get_bnc_test_config_path():
+    return os.path.join(os.path.expanduser("~"), '.bnc-tests')
 
 
 def remove_credentials_file():
@@ -50,7 +55,7 @@ def test_write_credentials_is_ok(mocked_bnc_config_path):
 
 
 def test_read_credentials_file_not_found(mocked_bnc_config_path):
-    with pytest.raises(FileNotFoundError, match='Credentials file does not exists'):
+    with pytest.raises(FileError, match='Credentials file does not exists'):
         read_credentials()
 
 
