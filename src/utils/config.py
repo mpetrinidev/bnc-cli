@@ -43,17 +43,21 @@ def write_credentials(api_key: str, secret: str):
         config_parser.write(f)
 
 
+def exists_config_file():
+    return os.path.isfile(get_bnc_config_file_path())
+
+
 def read_credentials():
     bnc_config_file_path = get_bnc_config_file_path()
 
-    if not os.path.isfile(bnc_config_file_path):
+    if not exists_config_file():
         raise ConfigException('Credentials file does not exists')
 
     config_parser = get_config_parser()
     config_parser.read(bnc_config_file_path)
 
     if not config_parser.has_section(SECTION):
-        raise ConfigException('api_credentials section cannot be found in credentials file')
+        raise ConfigException("api_credentials section cannot be found in credentials file")
 
     section = config_parser[SECTION]
 
@@ -72,7 +76,7 @@ def read_credentials():
 def remove_credentials():
     bnc_config_file_path = get_bnc_config_file_path()
 
-    if not os.path.isfile(bnc_config_file_path):
+    if not exists_config_file():
         return
 
     config_parser = get_config_parser()
