@@ -1,1 +1,1 @@
-API_BINANCE = 'https://api.binance.com/'
+API_BINANCE = 'https://testnet.binance.vision/'

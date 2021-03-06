@@ -17,6 +17,6 @@ def handle_response(ctx, r):
         ctx.log("Binance's side internal error has occurred")
 
     if 400 <= r.status_code <= 499:
-        ctx.log(f'Binance API is reporting the following error: ({result["results"]["code"]} | {result["results"]["msg"]})')
+        ctx.log(f'Binance API is reporting the following error: {result["results"]["code"]} | {result["results"]["msg"]}')
 
     return result
