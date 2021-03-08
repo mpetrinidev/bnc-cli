@@ -1,3 +1,4 @@
+from enum import Enum, unique
 from typing import List
 
 import click
@@ -37,6 +38,27 @@ def validate_locked_free(ctx, param, value):
     return value
 
 
+def validate_side(ctx, param, value):
+    value = str(value).upper()
+
+    if value not in ['BUY', 'SELL']:
+        raise click.BadParameter(value + '. Possible values: BUY | SELL')
+
+    return value
+
+
+def validate_time_in_force(ctx, param, value):
+    if value is None:
+        return value
+
+    value = str(value).upper()
+
+    if value not in ['GTC', 'IOC', 'FOK']:
+        raise click.BadParameter(value + '. Possible values: GTC | IOC | FOK')
+
+    return value
+
+
 def filter_balances(balances: List, locked_free: str = 'A'):
     locked_free = locked_free.upper()
 
@@ -56,9 +78,70 @@ def filter_balances(balances: List, locked_free: str = 'A'):
     return balances
 
 
-@click.group(short_help="Functionalities related to spot account/trade")
+@click.group(short_help="Spot Account/Trade operations")
 def cli():
     pass
+
+
+@cli.group("new_order")
+def new_order():
+    pass
+
+
+@unique
+class Side(Enum):
+    BUY = 1
+    SELL = 2
+
+
+@new_order.command("limit", short_help="Send in a new limit order")
+@click.option("-sy", "--symbol", required=True, type=click.types.STRING)
+@click.option("-si", "--side", required=True, callback=validate_side, type=click.types.STRING)
+@click.option("-tif", "--time_in_force", required=True, callback=validate_time_in_force, type=click.types.STRING)
+@click.option("-q", "--quantity", required=True, type=click.types.FLOAT)
+@click.option("-qoq", "--quote_order_qty", type=click.types.FLOAT)
+@click.option("-p", "--price", required=True, type=click.types.FLOAT)
+@click.option("-ncoid", "--new_client_order_id", type=click.types.STRING)
+@click.option("-sp", "--stop_price", type=click.types.FLOAT)
+@click.option("-iq", "--iceberg_qty", type=click.types.FLOAT)
+@click.option("-rw", "--recv_window", default=5000, show_default=True, callback=validate_recv_window,
+              type=click.types.INT)
+@coro
+async def limit(symbol, side, time_in_force, quantity, quote_order_qty, price, new_client_order_id,
+                stop_price, iceberg_qty, recv_window):
+
+    payload = {'symbol': symbol, 'side': side, 'type': "LIMIT", 'timeInForce': time_in_force, 'quantity': quantity}
+
+    if quote_order_qty is not None:
+        payload['quoteOrderQty'] = quote_order_qty
+
+    payload['price'] = price
+
+    if new_client_order_id is not None:
+        payload['newClientOrderId'] = new_client_order_id
+
+    if stop_price is not None:
+        payload['stopPrice'] = stop_price
+
+    if iceberg_qty is not None:
+        payload['icebergQty'] = iceberg_qty
+
+    payload['newOrderRespType'] = "FULL"
+    payload['recvWindow'] = recv_window
+    payload['timestamp'] = get_timestamp()
+
+    total_params = to_query_string_parameters(payload)
+    payload['signature'] = get_hmac_hash(total_params, get_secret_key())
+
+    headers = get_api_key_header()
+
+    r = await requests.post(API_BINANCE + 'api/v3/order', headers=headers, params=payload)
+    res = handle_response(r=r)
+
+    if not res['successful']:
+        return
+
+    generate_output(res['results'])
 
 
 @cli.command("account_info", short_help="Get current account information")
