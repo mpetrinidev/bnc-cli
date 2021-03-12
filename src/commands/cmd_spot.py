@@ -1,10 +1,10 @@
-from enum import Enum, unique
 from typing import List
 
 import click
 import requests_async as requests
 
 from src.cli import pass_environment
+from src.decorators import coro
 from src.utils.globals import API_BINANCE
 
 from src.utils.api_time import get_timestamp
@@ -14,7 +14,6 @@ from src.utils.security import get_secret_key
 from src.utils.security import get_api_key_header
 
 from src.utils.utils import to_query_string_parameters, generate_output
-from src.utils.utils import coro
 
 
 def validate_recv_window(ctx, param, value):
@@ -86,12 +85,6 @@ def cli():
 @cli.group("new_order")
 def new_order():
     pass
-
-
-@unique
-class Side(Enum):
-    BUY = 1
-    SELL = 2
 
 
 @new_order.command("limit", short_help="Send in a new limit order")

@@ -1,19 +1,9 @@
-import asyncio
 import json
 import yaml
 
 from pandas import json_normalize
-from functools import wraps
 
 from src.cli import pass_environment
-
-
-def coro(f):
-    @wraps(f)
-    def wrapper(*args, **kwargs):
-        return asyncio.run(f(*args, **kwargs))
-
-    return wrapper
 
 
 def json_to_str(value, indent: int = 2):
