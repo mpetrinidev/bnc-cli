@@ -1,3 +1,5 @@
+from abc import abstractmethod
+
 import click
 import requests_async as requests
 import yaml
@@ -16,12 +18,10 @@ class Builder:
         self.headers = None
         self.response = None
         self.result = None
+        self.has_error = False
 
         ctx = click.get_current_context()
         self.env = ctx.ensure_object(Environment)
-
-    def validate(self):
-        return self
 
     def set_security(self):
         self.payload['signature'] = get_hmac_hash(to_query_string_parameters(self.payload), get_secret_key())
@@ -51,16 +51,21 @@ class Builder:
 
         if 500 <= self.response.status_code <= 599:
             self.env.log("Binance's side internal error has occurred")
+            self.has_error = True
 
         if 400 <= self.response.status_code <= 499:
             self.env.log(
                 f'Binance API is reporting the following error: {result["results"]["code"]} | {result["results"]["msg"]}')
+            self.has_error = True
 
         self.result = result
 
         return self
 
     def generate_output(self):
+        if self.has_error:
+            return
+
         output = None
 
         if self.env.output == 'json':

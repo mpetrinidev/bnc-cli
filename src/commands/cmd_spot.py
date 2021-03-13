@@ -147,14 +147,9 @@ async def order_status(ctx, symbol, order_id, orig_client_order_id, recv_window)
     if orig_client_order_id is not None:
         payload['origClientOrderId'] = orig_client_order_id
 
-    total_params = to_query_string_parameters(payload)
-    payload['signature'] = get_hmac_hash(total_params, get_secret_key())
-    headers = get_api_key_header()
+    builder = Builder(endpoint='api/v3/order', payload=payload) \
+        .set_security()
 
-    r = await requests.get(API_BINANCE + 'api/v3/order', headers=headers, params=payload)
-    res = handle_response(r=r)
+    await builder.send_http_req()
 
-    if not res['successful']:
-        return
-
-    generate_output(res['results'])
+    builder.handle_response().generate_output()
