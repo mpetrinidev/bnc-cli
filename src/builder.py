@@ -1,5 +1,3 @@
-from abc import abstractmethod
-
 import click
 import requests_async as requests
 import yaml
