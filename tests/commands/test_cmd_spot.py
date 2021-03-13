@@ -80,9 +80,9 @@ def test_account_info_is_ok(runner, mocker):
     mock_response = Mock(status_code=200)
     mock_response.json.return_value = get_account_info()
 
-    mocker.patch('src.commands.cmd_spot.get_secret_key', return_value='SECRET_KEY')
-    mocker.patch('src.commands.cmd_spot.get_api_key_header', return_value={'X-MBX-APIKEY': 'API_KEY'})
-    mocker.patch('src.commands.cmd_spot.requests.get', return_value=mock_response)
+    mocker.patch('src.builder.get_secret_key', return_value='SECRET_KEY')
+    mocker.patch('src.builder.get_api_key_header', return_value={'X-MBX-APIKEY': 'API_KEY'})
+    mocker.patch('src.builder.requests.get', return_value=mock_response)
 
     result = runner.invoke(account_info)
 

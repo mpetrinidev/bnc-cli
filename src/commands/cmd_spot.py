@@ -3,9 +3,15 @@ from typing import List
 import click
 import requests_async as requests
 
+from src.builder import Builder
 from src.cli import pass_environment
 from src.decorators import coro
 from src.utils.globals import API_BINANCE
+
+from src.validation.val_spot import validate_side
+from src.validation.val_spot import validate_recv_window
+from src.validation.val_spot import validate_locked_free
+from src.validation.val_spot import validate_time_in_force
 
 from src.utils.api_time import get_timestamp
 from src.utils.http import handle_response
@@ -14,48 +20,6 @@ from src.utils.security import get_secret_key
 from src.utils.security import get_api_key_header
 
 from src.utils.utils import to_query_string_parameters, generate_output
-
-
-def validate_recv_window(ctx, param, value):
-    if value is None:
-        raise click.BadParameter('recv_window cannot be null')
-
-    if int(value) > 60000:
-        raise click.BadParameter(str(value) + '. Cannot exceed 60000')
-
-    return value
-
-
-def validate_locked_free(ctx, param, value):
-    if value is None:
-        return
-
-    value = str(value).upper()
-    if value not in ['L', 'F', 'B']:
-        raise click.BadParameter(value + '. Possible values: A | L | F | B')
-
-    return value
-
-
-def validate_side(ctx, param, value):
-    value = str(value).upper()
-
-    if value not in ['BUY', 'SELL']:
-        raise click.BadParameter(value + '. Possible values: BUY | SELL')
-
-    return value
-
-
-def validate_time_in_force(ctx, param, value):
-    if value is None:
-        return value
-
-    value = str(value).upper()
-
-    if value not in ['GTC', 'IOC', 'FOK']:
-        raise click.BadParameter(value + '. Possible values: GTC | IOC | FOK')
-
-    return value
 
 
 def filter_balances(balances: List, locked_free: str = 'A'):
@@ -102,7 +66,7 @@ def new_order():
 @coro
 async def limit(symbol, side, time_in_force, quantity, quote_order_qty, price, new_client_order_id,
                 stop_price, iceberg_qty, recv_window):
-
+    """Send in a new limit order"""
     payload = {'symbol': symbol, 'side': side, 'type': "LIMIT", 'timeInForce': time_in_force, 'quantity': quantity}
 
     if quote_order_qty is not None:
@@ -145,21 +109,13 @@ async def limit(symbol, side, time_in_force, quantity, quote_order_qty, price, n
 async def account_info(recv_window, locked_free):
     """Get current account information"""
     payload = {'recvWindow': recv_window, 'timestamp': get_timestamp()}
-    total_params = to_query_string_parameters(payload)
 
-    payload['signature'] = get_hmac_hash(total_params, get_secret_key())
-    headers = get_api_key_header()
+    builder = Builder(endpoint='api/v3/account', payload=payload) \
+        .set_security()
 
-    r = await requests.get(API_BINANCE + 'api/v3/account', headers=headers, params=payload)
-    res = handle_response(r=r)
+    await builder.send_http_req()
 
-    if not res['successful']:
-        return
-
-    if locked_free is not None:
-        res['results']['balances'] = filter_balances(res['results']['balances'], locked_free)
-
-    generate_output(res['results'])
+    builder.handle_response().generate_output()
 
 
 @cli.command("order_status", short_help="Check an order's status")
