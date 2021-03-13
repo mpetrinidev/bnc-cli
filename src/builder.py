@@ -1,3 +1,5 @@
+from abc import abstractmethod
+
 import click
 import requests_async as requests
 import yaml
@@ -60,6 +62,13 @@ class Builder:
 
         return self
 
+    @abstractmethod
+    def filter(self, **kwargs):
+        if self.has_error:
+            return
+
+        pass
+
     def generate_output(self):
         if self.has_error:
             return
@@ -73,3 +82,33 @@ class Builder:
             output = yaml.safe_dump(self.result['results'], default_flow_style=False, sort_keys=False)
 
         self.env.log(output)
+
+
+class AccountInfoBuilder(Builder):
+    def filter(self, **kwargs):
+        if self.has_error:
+            return
+
+        if 'locked_free' in kwargs and kwargs['locked_free'] is not None:
+            locked_free = str(kwargs['locked_free']).upper()
+
+            if self.result['results']['balances'] is None:
+                self.result['results']['balances'] = []
+                return self
+
+            if len(self.result['results']['balances']) == 0:
+                return self
+
+            filter_func = None
+
+            if locked_free == 'B':
+                filter_func = lambda balances: [x for x in balances if
+                                                float(x['free']) > 0.0 or float(x['locked']) > 0.0]
+            elif locked_free == 'F':
+                filter_func = lambda balances: [x for x in balances if float(x['free']) > 0.0]
+            elif locked_free == 'L':
+                filter_func = lambda balances: [x for x in balances if float(x['locked']) > 0.0]
+
+            self.result['results']['balances'] = filter_func(self.result['results']['balances'])
+
+        return self

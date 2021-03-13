@@ -1,12 +1,8 @@
-from typing import List
-
 import click
-import requests_async as requests
 
-from src.builder import Builder
+from src.builder import Builder, AccountInfoBuilder
 from src.cli import pass_environment
 from src.decorators import coro
-from src.utils.globals import API_BINANCE
 
 from src.validation.val_spot import validate_side
 from src.validation.val_spot import validate_recv_window
@@ -14,31 +10,6 @@ from src.validation.val_spot import validate_locked_free
 from src.validation.val_spot import validate_time_in_force
 
 from src.utils.api_time import get_timestamp
-from src.utils.http import handle_response
-from src.utils.security import get_hmac_hash
-from src.utils.security import get_secret_key
-from src.utils.security import get_api_key_header
-
-from src.utils.utils import to_query_string_parameters, generate_output
-
-
-def filter_balances(balances: List, locked_free: str = 'A'):
-    locked_free = locked_free.upper()
-
-    if balances is None:
-        return []
-
-    if len(balances) == 0:
-        return balances
-
-    if locked_free == 'B':
-        balances = [x for x in balances if float(x['free']) > 0.0 or float(x['locked']) > 0.0]
-    elif locked_free == 'F':
-        balances = [x for x in balances if float(x['free']) > 0.0]
-    elif locked_free == 'L':
-        balances = [x for x in balances if float(x['locked']) > 0.0]
-
-    return balances
 
 
 @click.group(short_help="Spot Account/Trade operations")
@@ -87,18 +58,12 @@ async def limit(symbol, side, time_in_force, quantity, quote_order_qty, price, n
     payload['recvWindow'] = recv_window
     payload['timestamp'] = get_timestamp()
 
-    total_params = to_query_string_parameters(payload)
-    payload['signature'] = get_hmac_hash(total_params, get_secret_key())
+    builder = Builder(endpoint='api/v3/order', payload=payload, method='POST') \
+        .set_security()
 
-    headers = get_api_key_header()
+    await builder.send_http_req()
 
-    r = await requests.post(API_BINANCE + 'api/v3/order', headers=headers, params=payload)
-    res = handle_response(r=r)
-
-    if not res['successful']:
-        return
-
-    generate_output(res['results'])
+    builder.handle_response().generate_output()
 
 
 @cli.command("account_info", short_help="Get current account information")
@@ -110,12 +75,12 @@ async def account_info(recv_window, locked_free):
     """Get current account information"""
     payload = {'recvWindow': recv_window, 'timestamp': get_timestamp()}
 
-    builder = Builder(endpoint='api/v3/account', payload=payload) \
+    builder = AccountInfoBuilder(endpoint='api/v3/account', payload=payload) \
         .set_security()
 
     await builder.send_http_req()
 
-    builder.handle_response().generate_output()
+    builder.handle_response().filter(locked_free=locked_free).generate_output()
 
 
 @cli.command("order_status", short_help="Check an order's status")
