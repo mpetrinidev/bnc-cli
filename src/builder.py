@@ -11,21 +11,41 @@ from src.utils.utils import to_query_string_parameters, json_to_str
 
 
 class Builder:
-    def __init__(self, endpoint, payload, method: str = 'GET'):
+    def __init__(self, endpoint: str, payload: dict, method: str = 'GET', headers=None):
+        if headers is None:
+            headers = {}
+
+        if endpoint is None or len(endpoint) == 0:
+            raise ValueError('endpoint cannot be null or empty')
+
+        if payload is None or not payload:
+            raise ValueError('payload cannot be null or empty')
+
         self.payload = payload
         self.endpoint = endpoint
-        self.method = method
-        self.headers = None
+
+        self._validate_http_method(method)
+
+        self.method = method.upper()
+        self.headers = headers
+
         self.response = None
         self.result = None
         self.has_error = False
 
-        ctx = click.get_current_context()
-        self.env = ctx.ensure_object(Environment)
+        ctx = click.get_current_context(silent=True)
+        self.env = None
+
+        if ctx is not None:
+            self.env = ctx.ensure_object(Environment)
+
+    def _validate_http_method(self, method: str):
+        if method.upper() not in ['POST', 'GET', 'PUT', 'PATCH', 'DELETE']:
+            raise ValueError('Http method is invalid')
 
     def set_security(self):
         self.payload['signature'] = get_hmac_hash(to_query_string_parameters(self.payload), get_secret_key())
-        self.headers = get_api_key_header()
+        self.headers.update(get_api_key_header())
 
         return self
 

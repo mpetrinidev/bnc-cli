@@ -1,14 +1,6 @@
 from click import ClickException
 
 
-class BncException(ClickException):
-    """Raises this exception for general purpose in the CLI"""
-
-    def __init__(self, message):
-        ClickException.__init__(self, message)
-        self.message = message
-
-
 class ConfigException(ClickException):
     """An exception that raises when an error occur in credentials config"""
 
