@@ -128,7 +128,7 @@ class AccountInfoBuilder(Builder):
                 filter_func = lambda balances: [x for x in balances if float(x['free']) > 0.0]
             elif locked_free == 'L':
                 filter_func = lambda balances: [x for x in balances if float(x['locked']) > 0.0]
-
+    
             self.result['results']['balances'] = filter_func(self.result['results']['balances'])
 
         return self

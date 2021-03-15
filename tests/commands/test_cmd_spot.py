@@ -5,8 +5,6 @@ from click import BadParameter
 from click.testing import CliRunner
 
 from src.commands.cmd_spot import account_info
-from src.commands.cmd_spot import validate_recv_window
-from src.commands.cmd_spot import validate_locked_free
 from src.utils.utils import json_to_str
 
 
@@ -87,22 +85,4 @@ def test_account_info_is_ok(runner, mocker):
 
     assert result.exit_code == 0
     assert result.output == json_to_str(get_account_info()) + '\n'
-
-
-@pytest.mark.parametrize("value", [60001, '60001'])
-def test_validate_recv_window_greater_than_60000(value):
-    with pytest.raises(BadParameter, match=f'{value}. Cannot exceed 60000'):
-        validate_recv_window(None, None, value)
-
-
-def test_validate_recv_window_is_none():
-    with pytest.raises(BadParameter, match='recv_window cannot be null'):
-        validate_recv_window(None, None, None)
-
-
-@pytest.mark.parametrize("value", ['G', 'LL', 'FF', 'BB', 2])
-def test_validate_locked_free_incorrect_value(value):
-    with pytest.raises(BadParameter, match=f'{value}. Possible values: A | L | F | B'):
-        validate_locked_free(None, None, value)
-
 
