@@ -4,7 +4,7 @@ import pytest
 from click import BadParameter
 from click.testing import CliRunner
 
-from src.commands.cmd_spot import account_info
+from src.commands.cmd_spot import account_info, cli, new_order, open_orders
 from src.utils.utils import json_to_str
 
 
@@ -49,6 +49,16 @@ def get_balances():
             "locked": "10.250"
         }
     ]
+
+
+def test_cli_root_is_ok(runner):
+    result = runner.invoke(cli)
+    assert result.exit_code == 0
+
+
+def test_new_order_root_is_ok(runner):
+    result = runner.invoke(new_order)
+    assert result.exit_code == 0
 
 
 @pytest.mark.parametrize("options", [

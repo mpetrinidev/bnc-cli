@@ -17,7 +17,10 @@ def cli():
     pass
 
 
-@cli.group("new_order")
+@cli.group("new_order", short_help="Send in a new limit, "
+                                   "market, stop_loss, stop_loss_limit, "
+                                   "take_profit, take_profit_limit "
+                                   "or limit_maker order")
 def new_order():
     pass
 
@@ -81,6 +84,27 @@ async def account_info(recv_window, locked_free):
     await builder.send_http_req()
 
     builder.handle_response().filter(locked_free=locked_free).generate_output()
+
+
+@cli.command("open_orders", short_help="Get all open orders on a symbol. Careful when accessing this with no symbol.")
+@click.option("-sy", "--symbol", type=click.types.STRING)
+@click.option("-rw", "--recv_window", default=5000, show_default=True, callback=validate_recv_window,
+              type=click.types.INT)
+@coro
+async def open_orders(symbol, recv_window):
+    """
+    Get all open orders on a symbol. Careful when accessing this with no symbol.
+
+    Weight: 1 for a single symbol; 40 when the symbol parameter is omitted
+    """
+    payload = {'recvWindow': recv_window, 'timestamp': get_timestamp()}
+    if symbol is not None:
+        payload['symbol'] = symbol
+
+    builder = Builder(endpoint='api/v3/openOrders', payload=payload).set_security()
+    await builder.send_http_req()
+
+    builder.handle_response().generate_output()
 
 
 @cli.command("order_status", short_help="Check an order's status")
