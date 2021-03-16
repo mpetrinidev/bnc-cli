@@ -56,6 +56,9 @@ class Builder:
         if self.method == 'POST':
             self.response = await requests.post(API_BINANCE + self.endpoint, headers=self.headers, params=self.payload)
 
+        if self.method == 'DELETE':
+            self.response = await requests.delete(API_BINANCE + self.endpoint, headers=self.headers, params=self.payload)
+
         return self
 
     def handle_response(self):

@@ -69,6 +69,46 @@ async def limit(symbol, side, time_in_force, quantity, quote_order_qty, price, n
     builder.handle_response().generate_output()
 
 
+@cli.command("cancel_order", short_help='Cancel an active order')
+@click.option("-sy", "--symbol", required=True, type=click.types.STRING)
+@click.option("-oid", "--order_id", type=click.types.INT)
+@click.option("-ocoid", "--orig_client_order_id", type=click.types.STRING)
+@click.option("-ncoid", "--new_client_order_id", type=click.types.STRING)
+@click.option("-rw", "--recv_window", default=5000, show_default=True, callback=validate_recv_window,
+              type=click.types.INT)
+@pass_environment
+@coro
+async def cancel_order(ctx, symbol, order_id, orig_client_order_id, new_client_order_id, recv_window):
+    """
+    Cancel an active order
+
+    Either orderId or origClientOrderId must be sent.
+    """
+    if order_id is None and orig_client_order_id is None:
+        ctx.log('Either --order_id (-oid) or --orig_client_order_id (-ocoid) must be sent.')
+        return
+
+    payload = {'symbol': symbol}
+
+    if order_id is not None:
+        payload['orderId'] = order_id
+
+    if orig_client_order_id is not None:
+        payload['origClientOrderId'] = orig_client_order_id
+
+    if new_client_order_id is not None:
+        payload['newClientOrderId'] = new_client_order_id
+
+    payload['recvWindow'] = recv_window
+    payload['timestamp'] = get_timestamp()
+
+    builder = Builder(endpoint='api/v3/order', payload=payload, method='DELETE').set_security()
+
+    await builder.send_http_req()
+
+    builder.handle_response().generate_output()
+
+
 @cli.command("account_info", short_help="Get current account information")
 @click.option("-rw", "--recv_window", default=5000, show_default=True, callback=validate_recv_window,
               type=click.types.INT)
