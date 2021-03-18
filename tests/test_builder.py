@@ -9,7 +9,7 @@ API_KEY = 'API_KEY'
 RESPONSE_OBJ = {'key': 1}
 
 
-@pytest.fixture()
+@pytest.fixture
 def mocked_deps(mocker):
     mocker.patch('src.builder.get_hmac_hash', return_value=SIGNATURE)
     mocker.patch('src.builder.get_secret_key', return_value='MY_SECRET_KEY')
