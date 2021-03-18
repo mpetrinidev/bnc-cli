@@ -4,7 +4,7 @@ import pytest
 from click import BadParameter
 from click.testing import CliRunner
 
-from src.commands.cmd_spot import account_info, cli, new_order, open_orders
+from src.commands.cmd_spot import account_info, cli, new_order, limit
 from src.utils.utils import json_to_str
 
 
@@ -51,6 +51,25 @@ def get_balances():
     ]
 
 
+def get_full_order_limit():
+    return {
+        "symbol": "LTCBTC",
+        "orderId": 44588,
+        "orderListId": -1,
+        "clientOrderId": "Xxv5X3sWh6wxIPtlZxkKmS",
+        "transactTime": 1616029165071,
+        "price": "0.00362100",
+        "origQty": "1.00000000",
+        "executedQty": "0.00000000",
+        "cummulativeQuoteQty": "0.00000000",
+        "status": "NEW",
+        "timeInForce": "GTC",
+        "type": "LIMIT",
+        "side": "BUY",
+        "fills": []
+    }
+
+
 def test_cli_root_is_ok(runner):
     result = runner.invoke(cli)
     assert result.exit_code == 0
@@ -59,6 +78,19 @@ def test_cli_root_is_ok(runner):
 def test_new_order_root_is_ok(runner):
     result = runner.invoke(new_order)
     assert result.exit_code == 0
+
+
+def test_new_order_limit_return_full_resp(runner, mocker):
+    mock_response = Mock(status_code=200)
+    mock_response.json.return_value = get_full_order_limit()
+
+    mocker.patch('src.builder.get_secret_key', return_value='SECRET_KEY')
+    mocker.patch('src.builder.get_api_key_header', return_value={'X-MBX-APIKEY': 'API_KEY'})
+    mocker.patch('src.builder.requests.post', return_value=mock_response)
+
+    result = runner.invoke(limit, ['-sy', 'LTCBTC', '-si', 'BUY', '-tif', 'GTC', '-q', 1, '-p', 0.003621])
+    assert result.exit_code == 0
+    assert result.output == json_to_str(get_full_order_limit()) + '\n'
 
 
 @pytest.mark.parametrize("options", [
@@ -95,4 +127,3 @@ def test_account_info_is_ok(runner, mocker):
 
     assert result.exit_code == 0
     assert result.output == json_to_str(get_account_info()) + '\n'
-
