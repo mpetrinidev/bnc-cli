@@ -69,6 +69,283 @@ async def limit(symbol, side, time_in_force, quantity, quote_order_qty, price, n
     builder.handle_response().generate_output()
 
 
+@new_order.command("market", short_help="Send in a new market order")
+@click.option("-sy", "--symbol", required=True, type=click.types.STRING)
+@click.option("-si", "--side", required=True, callback=validate_side, type=click.types.STRING)
+@click.option("-tif", "--time_in_force", callback=validate_time_in_force, type=click.types.STRING)
+@click.option("-q", "--quantity", type=click.types.FLOAT)
+@click.option("-qoq", "--quote_order_qty", type=click.types.FLOAT)
+@click.option("-p", "--price", type=click.types.FLOAT)
+@click.option("-ncoid", "--new_client_order_id", type=click.types.STRING)
+@click.option("-sp", "--stop_price", type=click.types.FLOAT)
+@click.option("-iq", "--iceberg_qty", type=click.types.FLOAT)
+@click.option("-rw", "--recv_window", default=5000, show_default=True, callback=validate_recv_window,
+              type=click.types.INT)
+@pass_environment
+@coro
+async def market(ctx, symbol, side, time_in_force, quantity, quote_order_qty, price, new_client_order_id,
+                 stop_price, iceberg_qty, recv_window):
+    """Send in a new market order"""
+    if quantity is None and quote_order_qty is None:
+        ctx.log('Either --quantity (-q) or --quote_order_qty (-qoq) must be sent.')
+        return
+
+    payload = {'symbol': symbol, 'side': side, 'type': "MARKET"}
+
+    if quantity is not None:
+        payload['quantity'] = quantity
+
+    if time_in_force is not None:
+        payload['timeInForce'] = time_in_force
+
+    if quote_order_qty is not None:
+        payload['quoteOrderQty'] = quote_order_qty
+
+    if price is not None:
+        payload['price'] = price
+
+    if new_client_order_id is not None:
+        payload['newClientOrderId'] = new_client_order_id
+
+    if stop_price is not None:
+        payload['stopPrice'] = stop_price
+
+    if iceberg_qty is not None:
+        payload['icebergQty'] = iceberg_qty
+
+    payload['newOrderRespType'] = "FULL"
+    payload['recvWindow'] = recv_window
+    payload['timestamp'] = get_timestamp()
+
+    builder = Builder(endpoint='api/v3/order', payload=payload, method='POST') \
+        .set_security()
+
+    await builder.send_http_req()
+
+    builder.handle_response().generate_output()
+
+
+@new_order.command("stop_loss", short_help="Send in a new stop_loss order")
+@click.option("-sy", "--symbol", required=True, type=click.types.STRING)
+@click.option("-si", "--side", required=True, callback=validate_side, type=click.types.STRING)
+@click.option("-tif", "--time_in_force", callback=validate_time_in_force, type=click.types.STRING)
+@click.option("-q", "--quantity", required=True, type=click.types.FLOAT)
+@click.option("-qoq", "--quote_order_qty", type=click.types.FLOAT)
+@click.option("-p", "--price", type=click.types.FLOAT)
+@click.option("-ncoid", "--new_client_order_id", type=click.types.STRING)
+@click.option("-sp", "--stop_price", required=True, type=click.types.FLOAT)
+@click.option("-iq", "--iceberg_qty", type=click.types.FLOAT)
+@click.option("-rw", "--recv_window", default=5000, show_default=True, callback=validate_recv_window,
+              type=click.types.INT)
+@coro
+async def stop_loss(symbol, side, time_in_force, quantity, quote_order_qty, price, new_client_order_id,
+                    stop_price, iceberg_qty, recv_window):
+    """Send in a new stop_loss order"""
+    payload = {'symbol': symbol, 'side': side, 'type': "STOP_LOSS", 'quantity': quantity, 'stopPrice': stop_price}
+
+    if time_in_force is not None:
+        payload['timeInForce'] = time_in_force
+
+    if quote_order_qty is not None:
+        payload['quoteOrderQty'] = quote_order_qty
+
+    if price is not None:
+        payload['price'] = price
+
+    if new_client_order_id is not None:
+        payload['newClientOrderId'] = new_client_order_id
+
+    if iceberg_qty is not None:
+        payload['icebergQty'] = iceberg_qty
+
+    payload['newOrderRespType'] = "ACK"
+    payload['recvWindow'] = recv_window
+    payload['timestamp'] = get_timestamp()
+
+    builder = Builder(endpoint='api/v3/order', payload=payload, method='POST') \
+        .set_security()
+
+    await builder.send_http_req()
+
+    builder.handle_response().generate_output()
+
+
+@new_order.command("stop_loss_limit", short_help="Send in a new stop_loss_limit order")
+@click.option("-sy", "--symbol", required=True, type=click.types.STRING)
+@click.option("-si", "--side", required=True, callback=validate_side, type=click.types.STRING)
+@click.option("-tif", "--time_in_force", required=True, callback=validate_time_in_force, type=click.types.STRING)
+@click.option("-q", "--quantity", required=True, type=click.types.FLOAT)
+@click.option("-qoq", "--quote_order_qty", type=click.types.FLOAT)
+@click.option("-p", "--price", required=True, type=click.types.FLOAT)
+@click.option("-ncoid", "--new_client_order_id", type=click.types.STRING)
+@click.option("-sp", "--stop_price", required=True, type=click.types.FLOAT)
+@click.option("-iq", "--iceberg_qty", type=click.types.FLOAT)
+@click.option("-rw", "--recv_window", default=5000, show_default=True, callback=validate_recv_window,
+              type=click.types.INT)
+@coro
+async def stop_loss_limit(symbol, side, time_in_force, quantity, quote_order_qty, price, new_client_order_id,
+                          stop_price, iceberg_qty, recv_window):
+    """Send in a new stop_loss_limit order"""
+    payload = {'symbol': symbol, 'side': side, 'type': "STOP_LOSS_LIMIT", 'timeInForce': time_in_force,
+               'quantity': quantity, 'price': price, 'stopPrice': stop_price}
+
+    if quote_order_qty is not None:
+        payload['quoteOrderQty'] = quote_order_qty
+
+    if price is not None:
+        payload['price'] = price
+
+    if new_client_order_id is not None:
+        payload['newClientOrderId'] = new_client_order_id
+
+    if iceberg_qty is not None:
+        payload['icebergQty'] = iceberg_qty
+
+    payload['newOrderRespType'] = "ACK"
+    payload['recvWindow'] = recv_window
+    payload['timestamp'] = get_timestamp()
+
+    builder = Builder(endpoint='api/v3/order', payload=payload, method='POST') \
+        .set_security()
+
+    await builder.send_http_req()
+
+    builder.handle_response().generate_output()
+
+
+@new_order.command("take_profit", short_help="Send in a new take_profit order")
+@click.option("-sy", "--symbol", required=True, type=click.types.STRING)
+@click.option("-si", "--side", required=True, callback=validate_side, type=click.types.STRING)
+@click.option("-tif", "--time_in_force", callback=validate_time_in_force, type=click.types.STRING)
+@click.option("-q", "--quantity", required=True, type=click.types.FLOAT)
+@click.option("-qoq", "--quote_order_qty", type=click.types.FLOAT)
+@click.option("-p", "--price", type=click.types.FLOAT)
+@click.option("-ncoid", "--new_client_order_id", type=click.types.STRING)
+@click.option("-sp", "--stop_price", required=True, type=click.types.FLOAT)
+@click.option("-iq", "--iceberg_qty", type=click.types.FLOAT)
+@click.option("-rw", "--recv_window", default=5000, show_default=True, callback=validate_recv_window,
+              type=click.types.INT)
+@coro
+async def take_profit(symbol, side, time_in_force, quantity, quote_order_qty, price, new_client_order_id,
+                      stop_price, iceberg_qty, recv_window):
+    """Send in a new take_profit order"""
+    payload = {'symbol': symbol, 'side': side, 'type': "TAKE_PROFIT", 'quantity': quantity, 'stopPrice': stop_price}
+
+    if time_in_force is not None:
+        payload['timeInForce'] = time_in_force
+
+    if quote_order_qty is not None:
+        payload['quoteOrderQty'] = quote_order_qty
+
+    if price is not None:
+        payload['price'] = price
+
+    if new_client_order_id is not None:
+        payload['newClientOrderId'] = new_client_order_id
+
+    if iceberg_qty is not None:
+        payload['icebergQty'] = iceberg_qty
+
+    payload['newOrderRespType'] = "ACK"
+    payload['recvWindow'] = recv_window
+    payload['timestamp'] = get_timestamp()
+
+    builder = Builder(endpoint='api/v3/order', payload=payload, method='POST') \
+        .set_security()
+
+    await builder.send_http_req()
+
+    builder.handle_response().generate_output()
+
+
+@new_order.command("take_profit_limit", short_help="Send in a new take_profit_limit order")
+@click.option("-sy", "--symbol", required=True, type=click.types.STRING)
+@click.option("-si", "--side", required=True, callback=validate_side, type=click.types.STRING)
+@click.option("-tif", "--time_in_force", required=True, callback=validate_time_in_force, type=click.types.STRING)
+@click.option("-q", "--quantity", required=True, type=click.types.FLOAT)
+@click.option("-qoq", "--quote_order_qty", type=click.types.FLOAT)
+@click.option("-p", "--price", required=True, type=click.types.FLOAT)
+@click.option("-ncoid", "--new_client_order_id", type=click.types.STRING)
+@click.option("-sp", "--stop_price", required=True, type=click.types.FLOAT)
+@click.option("-iq", "--iceberg_qty", type=click.types.FLOAT)
+@click.option("-rw", "--recv_window", default=5000, show_default=True, callback=validate_recv_window,
+              type=click.types.INT)
+@coro
+async def take_profit_limit(symbol, side, time_in_force, quantity, quote_order_qty, price, new_client_order_id,
+                            stop_price, iceberg_qty, recv_window):
+    """Send in a new take_profit_limit order"""
+    payload = {'symbol': symbol, 'side': side, 'type': "TAKE_PROFIT_LIMIT", 'timeInForce': time_in_force,
+               'quantity': quantity, 'price': price, 'stopPrice': stop_price}
+
+    if quote_order_qty is not None:
+        payload['quoteOrderQty'] = quote_order_qty
+
+    if price is not None:
+        payload['price'] = price
+
+    if new_client_order_id is not None:
+        payload['newClientOrderId'] = new_client_order_id
+
+    if iceberg_qty is not None:
+        payload['icebergQty'] = iceberg_qty
+
+    payload['newOrderRespType'] = "ACK"
+    payload['recvWindow'] = recv_window
+    payload['timestamp'] = get_timestamp()
+
+    builder = Builder(endpoint='api/v3/order', payload=payload, method='POST') \
+        .set_security()
+
+    await builder.send_http_req()
+
+    builder.handle_response().generate_output()
+
+
+@new_order.command("limit_maker", short_help="Send in a new limit_maker order")
+@click.option("-sy", "--symbol", required=True, type=click.types.STRING)
+@click.option("-si", "--side", required=True, callback=validate_side, type=click.types.STRING)
+@click.option("-tif", "--time_in_force", callback=validate_time_in_force, type=click.types.STRING)
+@click.option("-q", "--quantity", required=True, type=click.types.FLOAT)
+@click.option("-qoq", "--quote_order_qty", type=click.types.FLOAT)
+@click.option("-p", "--price", required=True, type=click.types.FLOAT)
+@click.option("-ncoid", "--new_client_order_id", type=click.types.STRING)
+@click.option("-sp", "--stop_price", type=click.types.FLOAT)
+@click.option("-iq", "--iceberg_qty", type=click.types.FLOAT)
+@click.option("-rw", "--recv_window", default=5000, show_default=True, callback=validate_recv_window,
+              type=click.types.INT)
+@coro
+async def limit_maker(symbol, side, time_in_force, quantity, quote_order_qty, price, new_client_order_id,
+                      stop_price, iceberg_qty, recv_window):
+    """Send in a new limit_maker order"""
+    payload = {'symbol': symbol, 'side': side, 'type': "LIMIT_MAKER", 'quantity': quantity, 'price': price}
+
+    if time_in_force is not None:
+        payload['timeInForce'] = time_in_force
+
+    if quote_order_qty is not None:
+        payload['quoteOrderQty'] = quote_order_qty
+
+    if stop_price is not None:
+        payload['stopPrice'] = stop_price
+
+    if new_client_order_id is not None:
+        payload['newClientOrderId'] = new_client_order_id
+
+    if iceberg_qty is not None:
+        payload['icebergQty'] = iceberg_qty
+
+    payload['newOrderRespType'] = "ACK"
+    payload['recvWindow'] = recv_window
+    payload['timestamp'] = get_timestamp()
+
+    builder = Builder(endpoint='api/v3/order', payload=payload, method='POST') \
+        .set_security()
+
+    await builder.send_http_req()
+
+    builder.handle_response().generate_output()
+
+
 @cli.command("cancel_order", short_help='Cancel an active order')
 @click.option("-sy", "--symbol", required=True, type=click.types.STRING)
 @click.option("-oid", "--order_id", type=click.types.INT)
