@@ -157,7 +157,7 @@ def test_new_order_limit_return_full_resp(runner, params, mock_default_deps):
     ['-sy', 'LTCBTC', '-si', 'BUY', '-q', 1],
     ['--symbol', 'LTCBTC', '--side', 'BUY', '--quantity', 1]
 ])
-def test_new_order_limit_return_full_resp(runner, params, mock_default_deps):
+def test_new_order_market_return_full_resp(runner, params, mock_default_deps):
     mock_response = Mock(status_code=200)
     mock_response.json.return_value = get_full_order_market()
 
