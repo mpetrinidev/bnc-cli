@@ -1,7 +1,8 @@
 import pytest
 from click import BadParameter
 
-from src.validation.val_spot import validate_recv_window, validate_locked_free, validate_side, validate_time_in_force
+from src.validation.val_spot import validate_recv_window, validate_locked_free, validate_side, validate_time_in_force, \
+    validate_new_order_resp_type
 
 
 def test_validate_recv_window_is_none():
@@ -31,3 +32,9 @@ def test_validate_side_incorrect_value(value):
 def test_validate_time_in_force_incorrect_value(value):
     with pytest.raises(BadParameter, match=f'{value}. Possible values: GTC | IOC | FOK'):
         validate_time_in_force(None, None, value)
+
+
+@pytest.mark.parametrize("value", ['ACKK', 'FULLL', 'RESULTS', 'TEST', 'R'])
+def test_validate_new_order_resp_type_incorrect_value(value):
+    with pytest.raises(BadParameter, match=f'{value}. Possible values: FULL | ACK | RESULT'):
+        validate_new_order_resp_type(None, None, value)

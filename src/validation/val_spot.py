@@ -41,3 +41,10 @@ def validate_time_in_force(ctx, param, value):
         raise click.BadParameter(value + '. Possible values: GTC | IOC | FOK')
 
     return value
+
+
+def validate_new_order_resp_type(ctx, param, value):
+    value = str(value).upper()
+
+    if value not in ['FULL', 'ACK', 'RESULT']:
+        raise click.BadParameter(value + '. Possible values: FULL | ACK | RESULT')

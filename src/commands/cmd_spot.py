@@ -4,7 +4,7 @@ from src.builder import Builder, AccountInfoBuilder
 from src.cli import pass_environment
 from src.decorators import coro
 
-from src.validation.val_spot import validate_side
+from src.validation.val_spot import validate_side, validate_new_order_resp_type
 from src.validation.val_spot import validate_recv_window
 from src.validation.val_spot import validate_locked_free
 from src.validation.val_spot import validate_time_in_force
@@ -37,9 +37,12 @@ def new_order():
 @click.option("-iq", "--iceberg_qty", type=click.types.FLOAT)
 @click.option("-rw", "--recv_window", default=5000, show_default=True, callback=validate_recv_window,
               type=click.types.INT)
+@click.option("-nort", "--new_order_resp_type", default="FULL", show_default=True,
+              callback=validate_new_order_resp_type,
+              type=click.types.STRING)
 @coro
 async def limit(symbol, side, time_in_force, quantity, quote_order_qty, price, new_client_order_id,
-                stop_price, iceberg_qty, recv_window):
+                stop_price, iceberg_qty, recv_window, new_order_resp_type):
     """Send in a new limit order"""
     payload = {'symbol': symbol, 'side': side, 'type': "LIMIT", 'timeInForce': time_in_force, 'quantity': quantity}
 
@@ -57,7 +60,7 @@ async def limit(symbol, side, time_in_force, quantity, quote_order_qty, price, n
     if iceberg_qty is not None:
         payload['icebergQty'] = iceberg_qty
 
-    payload['newOrderRespType'] = "FULL"
+    payload['newOrderRespType'] = new_order_resp_type
     payload['recvWindow'] = recv_window
     payload['timestamp'] = get_timestamp()
 
@@ -81,10 +84,13 @@ async def limit(symbol, side, time_in_force, quantity, quote_order_qty, price, n
 @click.option("-iq", "--iceberg_qty", type=click.types.FLOAT)
 @click.option("-rw", "--recv_window", default=5000, show_default=True, callback=validate_recv_window,
               type=click.types.INT)
+@click.option("-nort", "--new_order_resp_type", default="FULL", show_default=True,
+              callback=validate_new_order_resp_type,
+              type=click.types.STRING)
 @pass_environment
 @coro
 async def market(ctx, symbol, side, time_in_force, quantity, quote_order_qty, price, new_client_order_id,
-                 stop_price, iceberg_qty, recv_window):
+                 stop_price, iceberg_qty, recv_window, new_order_resp_type):
     """Send in a new market order"""
     if quantity is None and quote_order_qty is None:
         ctx.log('Either --quantity (-q) or --quote_order_qty (-qoq) must be sent.')
@@ -113,7 +119,7 @@ async def market(ctx, symbol, side, time_in_force, quantity, quote_order_qty, pr
     if iceberg_qty is not None:
         payload['icebergQty'] = iceberg_qty
 
-    payload['newOrderRespType'] = "FULL"
+    payload['newOrderRespType'] = new_order_resp_type
     payload['recvWindow'] = recv_window
     payload['timestamp'] = get_timestamp()
 
@@ -137,9 +143,12 @@ async def market(ctx, symbol, side, time_in_force, quantity, quote_order_qty, pr
 @click.option("-iq", "--iceberg_qty", type=click.types.FLOAT)
 @click.option("-rw", "--recv_window", default=5000, show_default=True, callback=validate_recv_window,
               type=click.types.INT)
+@click.option("-nort", "--new_order_resp_type", default="ACK", show_default=True,
+              callback=validate_new_order_resp_type,
+              type=click.types.STRING)
 @coro
 async def stop_loss(symbol, side, time_in_force, quantity, quote_order_qty, price, new_client_order_id,
-                    stop_price, iceberg_qty, recv_window):
+                    stop_price, iceberg_qty, recv_window, new_order_resp_type):
     """Send in a new stop_loss order"""
     payload = {'symbol': symbol, 'side': side, 'type': "STOP_LOSS", 'quantity': quantity, 'stopPrice': stop_price}
 
@@ -158,7 +167,7 @@ async def stop_loss(symbol, side, time_in_force, quantity, quote_order_qty, pric
     if iceberg_qty is not None:
         payload['icebergQty'] = iceberg_qty
 
-    payload['newOrderRespType'] = "ACK"
+    payload['newOrderRespType'] = new_order_resp_type
     payload['recvWindow'] = recv_window
     payload['timestamp'] = get_timestamp()
 
@@ -182,9 +191,12 @@ async def stop_loss(symbol, side, time_in_force, quantity, quote_order_qty, pric
 @click.option("-iq", "--iceberg_qty", type=click.types.FLOAT)
 @click.option("-rw", "--recv_window", default=5000, show_default=True, callback=validate_recv_window,
               type=click.types.INT)
+@click.option("-nort", "--new_order_resp_type", default="ACK", show_default=True,
+              callback=validate_new_order_resp_type,
+              type=click.types.STRING)
 @coro
 async def stop_loss_limit(symbol, side, time_in_force, quantity, quote_order_qty, price, new_client_order_id,
-                          stop_price, iceberg_qty, recv_window):
+                          stop_price, iceberg_qty, recv_window, new_order_resp_type):
     """Send in a new stop_loss_limit order"""
     payload = {'symbol': symbol, 'side': side, 'type': "STOP_LOSS_LIMIT", 'timeInForce': time_in_force,
                'quantity': quantity, 'price': price, 'stopPrice': stop_price}
@@ -201,7 +213,7 @@ async def stop_loss_limit(symbol, side, time_in_force, quantity, quote_order_qty
     if iceberg_qty is not None:
         payload['icebergQty'] = iceberg_qty
 
-    payload['newOrderRespType'] = "ACK"
+    payload['newOrderRespType'] = new_order_resp_type
     payload['recvWindow'] = recv_window
     payload['timestamp'] = get_timestamp()
 
@@ -225,9 +237,12 @@ async def stop_loss_limit(symbol, side, time_in_force, quantity, quote_order_qty
 @click.option("-iq", "--iceberg_qty", type=click.types.FLOAT)
 @click.option("-rw", "--recv_window", default=5000, show_default=True, callback=validate_recv_window,
               type=click.types.INT)
+@click.option("-nort", "--new_order_resp_type", default="ACK", show_default=True,
+              callback=validate_new_order_resp_type,
+              type=click.types.STRING)
 @coro
 async def take_profit(symbol, side, time_in_force, quantity, quote_order_qty, price, new_client_order_id,
-                      stop_price, iceberg_qty, recv_window):
+                      stop_price, iceberg_qty, recv_window, new_order_resp_type):
     """Send in a new take_profit order"""
     payload = {'symbol': symbol, 'side': side, 'type': "TAKE_PROFIT", 'quantity': quantity, 'stopPrice': stop_price}
 
@@ -246,7 +261,7 @@ async def take_profit(symbol, side, time_in_force, quantity, quote_order_qty, pr
     if iceberg_qty is not None:
         payload['icebergQty'] = iceberg_qty
 
-    payload['newOrderRespType'] = "ACK"
+    payload['newOrderRespType'] = new_order_resp_type
     payload['recvWindow'] = recv_window
     payload['timestamp'] = get_timestamp()
 
@@ -270,9 +285,12 @@ async def take_profit(symbol, side, time_in_force, quantity, quote_order_qty, pr
 @click.option("-iq", "--iceberg_qty", type=click.types.FLOAT)
 @click.option("-rw", "--recv_window", default=5000, show_default=True, callback=validate_recv_window,
               type=click.types.INT)
+@click.option("-nort", "--new_order_resp_type", default="ACK", show_default=True,
+              callback=validate_new_order_resp_type,
+              type=click.types.STRING)
 @coro
 async def take_profit_limit(symbol, side, time_in_force, quantity, quote_order_qty, price, new_client_order_id,
-                            stop_price, iceberg_qty, recv_window):
+                            stop_price, iceberg_qty, recv_window, new_order_resp_type):
     """Send in a new take_profit_limit order"""
     payload = {'symbol': symbol, 'side': side, 'type': "TAKE_PROFIT_LIMIT", 'timeInForce': time_in_force,
                'quantity': quantity, 'price': price, 'stopPrice': stop_price}
@@ -289,7 +307,7 @@ async def take_profit_limit(symbol, side, time_in_force, quantity, quote_order_q
     if iceberg_qty is not None:
         payload['icebergQty'] = iceberg_qty
 
-    payload['newOrderRespType'] = "ACK"
+    payload['newOrderRespType'] = new_order_resp_type
     payload['recvWindow'] = recv_window
     payload['timestamp'] = get_timestamp()
 
@@ -313,9 +331,12 @@ async def take_profit_limit(symbol, side, time_in_force, quantity, quote_order_q
 @click.option("-iq", "--iceberg_qty", type=click.types.FLOAT)
 @click.option("-rw", "--recv_window", default=5000, show_default=True, callback=validate_recv_window,
               type=click.types.INT)
+@click.option("-nort", "--new_order_resp_type", default="ACK", show_default=True,
+              callback=validate_new_order_resp_type,
+              type=click.types.STRING)
 @coro
 async def limit_maker(symbol, side, time_in_force, quantity, quote_order_qty, price, new_client_order_id,
-                      stop_price, iceberg_qty, recv_window):
+                      stop_price, iceberg_qty, recv_window, new_order_resp_type):
     """Send in a new limit_maker order"""
     payload = {'symbol': symbol, 'side': side, 'type': "LIMIT_MAKER", 'quantity': quantity, 'price': price}
 
@@ -334,7 +355,7 @@ async def limit_maker(symbol, side, time_in_force, quantity, quote_order_qty, pr
     if iceberg_qty is not None:
         payload['icebergQty'] = iceberg_qty
 
-    payload['newOrderRespType'] = "ACK"
+    payload['newOrderRespType'] = new_order_resp_type
     payload['recvWindow'] = recv_window
     payload['timestamp'] = get_timestamp()
 
