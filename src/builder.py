@@ -11,16 +11,14 @@ from src.utils.utils import to_query_string_parameters, json_to_str
 
 
 class Builder:
-    def __init__(self, endpoint: str, payload: dict, method: str = 'GET', headers=None):
+    def __init__(self, endpoint: str, payload: {} = None, method: str = 'GET', headers=None, without_signature=False):
         if headers is None:
             headers = {}
 
         if endpoint is None or len(endpoint) == 0:
             raise ValueError('endpoint cannot be null or empty')
 
-        if payload is None or not payload:
-            raise ValueError('payload cannot be null or empty')
-
+        self.without_signature = without_signature
         self.payload = payload
         self.endpoint = endpoint
 
@@ -44,7 +42,9 @@ class Builder:
             raise ValueError('Http method is invalid')
 
     def set_security(self):
-        self.payload['signature'] = get_hmac_hash(to_query_string_parameters(self.payload), get_secret_key())
+        if self.payload is not None and not self.without_signature:
+            self.payload['signature'] = get_hmac_hash(to_query_string_parameters(self.payload), get_secret_key())
+
         self.headers.update(get_api_key_header())
 
         return self
@@ -57,7 +57,8 @@ class Builder:
             self.response = await requests.post(API_BINANCE + self.endpoint, headers=self.headers, params=self.payload)
 
         if self.method == 'DELETE':
-            self.response = await requests.delete(API_BINANCE + self.endpoint, headers=self.headers, params=self.payload)
+            self.response = await requests.delete(API_BINANCE + self.endpoint, headers=self.headers,
+                                                  params=self.payload)
 
         return self
 
@@ -131,7 +132,7 @@ class AccountInfoBuilder(Builder):
                 filter_func = lambda balances: [x for x in balances if float(x['free']) > 0.0]
             elif locked_free == 'L':
                 filter_func = lambda balances: [x for x in balances if float(x['locked']) > 0.0]
-    
+
             self.result['results']['balances'] = filter_func(self.result['results']['balances'])
 
         return self

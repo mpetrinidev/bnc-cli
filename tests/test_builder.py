@@ -38,12 +38,6 @@ def test_builder_endpoint_is_null_or_empty(values):
         Builder(endpoint=values, payload={})
 
 
-@pytest.mark.parametrize("values", [None, {}])
-def test_builder_payload_is_null_or_empty(values):
-    with pytest.raises(ValueError, match='payload cannot be null or empty'):
-        Builder(endpoint='/test/', payload=values)
-
-
 def test_builder_change_method_is_post():
     builder = Builder(endpoint='/test', payload={'key': 1}, method='POST')
     assert builder.method == 'POST'
