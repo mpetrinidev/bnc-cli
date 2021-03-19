@@ -12,6 +12,7 @@ from src.utils.api_time import get_timestamp
 
 @click.group(short_help="Spot Account/Trade operations")
 def cli():
+    """Spot Account/Trade operations"""
     pass
 
 
@@ -20,6 +21,9 @@ def cli():
                                    "take_profit, take_profit_limit "
                                    "or limit_maker order")
 def new_order():
+    """
+    Send in a new limit, market, stop_loss, stop_loss_limit, take_profit, take_profit_limit or limit_maker order
+    """
     pass
 
 
