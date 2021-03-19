@@ -12,6 +12,47 @@ from src.validation.val_spot import validate_time_in_force
 from src.utils.api_time import get_timestamp
 
 
+def get_new_order_config_options():
+    return [
+        {'params': ['-sy', '--symbol'], 'attrs': {'required': True, 'type': click.types.STRING}},
+        {'params': ['-si', '--side'], 'attrs': {'required': True, 'callback': validate_side,
+                                                'type': click.types.STRING}},
+        {'params': ['-tif', '--time_in_force'], 'attrs': {'callback': validate_time_in_force,
+                                                          'type': click.types.STRING}},
+        {'params': ['-q', '--quantity'], 'attrs': {'type': click.types.FLOAT}},
+        {'params': ['-qoq', '--quote_order_qty'], 'attrs': {'type': click.types.FLOAT}},
+        {'params': ['-p', '--price'], 'attrs': {'type': click.types.FLOAT}},
+        {'params': ['-ncoid', '--new_client_order_id'], 'attrs': {'type': click.types.STRING}},
+        {'params': ['-sp', '--stop_price'], 'attrs': {'type': click.types.FLOAT}},
+        {'params': ['-iq', '--iceberg_qty'], 'attrs': {'type': click.types.FLOAT}},
+        {'params': ['-rw', '--recv_window'], 'attrs': {'default': 5000, 'show_default': True,
+                                                       'callback': validate_recv_window,
+                                                       'type': click.types.INT}},
+        {'params': ['-nort', '--new_order_resp_type'], 'attrs': {'default': "FULL", 'show_default': True,
+                                                                 'callback': validate_new_order_resp_type,
+                                                                 'type': click.types.STRING}},
+    ]
+
+
+def new_order_options(overrides: [] = None):
+    def wrapper(func):
+        for config_option in reversed(get_new_order_config_options()):
+            if overrides is not None:
+                for name in reversed(config_option['params']):
+                    lst = list(filter(lambda d: d['name'] == name, overrides))
+                    if not lst:
+                        continue
+
+                    config_option['attrs'].update(lst[0]['attrs'])
+
+            option = click.option(*config_option['params'], **config_option['attrs'])
+            func = option(func)
+
+        return func
+
+    return wrapper
+
+
 @click.group(short_help="Spot Account/Trade operations")
 def cli():
     pass
@@ -26,20 +67,9 @@ def new_order():
 
 
 @new_order.command("limit", short_help="Send in a new limit order")
-@click.option("-sy", "--symbol", required=True, type=click.types.STRING)
-@click.option("-si", "--side", required=True, callback=validate_side, type=click.types.STRING)
-@click.option("-tif", "--time_in_force", required=True, callback=validate_time_in_force, type=click.types.STRING)
-@click.option("-q", "--quantity", required=True, type=click.types.FLOAT)
-@click.option("-qoq", "--quote_order_qty", type=click.types.FLOAT)
-@click.option("-p", "--price", required=True, type=click.types.FLOAT)
-@click.option("-ncoid", "--new_client_order_id", type=click.types.STRING)
-@click.option("-sp", "--stop_price", type=click.types.FLOAT)
-@click.option("-iq", "--iceberg_qty", type=click.types.FLOAT)
-@click.option("-rw", "--recv_window", default=5000, show_default=True, callback=validate_recv_window,
-              type=click.types.INT)
-@click.option("-nort", "--new_order_resp_type", default="FULL", show_default=True,
-              callback=validate_new_order_resp_type,
-              type=click.types.STRING)
+@new_order_options([{'name': '-tif', 'attrs': {'required': True}},
+                    {'name': '-q', 'attrs': {'required': True}},
+                    {'name': '-p', 'attrs': {'required': True}}])
 @coro
 async def limit(symbol, side, time_in_force, quantity, quote_order_qty, price, new_client_order_id,
                 stop_price, iceberg_qty, recv_window, new_order_resp_type):
@@ -73,20 +103,7 @@ async def limit(symbol, side, time_in_force, quantity, quote_order_qty, price, n
 
 
 @new_order.command("market", short_help="Send in a new market order")
-@click.option("-sy", "--symbol", required=True, type=click.types.STRING)
-@click.option("-si", "--side", required=True, callback=validate_side, type=click.types.STRING)
-@click.option("-tif", "--time_in_force", callback=validate_time_in_force, type=click.types.STRING)
-@click.option("-q", "--quantity", type=click.types.FLOAT)
-@click.option("-qoq", "--quote_order_qty", type=click.types.FLOAT)
-@click.option("-p", "--price", type=click.types.FLOAT)
-@click.option("-ncoid", "--new_client_order_id", type=click.types.STRING)
-@click.option("-sp", "--stop_price", type=click.types.FLOAT)
-@click.option("-iq", "--iceberg_qty", type=click.types.FLOAT)
-@click.option("-rw", "--recv_window", default=5000, show_default=True, callback=validate_recv_window,
-              type=click.types.INT)
-@click.option("-nort", "--new_order_resp_type", default="FULL", show_default=True,
-              callback=validate_new_order_resp_type,
-              type=click.types.STRING)
+@new_order_options()
 @pass_environment
 @coro
 async def market(ctx, symbol, side, time_in_force, quantity, quote_order_qty, price, new_client_order_id,
@@ -132,20 +149,9 @@ async def market(ctx, symbol, side, time_in_force, quantity, quote_order_qty, pr
 
 
 @new_order.command("stop_loss", short_help="Send in a new stop_loss order")
-@click.option("-sy", "--symbol", required=True, type=click.types.STRING)
-@click.option("-si", "--side", required=True, callback=validate_side, type=click.types.STRING)
-@click.option("-tif", "--time_in_force", callback=validate_time_in_force, type=click.types.STRING)
-@click.option("-q", "--quantity", required=True, type=click.types.FLOAT)
-@click.option("-qoq", "--quote_order_qty", type=click.types.FLOAT)
-@click.option("-p", "--price", type=click.types.FLOAT)
-@click.option("-ncoid", "--new_client_order_id", type=click.types.STRING)
-@click.option("-sp", "--stop_price", required=True, type=click.types.FLOAT)
-@click.option("-iq", "--iceberg_qty", type=click.types.FLOAT)
-@click.option("-rw", "--recv_window", default=5000, show_default=True, callback=validate_recv_window,
-              type=click.types.INT)
-@click.option("-nort", "--new_order_resp_type", default="ACK", show_default=True,
-              callback=validate_new_order_resp_type,
-              type=click.types.STRING)
+@new_order_options([{'name': '-q', 'attrs': {'required': True}},
+                    {'name': '-sp', 'attrs': {'required': True}},
+                    {'name': '-nort', 'attrs': {'default': "ACK"}}])
 @coro
 async def stop_loss(symbol, side, time_in_force, quantity, quote_order_qty, price, new_client_order_id,
                     stop_price, iceberg_qty, recv_window, new_order_resp_type):
@@ -180,20 +186,11 @@ async def stop_loss(symbol, side, time_in_force, quantity, quote_order_qty, pric
 
 
 @new_order.command("stop_loss_limit", short_help="Send in a new stop_loss_limit order")
-@click.option("-sy", "--symbol", required=True, type=click.types.STRING)
-@click.option("-si", "--side", required=True, callback=validate_side, type=click.types.STRING)
-@click.option("-tif", "--time_in_force", required=True, callback=validate_time_in_force, type=click.types.STRING)
-@click.option("-q", "--quantity", required=True, type=click.types.FLOAT)
-@click.option("-qoq", "--quote_order_qty", type=click.types.FLOAT)
-@click.option("-p", "--price", required=True, type=click.types.FLOAT)
-@click.option("-ncoid", "--new_client_order_id", type=click.types.STRING)
-@click.option("-sp", "--stop_price", required=True, type=click.types.FLOAT)
-@click.option("-iq", "--iceberg_qty", type=click.types.FLOAT)
-@click.option("-rw", "--recv_window", default=5000, show_default=True, callback=validate_recv_window,
-              type=click.types.INT)
-@click.option("-nort", "--new_order_resp_type", default="ACK", show_default=True,
-              callback=validate_new_order_resp_type,
-              type=click.types.STRING)
+@new_order_options([{'name': '-tif', 'attrs': {'required': True}},
+                    {'name': '-q', 'attrs': {'required': True}},
+                    {'name': '-p', 'attrs': {'required': True}},
+                    {'name': '-sp', 'attrs': {'required': True}},
+                    {'name': '-nort', 'attrs': {'default': "ACK"}}])
 @coro
 async def stop_loss_limit(symbol, side, time_in_force, quantity, quote_order_qty, price, new_client_order_id,
                           stop_price, iceberg_qty, recv_window, new_order_resp_type):
@@ -226,20 +223,9 @@ async def stop_loss_limit(symbol, side, time_in_force, quantity, quote_order_qty
 
 
 @new_order.command("take_profit", short_help="Send in a new take_profit order")
-@click.option("-sy", "--symbol", required=True, type=click.types.STRING)
-@click.option("-si", "--side", required=True, callback=validate_side, type=click.types.STRING)
-@click.option("-tif", "--time_in_force", callback=validate_time_in_force, type=click.types.STRING)
-@click.option("-q", "--quantity", required=True, type=click.types.FLOAT)
-@click.option("-qoq", "--quote_order_qty", type=click.types.FLOAT)
-@click.option("-p", "--price", type=click.types.FLOAT)
-@click.option("-ncoid", "--new_client_order_id", type=click.types.STRING)
-@click.option("-sp", "--stop_price", required=True, type=click.types.FLOAT)
-@click.option("-iq", "--iceberg_qty", type=click.types.FLOAT)
-@click.option("-rw", "--recv_window", default=5000, show_default=True, callback=validate_recv_window,
-              type=click.types.INT)
-@click.option("-nort", "--new_order_resp_type", default="ACK", show_default=True,
-              callback=validate_new_order_resp_type,
-              type=click.types.STRING)
+@new_order_options([{'name': '-q', 'attrs': {'required': True}},
+                    {'name': '-sp', 'attrs': {'required': True}},
+                    {'name': '-nort', 'attrs': {'default': "ACK"}}])
 @coro
 async def take_profit(symbol, side, time_in_force, quantity, quote_order_qty, price, new_client_order_id,
                       stop_price, iceberg_qty, recv_window, new_order_resp_type):
@@ -274,20 +260,11 @@ async def take_profit(symbol, side, time_in_force, quantity, quote_order_qty, pr
 
 
 @new_order.command("take_profit_limit", short_help="Send in a new take_profit_limit order")
-@click.option("-sy", "--symbol", required=True, type=click.types.STRING)
-@click.option("-si", "--side", required=True, callback=validate_side, type=click.types.STRING)
-@click.option("-tif", "--time_in_force", required=True, callback=validate_time_in_force, type=click.types.STRING)
-@click.option("-q", "--quantity", required=True, type=click.types.FLOAT)
-@click.option("-qoq", "--quote_order_qty", type=click.types.FLOAT)
-@click.option("-p", "--price", required=True, type=click.types.FLOAT)
-@click.option("-ncoid", "--new_client_order_id", type=click.types.STRING)
-@click.option("-sp", "--stop_price", required=True, type=click.types.FLOAT)
-@click.option("-iq", "--iceberg_qty", type=click.types.FLOAT)
-@click.option("-rw", "--recv_window", default=5000, show_default=True, callback=validate_recv_window,
-              type=click.types.INT)
-@click.option("-nort", "--new_order_resp_type", default="ACK", show_default=True,
-              callback=validate_new_order_resp_type,
-              type=click.types.STRING)
+@new_order_options([{'name': '-tif', 'attrs': {'required': True}},
+                    {'name': '-q', 'attrs': {'required': True}},
+                    {'name': '-p', 'attrs': {'required': True}},
+                    {'name': '-sp', 'attrs': {'required': True}},
+                    {'name': '-nort', 'attrs': {'default': "ACK"}}])
 @coro
 async def take_profit_limit(symbol, side, time_in_force, quantity, quote_order_qty, price, new_client_order_id,
                             stop_price, iceberg_qty, recv_window, new_order_resp_type):
@@ -320,20 +297,9 @@ async def take_profit_limit(symbol, side, time_in_force, quantity, quote_order_q
 
 
 @new_order.command("limit_maker", short_help="Send in a new limit_maker order")
-@click.option("-sy", "--symbol", required=True, type=click.types.STRING)
-@click.option("-si", "--side", required=True, callback=validate_side, type=click.types.STRING)
-@click.option("-tif", "--time_in_force", callback=validate_time_in_force, type=click.types.STRING)
-@click.option("-q", "--quantity", required=True, type=click.types.FLOAT)
-@click.option("-qoq", "--quote_order_qty", type=click.types.FLOAT)
-@click.option("-p", "--price", required=True, type=click.types.FLOAT)
-@click.option("-ncoid", "--new_client_order_id", type=click.types.STRING)
-@click.option("-sp", "--stop_price", type=click.types.FLOAT)
-@click.option("-iq", "--iceberg_qty", type=click.types.FLOAT)
-@click.option("-rw", "--recv_window", default=5000, show_default=True, callback=validate_recv_window,
-              type=click.types.INT)
-@click.option("-nort", "--new_order_resp_type", default="ACK", show_default=True,
-              callback=validate_new_order_resp_type,
-              type=click.types.STRING)
+@new_order_options([{'name': '-q', 'attrs': {'required': True}},
+                    {'name': '-p', 'attrs': {'required': True}},
+                    {'name': '-nort', 'attrs': {'default': "ACK"}}])
 @coro
 async def limit_maker(symbol, side, time_in_force, quantity, quote_order_qty, price, new_client_order_id,
                       stop_price, iceberg_qty, recv_window, new_order_resp_type):
