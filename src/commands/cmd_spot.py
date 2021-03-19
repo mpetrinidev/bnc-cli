@@ -2,55 +2,12 @@ import click
 
 from src.builder import Builder, AccountInfoBuilder
 from src.cli import pass_environment
-from src.decorators import coro
+from src.decorators import coro, new_order_options
 
-from src.validation.val_spot import validate_side, validate_new_order_resp_type
 from src.validation.val_spot import validate_recv_window
 from src.validation.val_spot import validate_locked_free
-from src.validation.val_spot import validate_time_in_force
 
 from src.utils.api_time import get_timestamp
-
-
-def get_new_order_config_options():
-    return [
-        {'params': ['-sy', '--symbol'], 'attrs': {'required': True, 'type': click.types.STRING}},
-        {'params': ['-si', '--side'], 'attrs': {'required': True, 'callback': validate_side,
-                                                'type': click.types.STRING}},
-        {'params': ['-tif', '--time_in_force'], 'attrs': {'callback': validate_time_in_force,
-                                                          'type': click.types.STRING}},
-        {'params': ['-q', '--quantity'], 'attrs': {'type': click.types.FLOAT}},
-        {'params': ['-qoq', '--quote_order_qty'], 'attrs': {'type': click.types.FLOAT}},
-        {'params': ['-p', '--price'], 'attrs': {'type': click.types.FLOAT}},
-        {'params': ['-ncoid', '--new_client_order_id'], 'attrs': {'type': click.types.STRING}},
-        {'params': ['-sp', '--stop_price'], 'attrs': {'type': click.types.FLOAT}},
-        {'params': ['-iq', '--iceberg_qty'], 'attrs': {'type': click.types.FLOAT}},
-        {'params': ['-rw', '--recv_window'], 'attrs': {'default': 5000, 'show_default': True,
-                                                       'callback': validate_recv_window,
-                                                       'type': click.types.INT}},
-        {'params': ['-nort', '--new_order_resp_type'], 'attrs': {'default': "FULL", 'show_default': True,
-                                                                 'callback': validate_new_order_resp_type,
-                                                                 'type': click.types.STRING}},
-    ]
-
-
-def new_order_options(overrides: [] = None):
-    def wrapper(func):
-        for config_option in reversed(get_new_order_config_options()):
-            if overrides is not None:
-                for name in reversed(config_option['params']):
-                    lst = list(filter(lambda d: d['name'] == name, overrides))
-                    if not lst:
-                        continue
-
-                    config_option['attrs'].update(lst[0]['attrs'])
-
-            option = click.option(*config_option['params'], **config_option['attrs'])
-            func = option(func)
-
-        return func
-
-    return wrapper
 
 
 @click.group(short_help="Spot Account/Trade operations")
