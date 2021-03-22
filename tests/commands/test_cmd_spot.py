@@ -99,7 +99,21 @@ def test_new_order_take_profit_limit_return_ack_resp(runner, params, mock_defaul
 
 @pytest.mark.parametrize("params", [
     ['-sy', 'LTCBTC', '-si', 'BUY', '-q', 1, '-p', 0.003621],
-    ['--symbol', 'LTCBTC', '--side', 'BUY', '--quantity', 1, '--price', 0.003621]
+    ['--symbol', 'LTCBTC', '--side', 'BUY', '--quantity', 1, '--price', 0.003621],
+    ['-sy', 'LTCBTC', '-si', 'BUY', '-q', 1, '-p', 0.003621, '-tif', 'GTC'],
+    ['--symbol', 'LTCBTC', '--side', 'BUY', '--quantity', 1, '--price', 0.003621, '--time_in_force', 'GTC'],
+    ['-sy', 'LTCBTC', '-si', 'BUY', '-q', 1, '-p', 0.003621, '-qoq', 0.0],
+    ['--symbol', 'LTCBTC', '--side', 'BUY', '--quantity', 1, '--price', 0.003621, '--quote_order_qty', 0.0],
+    ['-sy', 'LTCBTC', '-si', 'BUY', '-q', 1, '-p', 0.003621, '-sp', 0.1],
+    ['--symbol', 'LTCBTC', '--side', 'BUY', '--quantity', 1, '--price', 0.003621, '--stop_price', 0.1],
+    ['-sy', 'LTCBTC', '-si', 'BUY', '-q', 1, '-p', 0.003621, '-ncoid', 'test'],
+    ['--symbol', 'LTCBTC', '--side', 'BUY', '--quantity', 1, '--price', 0.003621, '--new_client_order_id', 'test'],
+    ['-sy', 'LTCBTC', '-si', 'BUY', '-q', 1, '-p', 0.003621, '-iq', 0.0],
+    ['--symbol', 'LTCBTC', '--side', 'BUY', '--quantity', 1, '--price', 0.003621, '--iceberg_qty', 0.0],
+    ['-sy', 'LTCBTC', '-si', 'BUY', '-q', 1, '-p', 0.003621, '-tif', 'GTC', '-qoq', 0.0, '-sp', 0.1, '-ncoid', 'test',
+     '-iq', 0.0],
+    ['--symbol', 'LTCBTC', '--side', 'BUY', '--quantity', 1, '--price', 0.003621, '--time_in_force', 'GTC',
+     '--quote_order_qty', 0.0, '--stop_price', 0.1, '--new_client_order_id', 'test', '--iceberg_qty', 0.0]
 ])
 def test_new_order_limit_maker_return_ack_resp(runner, params, mock_default_deps):
     mock_response = Mock(status_code=200)
@@ -194,6 +208,17 @@ def test_open_orders_return_ok(runner, params, mock_default_deps):
     result = runner.invoke(open_orders, params)
     assert result.exit_code == 0
     assert result.output == json_to_str(get_open_orders()) + '\n'
+
+
+@pytest.mark.parametrize("params", [
+    ['-sy', 'LTCBTC'],
+    ['--symbol', 'LTCBTC']
+])
+def test_order_status_missing_order_id_or_orig_client_order_id(runner, params):
+    result = runner.invoke(order_status, params)
+
+    assert result.exit_code == 0
+    assert result.output == 'Either --order_id (-oid) or --orig_client_order_id (-ocoid) must be sent.\n'
 
 
 @pytest.mark.parametrize("params", [
