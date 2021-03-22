@@ -5,10 +5,10 @@ from click import BadParameter
 from click.testing import CliRunner
 
 from src.commands.cmd_spot import account_info, cli, new_order, limit, market, stop_loss_limit, take_profit_limit, \
-    limit_maker, cancel_order
+    limit_maker, cancel_order, open_orders
 from src.utils.utils import json_to_str
 from tests.responses.res_spot import get_full_order_limit, get_full_order_market, get_ack_order_stop_loss_limit, \
-    get_ack_order_take_profit_limit, get_ack_order_limit_maker, get_account_info, get_cancel_order
+    get_ack_order_take_profit_limit, get_ack_order_limit_maker, get_account_info, get_cancel_order, get_open_orders
 
 
 @pytest.fixture
@@ -113,7 +113,15 @@ def test_new_order_limit_maker_return_ack_resp(runner, params, mock_default_deps
 
 @pytest.mark.parametrize("params", [
     ['-sy', 'LTCBTC', '-oid', 44590],
-    ['--symbol', 'LTCBTC', '--order_id', 44590]
+    ['--symbol', 'LTCBTC', '--order_id', 44590],
+    ['-sy', 'LTCBTC', '-ocoid', 'oM1oUenAxizVURTgnsG3pU'],
+    ['--symbol', 'LTCBTC', '--orig_client_order_id', 'oM1oUenAxizVURTgnsG3pU'],
+    ['-sy', 'LTCBTC', '-oid', 44590, '-ocoid', 'oM1oUenAxizVURTgnsG3pU'],
+    ['--symbol', 'LTCBTC', '--order_id', 44590, '--orig_client_order_id', 'oM1oUenAxizVURTgnsG3pU'],
+    ['-sy', 'LTCBTC', '-oid', 44590, '-ocoid', 'oM1oUenAxizVURTgnsG3pU', '-ncoid', 'vmITMP7NPf3EfSmcyzX6JF'],
+    ['--symbol', 'LTCBTC', '--order_id', 44590,
+     '--orig_client_order_id', 'oM1oUenAxizVURTgnsG3pU',
+     '--new_client_order_id', 'vmITMP7NPf3EfSmcyzX6JF'],
 ])
 def test_cancel_order_return_ok(runner, params, mock_default_deps):
     mock_response = Mock(status_code=200)
@@ -169,3 +177,19 @@ def test_account_info_is_ok(runner, mock_default_deps):
 
     assert result.exit_code == 0
     assert result.output == json_to_str(get_account_info()) + '\n'
+
+
+@pytest.mark.parametrize("params", [
+    [],
+    ['-sy', 'LTCBTC'],
+    ['--symbol', 'LTCBTC']
+])
+def test_open_orders_return_ok(runner, params, mock_default_deps):
+    mock_response = Mock(status_code=200)
+    mock_response.json.return_value = get_open_orders()
+
+    mock_default_deps.patch('src.builder.requests.get', return_value=mock_response)
+
+    result = runner.invoke(open_orders, params)
+    assert result.exit_code == 0
+    assert result.output == json_to_str(get_open_orders()) + '\n'

@@ -142,7 +142,7 @@ def get_open_orders():
             "icebergQty": "0.00000000",
             "time": 1616030090950,
             "updateTime": 1616301810266,
-            "isWorking": true,
+            "isWorking": True,
             "origQuoteOrderQty": "0.00000000"
         }
     ]
