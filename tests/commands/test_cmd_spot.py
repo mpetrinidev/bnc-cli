@@ -5,8 +5,10 @@ from click import BadParameter
 from click.testing import CliRunner
 
 from src.commands.cmd_spot import account_info, cli, new_order, limit, market, stop_loss_limit, take_profit_limit, \
-    limit_maker
+    limit_maker, cancel_order
 from src.utils.utils import json_to_str
+from tests.responses.res_spot import get_full_order_limit, get_full_order_market, get_ack_order_stop_loss_limit, \
+    get_ack_order_take_profit_limit, get_ack_order_limit_maker, get_account_info, get_cancel_order
 
 
 @pytest.fixture
@@ -20,112 +22,6 @@ def mock_default_deps(mocker):
     mocker.patch('src.builder.get_api_key_header', return_value={'X-MBX-APIKEY': 'API_KEY'})
 
     return mocker
-
-
-def get_account_info():
-    return {
-        "makerCommission": 15,
-        "takerCommission": 15,
-        "buyerCommission": 0,
-        "sellerCommission": 0,
-        "canTrade": True,
-        "canWithdraw": True,
-        "canDeposit": True,
-        "updateTime": 123456789,
-        "accountType": "SPOT",
-        "balances": get_balances(),
-        "permissions": [
-            "SPOT"
-        ]
-    }
-
-
-def get_balances():
-    return [
-        {
-            "asset": "BTC",
-            "free": "4723846.89208129",
-            "locked": "0.00000000"
-        },
-        {
-            "asset": "LTC",
-            "free": "4763368.68006011",
-            "locked": "0.00000000"
-        },
-        {
-            "asset": "BNB",
-            "free": "0.00000000",
-            "locked": "10.250"
-        }
-    ]
-
-
-def get_full_order_limit():
-    return {
-        "symbol": "LTCBTC",
-        "orderId": 44588,
-        "orderListId": -1,
-        "clientOrderId": "Xxv5X3sWh6wxIPtlZxkKmS",
-        "transactTime": 1616029165071,
-        "price": "0.00362100",
-        "origQty": "1.00000000",
-        "executedQty": "0.00000000",
-        "cummulativeQuoteQty": "0.00000000",
-        "status": "NEW",
-        "timeInForce": "GTC",
-        "type": "LIMIT",
-        "side": "BUY",
-        "fills": []
-    }
-
-
-def get_full_order_market():
-    return {
-        "symbol": "LTCBTC",
-        "orderId": 44589,
-        "orderListId": -1,
-        "clientOrderId": "6lcsZpGiMMwCQlwVLtfMXz",
-        "transactTime": 1616029239160,
-        "price": "0.00000000",
-        "origQty": "1.00000000",
-        "executedQty": "0.00000000",
-        "cummulativeQuoteQty": "0.00000000",
-        "status": "EXPIRED",
-        "timeInForce": "GTC",
-        "type": "MARKET",
-        "side": "BUY",
-        "fills": []
-    }
-
-
-def get_ack_order_stop_loss_limit():
-    return {
-        "symbol": "LTCBTC",
-        "orderId": 44590,
-        "orderListId": -1,
-        "clientOrderId": "oM1oUenAxizVURTgnsG3pU",
-        "transactTime": 1616030090950
-    }
-
-
-def get_ack_order_take_profit_limit():
-    return {
-        "symbol": "LTCBTC",
-        "orderId": 44591,
-        "orderListId": -1,
-        "clientOrderId": "WHnGqkVEOYf6aIcJTuHfJa",
-        "transactTime": 1616031609028
-    }
-
-
-def get_ack_order_limit_maker():
-    return {
-        "symbol": "LTCBTC",
-        "orderId": 44592,
-        "orderListId": -1,
-        "clientOrderId": "iuq4RTzy2HHjw0LZp19JoT",
-        "transactTime": 1616031749054
-    }
 
 
 def test_cli_root_is_ok(runner):
@@ -213,6 +109,32 @@ def test_new_order_limit_maker_return_ack_resp(runner, params, mock_default_deps
     result = runner.invoke(limit_maker, params)
     assert result.exit_code == 0
     assert result.output == json_to_str(get_ack_order_limit_maker()) + '\n'
+
+
+@pytest.mark.parametrize("params", [
+    ['-sy', 'LTCBTC', '-oid', 44590],
+    ['--symbol', 'LTCBTC', '--order_id', 44590]
+])
+def test_cancel_order_return_ok(runner, params, mock_default_deps):
+    mock_response = Mock(status_code=200)
+    mock_response.json.return_value = get_cancel_order()
+
+    mock_default_deps.patch('src.builder.requests.delete', return_value=mock_response)
+
+    result = runner.invoke(cancel_order, params)
+    assert result.exit_code == 0
+    assert result.output == json_to_str(get_cancel_order()) + '\n'
+
+
+@pytest.mark.parametrize("params", [
+    ['-sy', 'LTCBTC'],
+    ['--symbol', 'LTCBTC']
+])
+def test_cancel_order_missing_order_id_or_orig_client_order_id(runner, params):
+    result = runner.invoke(cancel_order, params)
+
+    assert result.exit_code == 0
+    assert result.output == 'Either --order_id (-oid) or --orig_client_order_id (-ocoid) must be sent.\n'
 
 
 @pytest.mark.parametrize("options", [

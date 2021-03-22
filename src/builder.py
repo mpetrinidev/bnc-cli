@@ -89,13 +89,13 @@ class Builder:
     @abstractmethod
     def filter(self, **kwargs):
         if self.has_error:
-            return
+            return self
 
         pass
 
     def generate_output(self):
         if self.has_error:
-            return
+            return self
 
         output = None
 
@@ -111,7 +111,7 @@ class Builder:
 class AccountInfoBuilder(Builder):
     def filter(self, **kwargs):
         if self.has_error:
-            return
+            return self
 
         if 'locked_free' in kwargs and kwargs['locked_free'] is not None:
             locked_free = str(kwargs['locked_free']).upper()
