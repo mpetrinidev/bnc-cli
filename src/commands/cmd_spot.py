@@ -1,13 +1,13 @@
 import click
 
-from src.builder import Builder, AccountInfoBuilder
+from src.builder import AccountInfoBuilder, LimitOrderBuilder, MarketOrderBuilder, StopLossBuilder, \
+    StopLossLimitBuilder, TakeProfitBuilder, TakeProfitLimitBuilder, LimitMakerBuilder, CancelOrderBuilder, \
+    OpenOrdersBuilder, OrderStatusBuilder
 from src.cli import pass_environment
 from src.decorators import coro, new_order_options
-
-from src.validation.val_spot import validate_recv_window
-from src.validation.val_spot import validate_locked_free
-
 from src.utils.api_time import get_timestamp
+from src.validation.val_spot import validate_locked_free
+from src.validation.val_spot import validate_recv_window
 
 
 @click.group(short_help="Spot Account/Trade operations")
@@ -35,27 +35,23 @@ def new_order():
 async def limit(symbol, side, time_in_force, quantity, quote_order_qty, price, new_client_order_id,
                 stop_price, iceberg_qty, recv_window, new_order_resp_type):
     """Send in a new limit order"""
-    payload = {'symbol': symbol, 'side': side, 'type': "LIMIT", 'timeInForce': time_in_force, 'quantity': quantity}
+    payload = {
+        'symbol': symbol,
+        'side': side,
+        'type': "LIMIT",
+        'timeInForce': time_in_force,
+        'price': price,
+        'quantity': quantity,
+        'newOrderRespType': new_order_resp_type,
+        'recvWindow': recv_window,
+        'timestamp': get_timestamp()
+    }
 
-    if quote_order_qty is not None:
-        payload['quoteOrderQty'] = quote_order_qty
-
-    payload['price'] = price
-
-    if new_client_order_id is not None:
-        payload['newClientOrderId'] = new_client_order_id
-
-    if stop_price is not None:
-        payload['stopPrice'] = stop_price
-
-    if iceberg_qty is not None:
-        payload['icebergQty'] = iceberg_qty
-
-    payload['newOrderRespType'] = new_order_resp_type
-    payload['recvWindow'] = recv_window
-    payload['timestamp'] = get_timestamp()
-
-    builder = Builder(endpoint='api/v3/order', payload=payload, method='POST') \
+    builder = LimitOrderBuilder(endpoint='api/v3/order', payload=payload, method='POST') \
+        .add_optional_params_to_payload(quote_order_qty=quote_order_qty,
+                                        new_client_order_id=new_client_order_id,
+                                        stop_price=stop_price,
+                                        iceberg_qty=iceberg_qty) \
         .set_security()
 
     await builder.send_http_req()
@@ -74,34 +70,20 @@ async def market(ctx, symbol, side, time_in_force, quantity, quote_order_qty, pr
         ctx.log('Either --quantity (-q) or --quote_order_qty (-qoq) must be sent.')
         return
 
-    payload = {'symbol': symbol, 'side': side, 'type': "MARKET"}
+    payload = {
+        'symbol': symbol,
+        'side': side,
+        'type': "MARKET",
+        'newOrderRespType': new_order_resp_type,
+        'recvWindow': recv_window,
+        'timestamp': get_timestamp()
+    }
 
-    if quantity is not None:
-        payload['quantity'] = quantity
-
-    if time_in_force is not None:
-        payload['timeInForce'] = time_in_force
-
-    if quote_order_qty is not None:
-        payload['quoteOrderQty'] = quote_order_qty
-
-    if price is not None:
-        payload['price'] = price
-
-    if new_client_order_id is not None:
-        payload['newClientOrderId'] = new_client_order_id
-
-    if stop_price is not None:
-        payload['stopPrice'] = stop_price
-
-    if iceberg_qty is not None:
-        payload['icebergQty'] = iceberg_qty
-
-    payload['newOrderRespType'] = new_order_resp_type
-    payload['recvWindow'] = recv_window
-    payload['timestamp'] = get_timestamp()
-
-    builder = Builder(endpoint='api/v3/order', payload=payload, method='POST') \
+    builder = MarketOrderBuilder(endpoint='api/v3/order', payload=payload, method='POST') \
+        .add_optional_params_to_payload(quantity=quantity, time_in_force=time_in_force,
+                                        quote_order_qty=quote_order_qty, price=price,
+                                        new_client_order_id=new_client_order_id,
+                                        stop_price=stop_price, iceberg_qty=iceberg_qty) \
         .set_security()
 
     await builder.send_http_req()
@@ -117,28 +99,23 @@ async def market(ctx, symbol, side, time_in_force, quantity, quote_order_qty, pr
 async def stop_loss(symbol, side, time_in_force, quantity, quote_order_qty, price, new_client_order_id,
                     stop_price, iceberg_qty, recv_window, new_order_resp_type):
     """Send in a new stop_loss order"""
-    payload = {'symbol': symbol, 'side': side, 'type': "STOP_LOSS", 'quantity': quantity, 'stopPrice': stop_price}
+    payload = {
+        'symbol': symbol,
+        'side': side,
+        'type': "STOP_LOSS",
+        'quantity': quantity,
+        'stopPrice': stop_price,
+        'newOrderRespType': new_order_resp_type,
+        'recvWindow': recv_window,
+        'timestamp': get_timestamp()
+    }
 
-    if time_in_force is not None:
-        payload['timeInForce'] = time_in_force
-
-    if quote_order_qty is not None:
-        payload['quoteOrderQty'] = quote_order_qty
-
-    if price is not None:
-        payload['price'] = price
-
-    if new_client_order_id is not None:
-        payload['newClientOrderId'] = new_client_order_id
-
-    if iceberg_qty is not None:
-        payload['icebergQty'] = iceberg_qty
-
-    payload['newOrderRespType'] = new_order_resp_type
-    payload['recvWindow'] = recv_window
-    payload['timestamp'] = get_timestamp()
-
-    builder = Builder(endpoint='api/v3/order', payload=payload, method='POST') \
+    builder = StopLossBuilder(endpoint='api/v3/order', payload=payload, method='POST') \
+        .add_optional_params_to_payload(time_in_force=time_in_force,
+                                        quote_order_qty=quote_order_qty,
+                                        price=price,
+                                        new_client_order_id=new_client_order_id,
+                                        iceberg_qty=iceberg_qty) \
         .set_security()
 
     await builder.send_http_req()
@@ -156,24 +133,23 @@ async def stop_loss(symbol, side, time_in_force, quantity, quote_order_qty, pric
 async def stop_loss_limit(symbol, side, time_in_force, quantity, quote_order_qty, price, new_client_order_id,
                           stop_price, iceberg_qty, recv_window, new_order_resp_type):
     """Send in a new stop_loss_limit order"""
-    payload = {'symbol': symbol, 'side': side, 'type': "STOP_LOSS_LIMIT", 'timeInForce': time_in_force,
-               'quantity': quantity, 'price': price, 'stopPrice': stop_price}
+    payload = {
+        'symbol': symbol,
+        'side': side,
+        'type': "STOP_LOSS_LIMIT",
+        'timeInForce': time_in_force,
+        'quantity': quantity,
+        'price': price,
+        'stopPrice': stop_price,
+        'newOrderRespType': new_order_resp_type,
+        'recvWindow': recv_window,
+        'timestamp': get_timestamp()
+    }
 
-    if quote_order_qty is not None:
-        payload['quoteOrderQty'] = quote_order_qty
-
-
-    if new_client_order_id is not None:
-        payload['newClientOrderId'] = new_client_order_id
-
-    if iceberg_qty is not None:
-        payload['icebergQty'] = iceberg_qty
-
-    payload['newOrderRespType'] = new_order_resp_type
-    payload['recvWindow'] = recv_window
-    payload['timestamp'] = get_timestamp()
-
-    builder = Builder(endpoint='api/v3/order', payload=payload, method='POST') \
+    builder = StopLossLimitBuilder(endpoint='api/v3/order', payload=payload, method='POST') \
+        .add_optional_params_to_payload(quote_order_qty=quote_order_qty,
+                                        new_client_order_id=new_client_order_id,
+                                        iceberg_qty=iceberg_qty) \
         .set_security()
 
     await builder.send_http_req()
@@ -189,28 +165,23 @@ async def stop_loss_limit(symbol, side, time_in_force, quantity, quote_order_qty
 async def take_profit(symbol, side, time_in_force, quantity, quote_order_qty, price, new_client_order_id,
                       stop_price, iceberg_qty, recv_window, new_order_resp_type):
     """Send in a new take_profit order"""
-    payload = {'symbol': symbol, 'side': side, 'type': "TAKE_PROFIT", 'quantity': quantity, 'stopPrice': stop_price}
+    payload = {
+        'symbol': symbol,
+        'side': side,
+        'type': "TAKE_PROFIT",
+        'quantity': quantity,
+        'stopPrice': stop_price,
+        'newOrderRespType': new_order_resp_type,
+        'recvWindow': recv_window,
+        'timestamp': get_timestamp()
+    }
 
-    if time_in_force is not None:
-        payload['timeInForce'] = time_in_force
-
-    if quote_order_qty is not None:
-        payload['quoteOrderQty'] = quote_order_qty
-
-    if price is not None:
-        payload['price'] = price
-
-    if new_client_order_id is not None:
-        payload['newClientOrderId'] = new_client_order_id
-
-    if iceberg_qty is not None:
-        payload['icebergQty'] = iceberg_qty
-
-    payload['newOrderRespType'] = new_order_resp_type
-    payload['recvWindow'] = recv_window
-    payload['timestamp'] = get_timestamp()
-
-    builder = Builder(endpoint='api/v3/order', payload=payload, method='POST') \
+    builder = TakeProfitBuilder(endpoint='api/v3/order', payload=payload, method='POST') \
+        .add_optional_params_to_payload(time_in_force=time_in_force,
+                                        quote_order_qty=quote_order_qty,
+                                        price=price,
+                                        new_client_order_id=new_client_order_id,
+                                        iceberg_qty=iceberg_qty) \
         .set_security()
 
     await builder.send_http_req()
@@ -228,23 +199,23 @@ async def take_profit(symbol, side, time_in_force, quantity, quote_order_qty, pr
 async def take_profit_limit(symbol, side, time_in_force, quantity, quote_order_qty, price, new_client_order_id,
                             stop_price, iceberg_qty, recv_window, new_order_resp_type):
     """Send in a new take_profit_limit order"""
-    payload = {'symbol': symbol, 'side': side, 'type': "TAKE_PROFIT_LIMIT", 'timeInForce': time_in_force,
-               'quantity': quantity, 'price': price, 'stopPrice': stop_price}
+    payload = {
+        'symbol': symbol,
+        'side': side,
+        'type': "TAKE_PROFIT_LIMIT",
+        'timeInForce': time_in_force,
+        'quantity': quantity,
+        'price': price,
+        'stopPrice': stop_price,
+        'newOrderRespType': new_order_resp_type,
+        'recvWindow': recv_window,
+        'timestamp': get_timestamp()
+    }
 
-    if quote_order_qty is not None:
-        payload['quoteOrderQty'] = quote_order_qty
-
-    if new_client_order_id is not None:
-        payload['newClientOrderId'] = new_client_order_id
-
-    if iceberg_qty is not None:
-        payload['icebergQty'] = iceberg_qty
-
-    payload['newOrderRespType'] = new_order_resp_type
-    payload['recvWindow'] = recv_window
-    payload['timestamp'] = get_timestamp()
-
-    builder = Builder(endpoint='api/v3/order', payload=payload, method='POST') \
+    builder = TakeProfitLimitBuilder(endpoint='api/v3/order', payload=payload, method='POST') \
+        .add_optional_params_to_payload(quote_order_qty=quote_order_qty,
+                                        new_client_order_id=new_client_order_id,
+                                        iceberg_qty=iceberg_qty) \
         .set_security()
 
     await builder.send_http_req()
@@ -260,28 +231,23 @@ async def take_profit_limit(symbol, side, time_in_force, quantity, quote_order_q
 async def limit_maker(symbol, side, time_in_force, quantity, quote_order_qty, price, new_client_order_id,
                       stop_price, iceberg_qty, recv_window, new_order_resp_type):
     """Send in a new limit_maker order"""
-    payload = {'symbol': symbol, 'side': side, 'type': "LIMIT_MAKER", 'quantity': quantity, 'price': price}
+    payload = {
+        'symbol': symbol,
+        'side': side,
+        'type': "LIMIT_MAKER",
+        'quantity': quantity,
+        'price': price,
+        'newOrderRespType': new_order_resp_type,
+        'recvWindow': recv_window,
+        'timestamp': get_timestamp()
+    }
 
-    if time_in_force is not None:
-        payload['timeInForce'] = time_in_force
-
-    if quote_order_qty is not None:
-        payload['quoteOrderQty'] = quote_order_qty
-
-    if stop_price is not None:
-        payload['stopPrice'] = stop_price
-
-    if new_client_order_id is not None:
-        payload['newClientOrderId'] = new_client_order_id
-
-    if iceberg_qty is not None:
-        payload['icebergQty'] = iceberg_qty
-
-    payload['newOrderRespType'] = new_order_resp_type
-    payload['recvWindow'] = recv_window
-    payload['timestamp'] = get_timestamp()
-
-    builder = Builder(endpoint='api/v3/order', payload=payload, method='POST') \
+    builder = LimitMakerBuilder(endpoint='api/v3/order', payload=payload, method='POST') \
+        .add_optional_params_to_payload(time_in_force=time_in_force,
+                                        quote_order_qty=quote_order_qty,
+                                        stop_price=stop_price,
+                                        new_client_order_id=new_client_order_id,
+                                        iceberg_qty=iceberg_qty) \
         .set_security()
 
     await builder.send_http_req()
@@ -308,21 +274,17 @@ async def cancel_order(ctx, symbol, order_id, orig_client_order_id, new_client_o
         ctx.log('Either --order_id (-oid) or --orig_client_order_id (-ocoid) must be sent.')
         return
 
-    payload = {'symbol': symbol}
+    payload = {
+        'symbol': symbol,
+        'recvWindow': recv_window,
+        'timestamp': get_timestamp()
+    }
 
-    if order_id is not None:
-        payload['orderId'] = order_id
-
-    if orig_client_order_id is not None:
-        payload['origClientOrderId'] = orig_client_order_id
-
-    if new_client_order_id is not None:
-        payload['newClientOrderId'] = new_client_order_id
-
-    payload['recvWindow'] = recv_window
-    payload['timestamp'] = get_timestamp()
-
-    builder = Builder(endpoint='api/v3/order', payload=payload, method='DELETE').set_security()
+    builder = CancelOrderBuilder(endpoint='api/v3/order', payload=payload, method='DELETE') \
+        .add_optional_params_to_payload(order_id=order_id,
+                                        orig_client_order_id=orig_client_order_id,
+                                        new_client_order_id=new_client_order_id) \
+        .set_security()
 
     await builder.send_http_req()
 
@@ -336,7 +298,10 @@ async def cancel_order(ctx, symbol, order_id, orig_client_order_id, new_client_o
 @coro
 async def account_info(recv_window, locked_free):
     """Get current account information"""
-    payload = {'recvWindow': recv_window, 'timestamp': get_timestamp()}
+    payload = {
+        'recvWindow': recv_window,
+        'timestamp': get_timestamp()
+    }
 
     builder = AccountInfoBuilder(endpoint='api/v3/account', payload=payload) \
         .set_security()
@@ -357,11 +322,15 @@ async def open_orders(symbol, recv_window):
 
     Weight: 1 for a single symbol; 40 when the symbol parameter is omitted
     """
-    payload = {'recvWindow': recv_window, 'timestamp': get_timestamp()}
-    if symbol is not None:
-        payload['symbol'] = symbol
+    payload = {
+        'recvWindow': recv_window,
+        'timestamp': get_timestamp()
+    }
 
-    builder = Builder(endpoint='api/v3/openOrders', payload=payload).set_security()
+    builder = OpenOrdersBuilder(endpoint='api/v3/openOrders', payload=payload) \
+        .add_optional_params_to_payload(symbol=symbol) \
+        .set_security()
+
     await builder.send_http_req()
 
     builder.handle_response().generate_output()
@@ -389,14 +358,15 @@ async def order_status(ctx, symbol, order_id, orig_client_order_id, recv_window)
         ctx.log('Either --order_id (-oid) or --orig_client_order_id (-ocoid) must be sent.')
         return
 
-    payload = {'symbol': symbol, 'recvWindow': recv_window, 'timestamp': get_timestamp()}
-    if order_id is not None:
-        payload['orderId'] = order_id
+    payload = {
+        'symbol': symbol,
+        'recvWindow': recv_window,
+        'timestamp': get_timestamp()
+    }
 
-    if orig_client_order_id is not None:
-        payload['origClientOrderId'] = orig_client_order_id
-
-    builder = Builder(endpoint='api/v3/order', payload=payload) \
+    builder = OrderStatusBuilder(endpoint='api/v3/order', payload=payload) \
+        .add_optional_params_to_payload(order_id=order_id,
+                                        orig_client_order_id=orig_client_order_id) \
         .set_security()
 
     await builder.send_http_req()

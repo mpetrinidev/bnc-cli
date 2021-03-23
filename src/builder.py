@@ -41,6 +41,10 @@ class Builder:
         if method.upper() not in ['POST', 'GET', 'PUT', 'PATCH', 'DELETE']:
             raise ValueError('Http method is invalid')
 
+    @abstractmethod
+    def add_optional_params_to_payload(self, **kwargs):
+        pass
+
     def set_security(self):
         if self.payload is not None and not self.without_signature:
             self.payload['signature'] = get_hmac_hash(to_query_string_parameters(self.payload), get_secret_key())
@@ -108,7 +112,214 @@ class Builder:
         self.env.log(output)
 
 
+class LimitOrderBuilder(Builder):
+
+    def add_optional_params_to_payload(self, **kwargs):
+        quote_order_qty, new_client_order_id, stop_price, iceberg_qty = kwargs.values()
+
+        if quote_order_qty is not None:
+            self.payload['quoteOrderQty'] = quote_order_qty
+
+        if new_client_order_id is not None:
+            self.payload['newClientOrderId'] = new_client_order_id
+
+        if stop_price is not None:
+            self.payload['stopPrice'] = stop_price
+
+        if iceberg_qty is not None:
+            self.payload['icebergQty'] = iceberg_qty
+
+        return self
+
+    def filter(self, **kwargs):
+        pass
+
+
+class MarketOrderBuilder(Builder):
+
+    def add_optional_params_to_payload(self, **kwargs):
+        quantity, time_in_force, \
+        quote_order_qty, price, \
+        new_client_order_id, stop_price, \
+        iceberg_qty = kwargs.values()
+
+        if quantity is not None:
+            self.payload['quantity'] = quantity
+
+        if time_in_force is not None:
+            self.payload['timeInForce'] = time_in_force
+
+        if quote_order_qty is not None:
+            self.payload['quoteOrderQty'] = quote_order_qty
+
+        if price is not None:
+            self.payload['price'] = price
+
+        if new_client_order_id is not None:
+            self.payload['newClientOrderId'] = new_client_order_id
+
+        if stop_price is not None:
+            self.payload['stopPrice'] = stop_price
+
+        if iceberg_qty is not None:
+            self.payload['icebergQty'] = iceberg_qty
+
+        return self
+
+    def filter(self, **kwargs):
+        pass
+
+
+class StopLossBuilder(Builder):
+
+    def add_optional_params_to_payload(self, **kwargs):
+        time_in_force, quote_order_qty, \
+        price, new_client_order_id, \
+        iceberg_qty = kwargs.values()
+
+        if time_in_force is not None:
+            self.payload['timeInForce'] = time_in_force
+
+        if quote_order_qty is not None:
+            self.payload['quoteOrderQty'] = quote_order_qty
+
+        if price is not None:
+            self.payload['price'] = price
+
+        if new_client_order_id is not None:
+            self.payload['newClientOrderId'] = new_client_order_id
+
+        if iceberg_qty is not None:
+            self.payload['icebergQty'] = iceberg_qty
+
+        return self
+
+    def filter(self, **kwargs):
+        pass
+
+
+class StopLossLimitBuilder(Builder):
+
+    def add_optional_params_to_payload(self, **kwargs):
+        quote_order_qty, new_client_order_id, iceberg_qty = kwargs.values()
+
+        if quote_order_qty is not None:
+            self.payload['quoteOrderQty'] = quote_order_qty
+
+        if new_client_order_id is not None:
+            self.payload['newClientOrderId'] = new_client_order_id
+
+        if iceberg_qty is not None:
+            self.payload['icebergQty'] = iceberg_qty
+
+        return self
+
+    def filter(self, **kwargs):
+        pass
+
+
+class TakeProfitBuilder(Builder):
+
+    def add_optional_params_to_payload(self, **kwargs):
+        time_in_force, quote_order_qty, \
+        price, new_client_order_id, \
+        iceberg_qty = kwargs.values()
+
+        if time_in_force is not None:
+            self.payload['timeInForce'] = time_in_force
+
+        if quote_order_qty is not None:
+            self.payload['quoteOrderQty'] = quote_order_qty
+
+        if price is not None:
+            self.payload['price'] = price
+
+        if new_client_order_id is not None:
+            self.payload['newClientOrderId'] = new_client_order_id
+
+        if iceberg_qty is not None:
+            self.payload['icebergQty'] = iceberg_qty
+
+        return self
+
+    def filter(self, **kwargs):
+        pass
+
+
+class TakeProfitLimitBuilder(Builder):
+
+    def add_optional_params_to_payload(self, **kwargs):
+        quote_order_qty, \
+        new_client_order_id, \
+        iceberg_qty = kwargs.values()
+
+        if quote_order_qty is not None:
+            self.payload['quoteOrderQty'] = quote_order_qty
+
+        if new_client_order_id is not None:
+            self.payload['newClientOrderId'] = new_client_order_id
+
+        if iceberg_qty is not None:
+            self.payload['icebergQty'] = iceberg_qty
+
+        return self
+
+    def filter(self, **kwargs):
+        pass
+
+
+class LimitMakerBuilder(Builder):
+
+    def add_optional_params_to_payload(self, **kwargs):
+        time_in_force, quote_order_qty, \
+        stop_price, new_client_order_id, \
+        iceberg_qty = kwargs.values()
+
+        if time_in_force is not None:
+            self.payload['timeInForce'] = time_in_force
+
+        if quote_order_qty is not None:
+            self.payload['quoteOrderQty'] = quote_order_qty
+
+        if stop_price is not None:
+            self.payload['stopPrice'] = stop_price
+
+        if new_client_order_id is not None:
+            self.payload['newClientOrderId'] = new_client_order_id
+
+        if iceberg_qty is not None:
+            self.payload['icebergQty'] = iceberg_qty
+
+        return self
+
+    def filter(self, **kwargs):
+        pass
+
+
+class CancelOrderBuilder(Builder):
+
+    def add_optional_params_to_payload(self, **kwargs):
+        order_id, orig_client_order_id, new_client_order_id = kwargs.values()
+
+        if order_id is not None:
+            self.payload['orderId'] = order_id
+
+        if orig_client_order_id is not None:
+            self.payload['origClientOrderId'] = orig_client_order_id
+
+        if new_client_order_id is not None:
+            self.payload['newClientOrderId'] = new_client_order_id
+
+        return self
+
+    def filter(self, **kwargs):
+        pass
+
+
 class AccountInfoBuilder(Builder):
+    def add_optional_params_to_payload(self, **kwargs):
+        pass
+
     def filter(self, **kwargs):
         if self.has_error:
             return self
@@ -136,3 +347,32 @@ class AccountInfoBuilder(Builder):
             self.result['results']['balances'] = filter_func(self.result['results']['balances'])
 
         return self
+
+
+class OpenOrdersBuilder(Builder):
+    def add_optional_params_to_payload(self, **kwargs):
+        symbol = kwargs.values()
+
+        if symbol is not None:
+            self.payload['symbol'] = symbol
+
+        return self
+
+    def filter(self, **kwargs):
+        pass
+
+
+class OrderStatusBuilder(Builder):
+    def add_optional_params_to_payload(self, **kwargs):
+        order_id, orig_client_order_id = kwargs.values()
+
+        if order_id is not None:
+            self.payload['orderId'] = order_id
+
+        if orig_client_order_id is not None:
+            self.payload['origClientOrderId'] = orig_client_order_id
+
+        return self
+
+    def filter(self, **kwargs):
+        pass

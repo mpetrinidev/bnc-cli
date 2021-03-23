@@ -64,7 +64,10 @@ async def exchange_info():
 @coro
 async def trades(symbol, limit):
     """Get recent trades."""
-    payload = {'symbol': symbol, 'limit': limit}
+    payload = {
+        'symbol': symbol,
+        'limit': limit
+    }
 
     builder = Builder(endpoint='api/v3/trades', payload=payload, without_signature=True).set_security()
     await builder.send_http_req()
