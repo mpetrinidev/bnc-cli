@@ -162,8 +162,6 @@ async def stop_loss_limit(symbol, side, time_in_force, quantity, quote_order_qty
     if quote_order_qty is not None:
         payload['quoteOrderQty'] = quote_order_qty
 
-    if price is not None:
-        payload['price'] = price
 
     if new_client_order_id is not None:
         payload['newClientOrderId'] = new_client_order_id
@@ -235,9 +233,6 @@ async def take_profit_limit(symbol, side, time_in_force, quantity, quote_order_q
 
     if quote_order_qty is not None:
         payload['quoteOrderQty'] = quote_order_qty
-
-    if price is not None:
-        payload['price'] = price
 
     if new_client_order_id is not None:
         payload['newClientOrderId'] = new_client_order_id

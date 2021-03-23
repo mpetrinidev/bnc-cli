@@ -37,7 +37,23 @@ def test_new_order_root_is_ok(runner):
 
 @pytest.mark.parametrize("params", [
     ['-sy', 'LTCBTC', '-si', 'BUY', '-tif', 'GTC', '-q', 1, '-p', 0.003621],
-    ['--symbol', 'LTCBTC', '--side', 'BUY', '--time_in_force', 'GTC', '--quantity', 1, '--price', 0.003621]
+    ['--symbol', 'LTCBTC', '--side', 'BUY', '--time_in_force', 'GTC', '--quantity', 1, '--price', 0.003621],
+    ['-sy', 'LTCBTC', '-si', 'BUY', '-tif', 'GTC', '-q', 1, '-p', 0.003621, '-qoq', 0.0],
+    ['--symbol', 'LTCBTC', '--side', 'BUY', '--time_in_force', 'GTC', '--quantity', 1, '--price', 0.003621,
+     '--quote_order_qty', 0.0],
+    ['-sy', 'LTCBTC', '-si', 'BUY', '-tif', 'GTC', '-q', 1, '-p', 0.003621, '-ncoid', 'test'],
+    ['--symbol', 'LTCBTC', '--side', 'BUY', '--time_in_force', 'GTC', '--quantity', 1, '--price', 0.003621,
+     '--new_client_order_id', 0.0],
+    ['-sy', 'LTCBTC', '-si', 'BUY', '-tif', 'GTC', '-q', 1, '-p', 0.003621, '-sp', 0.0],
+    ['--symbol', 'LTCBTC', '--side', 'BUY', '--time_in_force', 'GTC', '--quantity', 1, '--price', 0.003621,
+     '--stop_price', 0.0],
+    ['-sy', 'LTCBTC', '-si', 'BUY', '-tif', 'GTC', '-q', 1, '-p', 0.003621, '-iq', 0.0],
+    ['--symbol', 'LTCBTC', '--side', 'BUY', '--time_in_force', 'GTC', '--quantity', 1, '--price', 0.003621,
+     '--iceberg_qty', 0.0],
+    ['-sy', 'LTCBTC', '-si', 'BUY', '-tif', 'GTC', '-q', 1, '-p', 0.003621, '-qoq', 0.0, '-ncoid', 'test',
+     '-sp', 0.0, '-iq', 0.0],
+    ['--symbol', 'LTCBTC', '--side', 'BUY', '--time_in_force', 'GTC', '--quantity', 1, '--price', 0.003621,
+     '--quote_order_qty', 0.0, '--new_client_order_id', 0.0, '--stop_price', 0.0, '--iceberg_qty', 0.0]
 ])
 def test_new_order_limit_return_full_resp(runner, params, mock_default_deps):
     mock_response = Mock(status_code=200)
@@ -51,8 +67,36 @@ def test_new_order_limit_return_full_resp(runner, params, mock_default_deps):
 
 
 @pytest.mark.parametrize("params", [
+    ['-sy', 'LTCBTC', '-si', 'BUY'],
+    ['--symbol', 'LTCBTC', '--side', 'BUY']
+])
+def test_new_order_market_missing_quantity_or_quote_order_id(runner, params):
+    result = runner.invoke(market, params)
+
+    assert result.exit_code == 0
+    assert result.output == 'Either --quantity (-q) or --quote_order_qty (-qoq) must be sent.\n'
+
+
+@pytest.mark.parametrize("params", [
     ['-sy', 'LTCBTC', '-si', 'BUY', '-q', 1],
-    ['--symbol', 'LTCBTC', '--side', 'BUY', '--quantity', 1]
+    ['--symbol', 'LTCBTC', '--side', 'BUY', '--quantity', 1],
+    ['-sy', 'LTCBTC', '-si', 'BUY', '-q', 1, '-tif', 'GTC'],
+    ['--symbol', 'LTCBTC', '--side', 'BUY', '--quantity', 1, '--time_in_force', 'GTC'],
+    ['-sy', 'LTCBTC', '-si', 'BUY', '-q', 1, '-qoq', 0.0],
+    ['--symbol', 'LTCBTC', '--side', 'BUY', '--quantity', 1, '--quote_order_qty', 0.0],
+    ['-sy', 'LTCBTC', '-si', 'BUY', '-q', 1, '-p', 0.0],
+    ['--symbol', 'LTCBTC', '--side', 'BUY', '--quantity', 1, '--price', 0.0],
+    ['-sy', 'LTCBTC', '-si', 'BUY', '-q', 1, '-ncoid', 'test'],
+    ['--symbol', 'LTCBTC', '--side', 'BUY', '--quantity', 1, '--new_client_order_id', 'test'],
+    ['-sy', 'LTCBTC', '-si', 'BUY', '-q', 1, '-sp', 0.0],
+    ['--symbol', 'LTCBTC', '--side', 'BUY', '--quantity', 1, '--stop_price', 0.0],
+    ['-sy', 'LTCBTC', '-si', 'BUY', '-q', 1, '-iq', 0.0],
+    ['--symbol', 'LTCBTC', '--side', 'BUY', '--quantity', 1, '--iceberg_qty', 0.0],
+    ['-sy', 'LTCBTC', '-si', 'BUY', '-q', 1, '-tif', 'GTC', '-qoq', 0.0, '-p', 0.0, '-ncoid', 'test',
+     '-sp', 0.0, '-iq', 0.0],
+    ['--symbol', 'LTCBTC', '--side', 'BUY', '--quantity', 1, '--time_in_force', 'GTC',
+     '--quote_order_qty', 0.0, '--price', 0.0, '--new_client_order_id', 'test', '--stop_price', 0.0,
+     '--iceberg_qty', 0.0]
 ])
 def test_new_order_market_return_full_resp(runner, params, mock_default_deps):
     mock_response = Mock(status_code=200)
@@ -68,7 +112,22 @@ def test_new_order_market_return_full_resp(runner, params, mock_default_deps):
 @pytest.mark.parametrize("params", [
     ['-sy', 'LTCBTC', '-si', 'SELL', '-tif', 'GTC', '-q', 1, '-p', 0.003621, '-sp', 0.0010],
     ['--symbol', 'LTCBTC', '--side', 'SELL', '--time_in_force', 'GTC',
-     '--quantity', 1, '--price', 0.003621, '--stop_price', 0.0010]
+     '--quantity', 1, '--price', 0.003621, '--stop_price', 0.0010],
+    ['-sy', 'LTCBTC', '-si', 'SELL', '-tif', 'GTC', '-q', 1, '-p', 0.003621, '-sp', 0.0010, '-qoq', 0.0],
+    ['--symbol', 'LTCBTC', '--side', 'SELL', '--time_in_force', 'GTC',
+     '--quantity', 1, '--price', 0.003621, '--stop_price', 0.0010, '--quote_order_qty', 0.0],
+    ['-sy', 'LTCBTC', '-si', 'SELL', '-tif', 'GTC', '-q', 1, '-p', 0.003621, '-sp', 0.0010, '-ncoid', 'test'],
+    ['--symbol', 'LTCBTC', '--side', 'SELL', '--time_in_force', 'GTC',
+     '--quantity', 1, '--price', 0.003621, '--stop_price', 0.0010, '--new_client_order_id', 'test'],
+    ['-sy', 'LTCBTC', '-si', 'SELL', '-tif', 'GTC', '-q', 1, '-p', 0.003621, '-sp', 0.0010, '-iq', 0.0],
+    ['--symbol', 'LTCBTC', '--side', 'SELL', '--time_in_force', 'GTC',
+     '--quantity', 1, '--price', 0.003621, '--stop_price', 0.0010, '--iceberg_qty', 0.0],
+
+    ['-sy', 'LTCBTC', '-si', 'SELL', '-tif', 'GTC', '-q', 1, '-p', 0.003621, '-sp', 0.0010, '-qoq', 0.0,
+     '-ncoid', 'test', '-iq', 0.0],
+    ['--symbol', 'LTCBTC', '--side', 'SELL', '--time_in_force', 'GTC',
+     '--quantity', 1, '--price', 0.003621, '--stop_price', 0.0010, '--quote_order_qty', 0.0,
+     '--new_client_order_id', 'test', '--iceberg_qty', 0.0]
 ])
 def test_new_order_stop_loss_limit_return_ack_resp(runner, params, mock_default_deps):
     mock_response = Mock(status_code=200)
@@ -84,7 +143,22 @@ def test_new_order_stop_loss_limit_return_ack_resp(runner, params, mock_default_
 @pytest.mark.parametrize("params", [
     ['-sy', 'LTCBTC', '-si', 'BUY', '-tif', 'GTC', '-q', 1, '-p', 0.003621, '-sp', 0.0010],
     ['--symbol', 'LTCBTC', '--side', 'BUY', '--time_in_force', 'GTC',
-     '--quantity', 1, '--price', 0.003621, '--stop_price', 0.0010]
+     '--quantity', 1, '--price', 0.003621, '--stop_price', 0.0010],
+    ['-sy', 'LTCBTC', '-si', 'BUY', '-tif', 'GTC', '-q', 1, '-p', 0.003621, '-sp', 0.0010, '-qoq', 0.0],
+    ['--symbol', 'LTCBTC', '--side', 'BUY', '--time_in_force', 'GTC',
+     '--quantity', 1, '--price', 0.003621, '--stop_price', 0.0010, '--quote_order_qty', 0.0],
+    ['-sy', 'LTCBTC', '-si', 'BUY', '-tif', 'GTC', '-q', 1, '-p', 0.003621, '-sp', 0.0010, '-ncoid', 'test'],
+    ['--symbol', 'LTCBTC', '--side', 'BUY', '--time_in_force', 'GTC',
+     '--quantity', 1, '--price', 0.003621, '--stop_price', 0.0010, '--new_client_order_id', 'test'],
+    ['-sy', 'LTCBTC', '-si', 'BUY', '-tif', 'GTC', '-q', 1, '-p', 0.003621, '-sp', 0.0010, '-iq', 0.0],
+    ['--symbol', 'LTCBTC', '--side', 'BUY', '--time_in_force', 'GTC',
+     '--quantity', 1, '--price', 0.003621, '--stop_price', 0.0010, '--iceberg_qty', 0.0],
+
+    ['-sy', 'LTCBTC', '-si', 'BUY', '-tif', 'GTC', '-q', 1, '-p', 0.003621, '-sp', 0.0010, '-qoq', 0.0,
+     '-ncoid', 'test', '-iq', 0.0],
+    ['--symbol', 'LTCBTC', '--side', 'BUY', '--time_in_force', 'GTC',
+     '--quantity', 1, '--price', 0.003621, '--stop_price', 0.0010, '--quote_order_qty', 0.0,
+     '--new_client_order_id', 'test', '--iceberg_qty', 0.0]
 ])
 def test_new_order_take_profit_limit_return_ack_resp(runner, params, mock_default_deps):
     mock_response = Mock(status_code=200)
@@ -238,4 +312,3 @@ def test_order_status_return_ok(runner, params, mock_default_deps):
     result = runner.invoke(order_status, params)
     assert result.exit_code == 0
     assert result.output == json_to_str(get_order_status()) + '\n'
-
