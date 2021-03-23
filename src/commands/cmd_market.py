@@ -19,7 +19,7 @@ def cli():
 @coro
 async def test(ctx):
     """Test connectivity to the Rest API."""
-    builder = Builder(endpoint='api/v3/ping').set_security()
+    builder = Builder(endpoint='api/v3/ping')
     await builder.send_http_req()
 
     builder.handle_response()
@@ -35,7 +35,7 @@ async def test(ctx):
 @coro
 async def server_time(ctx):
     """Test connectivity to the Rest API and get the current server time."""
-    builder = Builder(endpoint='api/v3/time').set_security()
+    builder = Builder(endpoint='api/v3/time')
     await builder.send_http_req()
 
     builder.handle_response()
@@ -52,7 +52,7 @@ async def server_time(ctx):
 @coro
 async def exchange_info():
     """Current exchange trading rules and symbol information."""
-    builder = Builder(endpoint='api/v3/exchangeInfo').set_security()
+    builder = Builder(endpoint='api/v3/exchangeInfo')
     await builder.send_http_req()
 
     builder.handle_response().generate_output()
@@ -69,7 +69,7 @@ async def trades(symbol, limit):
         'limit': limit
     }
 
-    builder = Builder(endpoint='api/v3/trades', payload=payload, without_signature=True).set_security()
+    builder = Builder(endpoint='api/v3/trades', payload=payload, without_signature=True)
     await builder.send_http_req()
 
     builder.handle_response().generate_output()
