@@ -376,3 +376,22 @@ class OrderStatusBuilder(Builder):
 
     def filter(self, **kwargs):
         pass
+
+
+class KlinesBuilder(Builder):
+    def add_optional_params_to_payload(self, **kwargs):
+        start_time, end_time, limit = kwargs.values()
+
+        if start_time is not None:
+            self.payload['startTime'] = start_time
+
+        if end_time is not None:
+            self.payload['endTime'] = end_time
+
+        if limit is not None:
+            self.payload['limit'] = limit
+
+        return self
+
+    def filter(self, **kwargs):
+        pass

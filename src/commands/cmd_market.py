@@ -1,9 +1,9 @@
 import click
 
-from src.builder import Builder
+from src.builder import Builder, KlinesBuilder
 from src.cli import pass_environment
 from src.decorators import coro
-from src.validation.val_market import validate_limit
+from src.validation.val_market import validate_interval
 
 
 @click.group(short_help='Market data endpoints')
@@ -60,7 +60,7 @@ async def exchange_info():
 
 @cli.command("trades", short_help='Get recent trades.')
 @click.option("-sy", "--symbol", required=True, type=click.types.STRING)
-@click.option("-l", "--limit", default=500, show_default=True, callback=validate_limit, type=click.types.INT)
+@click.option("-l", "--limit", default=500, show_default=True, type=click.types.IntRange(1, 1000))
 @coro
 async def trades(symbol, limit):
     """Get recent trades."""
@@ -70,6 +70,30 @@ async def trades(symbol, limit):
     }
 
     builder = Builder(endpoint='api/v3/trades', payload=payload, without_signature=True)
+    await builder.send_http_req()
+
+    builder.handle_response().generate_output()
+
+
+@cli.command("klines", short_help="Kline/candlestick bars for a symbol. "
+                                  "Klines are uniquely identified by their open time.")
+@click.option("-sy", "--symbol", required=True, type=click.types.STRING)
+@click.option("-i", "--interval", required=True, callback=validate_interval, type=click.types.STRING)
+@click.option("-st", "--start_time", type=click.types.INT)
+@click.option("-et", "--end_time", type=click.types.INT)
+@click.option("-l", "--limit", default=500, show_default=True, type=click.types.IntRange(1, 1000))
+@coro
+async def klines(symbol, interval, start_time, end_time, limit):
+    payload = {
+        'symbol': symbol,
+        'interval': str(interval).lower()
+    }
+
+    builder = KlinesBuilder(endpoint='api/v3/klines', payload=payload, without_signature=True) \
+        .add_optional_params_to_payload(start_time=start_time,
+                                        end_time=end_time,
+                                        limit=limit)
+
     await builder.send_http_req()
 
     builder.handle_response().generate_output()
