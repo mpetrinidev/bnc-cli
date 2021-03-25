@@ -208,3 +208,10 @@ def get_klines():
             "0"
         ]
     ]
+
+
+def get_current_avg_price():
+    return {
+        "mins": 1,
+        "price": "0.00331289"
+    }

@@ -104,3 +104,21 @@ async def klines(symbol, interval, start_time, end_time, limit):
     await builder.send_http_req()
 
     builder.handle_response().generate_output()
+
+
+@cli.command("current_avg_price", short_help="Current average price for a symbol.")
+@click.option("-sy", "--symbol", required=True, type=click.types.STRING)
+@coro
+async def current_avg_price(symbol):
+    """
+    Current average price for a symbol.
+    """
+    payload = {
+        'symbol': symbol
+    }
+
+    builder = Builder(endpoint='api/v3/avgPrice', payload=payload, without_signature=True)
+
+    await builder.send_http_req()
+
+    builder.handle_response().generate_output()
