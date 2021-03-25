@@ -84,6 +84,13 @@ async def trades(symbol, limit):
 @click.option("-l", "--limit", default=500, show_default=True, type=click.types.IntRange(1, 1000))
 @coro
 async def klines(symbol, interval, start_time, end_time, limit):
+    """
+    Kline/candlestick bars for a symbol.
+
+    Klines are uniquely identified by their open time.
+
+    NOTE: If start_time and end_time are not sent, the most recent klines are returned.
+    """
     payload = {
         'symbol': symbol,
         'interval': str(interval).lower()
