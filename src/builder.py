@@ -395,3 +395,16 @@ class KlinesBuilder(Builder):
 
     def filter(self, **kwargs):
         pass
+
+
+class Ticker24Builder(Builder):
+    def add_optional_params_to_payload(self, **kwargs):
+        symbol = kwargs.values()
+
+        if symbol is not None:
+            self.payload = {'symbol': symbol}
+
+        return self
+
+    def filter(self, **kwargs):
+        pass

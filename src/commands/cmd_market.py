@@ -1,6 +1,6 @@
 import click
 
-from src.builder import Builder, KlinesBuilder
+from src.builder import Builder, KlinesBuilder, Ticker24Builder
 from src.cli import pass_environment
 from src.decorators import coro
 from src.validation.val_market import validate_interval
@@ -118,6 +118,26 @@ async def current_avg_price(symbol):
     }
 
     builder = Builder(endpoint='api/v3/avgPrice', payload=payload, without_signature=True)
+
+    await builder.send_http_req()
+
+    builder.handle_response().generate_output()
+
+
+@cli.command("ticker_24hr", short_help="24 hour rolling window price change statistics. "
+                                       "Careful when accessing this with no symbol.")
+@click.option("-sy", "--symbol", type=click.types.STRING)
+@coro
+async def ticker_24hr(symbol):
+    """
+    24 hour rolling window price change statistics. Careful when accessing this with no symbol.
+
+    NOTE:
+        Weight: 1 for a single symbol;
+        40 when the symbol parameter is omitted;
+    """
+    builder = Ticker24Builder(endpoint='api/v3/ticker/24hr', without_signature=True) \
+        .add_optional_params_to_payload(symbol=symbol)
 
     await builder.send_http_req()
 
