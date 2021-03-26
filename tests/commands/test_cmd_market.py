@@ -4,9 +4,10 @@ import pytest
 from click.testing import CliRunner
 
 from src.commands.cmd_market import cli, test, server_time, exchange_info, trades, klines, current_avg_price, \
-    ticker_24hr
+    ticker_24hr, ticker_price
 from src.utils.utils import json_to_str
-from tests.responses.res_market import get_exchange_info, get_trades, get_klines, get_current_avg_price, get_ticker_24hr
+from tests.responses.res_market import get_exchange_info, get_trades, get_klines, get_current_avg_price, \
+    get_ticker_24hr, get_ticker_price
 
 
 @pytest.fixture()
@@ -93,9 +94,20 @@ def test_ticker_24hr_return_values(runner, mocker):
 
     mocker.patch('src.builder.requests.get', return_value=mock_response)
 
-    result = runner.invoke(current_avg_price, ['--symbol', 'LTCBTC'])
+    result = runner.invoke(ticker_24hr, ['--symbol', 'LTCBTC'])
     assert result.exit_code == 0
     assert result.output == f'{json_to_str(get_ticker_24hr())}\n'
+
+
+def test_ticker_price_return_values(runner, mocker):
+    mock_response = Mock(status_code=200)
+    mock_response.json.return_value = get_ticker_price()
+
+    mocker.patch('src.builder.requests.get', return_value=mock_response)
+
+    result = runner.invoke(ticker_price, ['--symbol', 'LTCBTC'])
+    assert result.exit_code == 0
+    assert result.output == f'{json_to_str(get_ticker_price())}\n'
 
 
 @pytest.mark.parametrize("commands,options", [(test, []), (server_time, []),
@@ -103,7 +115,8 @@ def test_ticker_24hr_return_values(runner, mocker):
                                               (trades, ['--symbol', 'LTCBTC', '--limit', 5]),
                                               (klines, ['--symbol', 'LTCBTC', '--interval', '1m']),
                                               (current_avg_price, ['--symbol', 'LTCBTC']),
-                                              (ticker_24hr, ['--symbol', 'LTCBTC'])])
+                                              (ticker_24hr, ['--symbol', 'LTCBTC']),
+                                              (ticker_price, ['--symbol', 'LTCBTC'])])
 def test_market_http_get_commands_return_500(runner, mocker, commands, options):
     mock_response = Mock(status_code=500)
     mocker.patch('src.builder.requests.get', return_value=mock_response)

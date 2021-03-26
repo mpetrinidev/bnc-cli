@@ -241,3 +241,10 @@ def get_ticker_24hr():
         "lastId": 1103,
         "count": 32
     }
+
+
+def get_ticker_price():
+    return {
+        "symbol": "LTCBTC",
+        "price": "0.00330900"
+    }

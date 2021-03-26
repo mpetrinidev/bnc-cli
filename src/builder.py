@@ -397,7 +397,7 @@ class KlinesBuilder(Builder):
         pass
 
 
-class Ticker24Builder(Builder):
+class Ticker24AndPriceBuilder(Builder):
     def add_optional_params_to_payload(self, **kwargs):
         symbol = kwargs.values()
 

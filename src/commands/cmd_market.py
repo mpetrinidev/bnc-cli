@@ -1,6 +1,6 @@
 import click
 
-from src.builder import Builder, KlinesBuilder, Ticker24Builder
+from src.builder import Builder, KlinesBuilder, Ticker24AndPriceBuilder
 from src.cli import pass_environment
 from src.decorators import coro
 from src.validation.val_market import validate_interval
@@ -136,7 +136,26 @@ async def ticker_24hr(symbol):
         Weight: 1 for a single symbol;
         40 when the symbol parameter is omitted;
     """
-    builder = Ticker24Builder(endpoint='api/v3/ticker/24hr', without_signature=True) \
+    builder = Ticker24AndPriceBuilder(endpoint='api/v3/ticker/24hr', without_signature=True) \
+        .add_optional_params_to_payload(symbol=symbol)
+
+    await builder.send_http_req()
+
+    builder.handle_response().generate_output()
+
+
+@cli.command("ticker_price", short_help="Latest price for a symbol or symbols.")
+@click.option("-sy", "--symbol", type=click.types.STRING)
+@coro
+async def ticker_price(symbol):
+    """
+    Latest price for a symbol or symbols.
+
+    NOTE:
+        Weight: 1 for a single symbol;
+        2 when the symbol parameter is omitted;
+    """
+    builder = Ticker24AndPriceBuilder(endpoint='api/v3/ticker/price', without_signature=True) \
         .add_optional_params_to_payload(symbol=symbol)
 
     await builder.send_http_req()
