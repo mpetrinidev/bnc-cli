@@ -3,15 +3,9 @@ import sys
 
 import click
 
+from src.validation.val_cli import validate_output_value
+
 CONTEXT_SETTINGS = dict(auto_envvar_prefix="BNC")
-
-
-def validate_output_value(ctx, param, value):
-    value = str(value).lower()
-    if value not in ['json', 'table', 'yaml']:
-        raise click.BadParameter(value + '. Possible values: json | table | yaml')
-
-    return value
 
 
 class Environment:
