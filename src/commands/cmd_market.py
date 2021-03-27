@@ -49,13 +49,14 @@ async def server_time(ctx):
 
 
 @cli.command("exchange_info", short_help='Current exchange trading rules and symbol information.')
+@click.option("--query", type=click.types.STRING)
 @coro
-async def exchange_info():
+async def exchange_info(query):
     """Current exchange trading rules and symbol information."""
     builder = Builder(endpoint='api/v3/exchangeInfo')
     await builder.send_http_req()
 
-    builder.handle_response().generate_output()
+    builder.handle_response().filter(query).generate_output()
 
 
 @cli.command("trades", short_help='Get recent trades.')

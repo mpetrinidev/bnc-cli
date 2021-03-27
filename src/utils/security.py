@@ -31,8 +31,9 @@ def get_api_key():
 
     # Check config file variable
     if api_key is None or len(api_key) == 0:
-        raise SecurityException('Credentials are required. Run: bnc credentials add -ak="your_api_key" '
-                                '-s="your_secret_key" to start using the CLI or add credentials using env variables')
+        raise SecurityException('Credentials are required. Run: bnc credentials add --api_key="your_api_key" '
+                                '--secret="your_secret_key" to start using the CLI or add credentials using '
+                                'env variables')
 
     return api_key
 
@@ -50,8 +51,9 @@ def get_secret_key():
 
     # Check config file variable
     if secret_key is None or len(secret_key) == 0:
-        raise SecurityException('Credentials are required. Run: bnc credentials add -ak="your_api_key" '
-                                '-s="your_secret_key" to start using the CLI or add credentials using env variables')
+        raise SecurityException('Credentials are required. Run: bnc credentials add --api_key="your_api_key" '
+                                '--secret="your_secret_key" to start using the CLI or add credentials using '
+                                'env variables')
 
     return secret_key
 

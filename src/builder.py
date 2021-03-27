@@ -3,6 +3,7 @@ from abc import abstractmethod
 import click
 import requests_async as requests
 import yaml
+import jmespath
 
 from src.cli import Environment
 from src.utils.globals import API_BINANCE
@@ -83,19 +84,22 @@ class Builder:
 
         if 400 <= self.response.status_code <= 499:
             self.env.log(
-                f'Binance API is reporting the following error: {result["results"]["code"]} | {result["results"]["msg"]}')
+                f'Binance API is reporting the following error: {result["results"]["code"]} | '
+                f'{result["results"]["msg"]}')
             self.has_error = True
 
         self.result = result
 
         return self
 
-    @abstractmethod
-    def filter(self, **kwargs):
+    def filter(self, query):
         if self.has_error:
             return self
 
-        pass
+        if query is not None:
+            self.result['results'] = jmespath.search(query, self.result['results'])
+
+        return self
 
     def generate_output(self):
         if self.has_error:
@@ -131,9 +135,6 @@ class LimitOrderBuilder(Builder):
 
         return self
 
-    def filter(self, **kwargs):
-        pass
-
 
 class MarketOrderBuilder(Builder):
 
@@ -166,9 +167,6 @@ class MarketOrderBuilder(Builder):
 
         return self
 
-    def filter(self, **kwargs):
-        pass
-
 
 class StopLossBuilder(Builder):
 
@@ -194,9 +192,6 @@ class StopLossBuilder(Builder):
 
         return self
 
-    def filter(self, **kwargs):
-        pass
-
 
 class StopLossLimitBuilder(Builder):
 
@@ -213,9 +208,6 @@ class StopLossLimitBuilder(Builder):
             self.payload['icebergQty'] = iceberg_qty
 
         return self
-
-    def filter(self, **kwargs):
-        pass
 
 
 class TakeProfitBuilder(Builder):
@@ -242,9 +234,6 @@ class TakeProfitBuilder(Builder):
 
         return self
 
-    def filter(self, **kwargs):
-        pass
-
 
 class TakeProfitLimitBuilder(Builder):
 
@@ -263,9 +252,6 @@ class TakeProfitLimitBuilder(Builder):
             self.payload['icebergQty'] = iceberg_qty
 
         return self
-
-    def filter(self, **kwargs):
-        pass
 
 
 class LimitMakerBuilder(Builder):
@@ -292,9 +278,6 @@ class LimitMakerBuilder(Builder):
 
         return self
 
-    def filter(self, **kwargs):
-        pass
-
 
 class CancelOrderBuilder(Builder):
 
@@ -311,9 +294,6 @@ class CancelOrderBuilder(Builder):
             self.payload['newClientOrderId'] = new_client_order_id
 
         return self
-
-    def filter(self, **kwargs):
-        pass
 
 
 class AccountInfoBuilder(Builder):
@@ -358,9 +338,6 @@ class OpenOrdersBuilder(Builder):
 
         return self
 
-    def filter(self, **kwargs):
-        pass
-
 
 class OrderStatusBuilder(Builder):
     def add_optional_params_to_payload(self, **kwargs):
@@ -373,9 +350,6 @@ class OrderStatusBuilder(Builder):
             self.payload['origClientOrderId'] = orig_client_order_id
 
         return self
-
-    def filter(self, **kwargs):
-        pass
 
 
 class KlinesBuilder(Builder):
@@ -393,18 +367,12 @@ class KlinesBuilder(Builder):
 
         return self
 
-    def filter(self, **kwargs):
-        pass
-
 
 class Ticker24AndPriceBuilder(Builder):
     def add_optional_params_to_payload(self, **kwargs):
-        symbol = kwargs.values()
+        symbol = kwargs['symbol']
 
         if symbol is not None:
             self.payload = {'symbol': symbol}
 
         return self
-
-    def filter(self, **kwargs):
-        pass

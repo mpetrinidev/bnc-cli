@@ -50,7 +50,7 @@ def test_exchange_info_return_values(runner, mocker):
 
     mocker.patch('src.builder.requests.get', return_value=mock_response)
 
-    result = runner.invoke(exchange_info)
+    result = runner.invoke(exchange_info, [])
     assert result.exit_code == 0
     assert result.output == f'{json_to_str(get_exchange_info())}\n'
 
@@ -94,7 +94,7 @@ def test_ticker_24hr_return_values(runner, mocker):
 
     mocker.patch('src.builder.requests.get', return_value=mock_response)
 
-    result = runner.invoke(ticker_24hr, ['--symbol', 'LTCBTC'])
+    result = runner.invoke(ticker_24hr)
     assert result.exit_code == 0
     assert result.output == f'{json_to_str(get_ticker_24hr())}\n'
 
