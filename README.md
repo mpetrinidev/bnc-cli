@@ -147,4 +147,4 @@ permissions:
 
 For more information:
 
-[Binance CLI](https://mpetrini.dev/bnc-cli)
+[Binance CLI](https://github.com/mpetrinidev/bnc-cli/wiki)
