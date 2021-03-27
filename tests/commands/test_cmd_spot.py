@@ -5,11 +5,11 @@ from click import BadParameter
 from click.testing import CliRunner
 
 from src.commands.cmd_spot import account_info, cli, new_order, limit, market, stop_loss_limit, take_profit_limit, \
-    limit_maker, cancel_order, open_orders, order_status
+    limit_maker, cancel_order, open_orders, order_status, cancel_all_orders
 from src.utils.utils import json_to_str
 from tests.responses.res_spot import get_full_order_limit, get_full_order_market, get_ack_order_stop_loss_limit, \
     get_ack_order_take_profit_limit, get_ack_order_limit_maker, get_account_info, get_cancel_order, get_open_orders, \
-    get_order_status
+    get_order_status, get_cancel_all_orders
 
 
 @pytest.fixture
@@ -234,15 +234,19 @@ def test_cancel_order_missing_order_id_or_orig_client_order_id(runner, params):
     assert result.output == 'Either --order_id (-oid) or --orig_client_order_id (-ocoid) must be sent.\n'
 
 
-@pytest.mark.parametrize("options", [
-    ['-rw', 60001], ['--recv_window', 60001],
-    ['-rw', 'Incorrect_Value'], ['--recv_window', 'Incorrect_Value']
+@pytest.mark.parametrize("params", [
+    ['-sy', 'LTCBTC'],
+    ['--symbol', 'LTCBTC']
 ])
-def test_account_info_recv_window_greater_than_60000(runner, options):
-    result = runner.invoke(account_info, options)
+def test_cancel_all_orders_return_ok(runner, params, mock_default_deps):
+    mock_response = Mock(status_code=200)
+    mock_response.json.return_value = get_cancel_all_orders()
 
-    assert result.exit_code == 2
-    assert isinstance(result.exception, (BadParameter, SystemExit))
+    mock_default_deps.patch('src.builder.requests.delete', return_value=mock_response)
+
+    result = runner.invoke(cancel_all_orders, params)
+    assert result.exit_code == 0
+    assert result.output == json_to_str(get_cancel_all_orders()) + '\n'
 
 
 @pytest.mark.parametrize("options", [

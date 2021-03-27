@@ -2,7 +2,7 @@ import click
 
 from src.builder import AccountInfoBuilder, LimitOrderBuilder, MarketOrderBuilder, StopLossBuilder, \
     StopLossLimitBuilder, TakeProfitBuilder, TakeProfitLimitBuilder, LimitMakerBuilder, CancelOrderBuilder, \
-    OpenOrdersBuilder, OrderStatusBuilder
+    OpenOrdersBuilder, OrderStatusBuilder, Builder
 from src.cli import pass_environment
 from src.decorators import coro, new_order_options
 from src.utils.api_time import get_timestamp
@@ -291,6 +291,31 @@ async def cancel_order(ctx, symbol, order_id, orig_client_order_id, new_client_o
     builder.handle_response().generate_output()
 
 
+@cli.command("cancel_all_orders", short_help='Cancels all active orders on a symbol. '
+                                             'This includes OCO orders.')
+@click.option("-sy", "--symbol", required=True, type=click.types.STRING)
+@click.option("-rw", "--recv_window", default=5000, show_default=True, callback=validate_recv_window,
+              type=click.types.INT)
+@coro
+async def cancel_all_orders(symbol, recv_window):
+    """
+    Cancels all active orders on a symbol.
+    This includes OCO orders.
+    """
+
+    payload = {
+        'symbol': symbol,
+        'recvWindow': recv_window,
+        'timestamp': get_timestamp()
+    }
+
+    builder = Builder(endpoint='api/v3/openOrders', payload=payload, method='DELETE').set_security()
+
+    await builder.send_http_req()
+
+    builder.handle_response().generate_output()
+
+
 @cli.command("account_info", short_help="Get current account information")
 @click.option("-rw", "--recv_window", default=5000, show_default=True, callback=validate_recv_window,
               type=click.types.INT)
@@ -320,7 +345,9 @@ async def open_orders(symbol, recv_window):
     """
     Get all open orders on a symbol. Careful when accessing this with no symbol.
 
-    Weight: 1 for a single symbol; 40 when the symbol parameter is omitted
+    Weight:
+        1 for a single symbol.
+        40 when the symbol parameter is omitted.
     """
     payload = {
         'recvWindow': recv_window,
@@ -349,9 +376,7 @@ async def order_status(ctx, symbol, order_id, orig_client_order_id, recv_window)
     Check an order's status
 
     Notes:
-
         Either --order_id (-oid) or --orig_client_order_id (-ocoid) must be sent.
-
         For some historical orders cummulativeQuoteQty will be < 0, meaning the data is not available at this time.
     """
     if order_id is None and orig_client_order_id is None:

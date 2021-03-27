@@ -2,9 +2,6 @@ import click
 
 
 def validate_recv_window(ctx, param, value):
-    if value is None:
-        raise click.BadParameter('recv_window cannot be null')
-
     if int(value) > 60000:
         raise click.BadParameter(str(value) + '. Cannot exceed 60000')
 
@@ -17,7 +14,7 @@ def validate_locked_free(ctx, param, value):
 
     value = str(value).upper()
     if value not in ['L', 'F', 'B']:
-        raise click.BadParameter(value + '. Possible values: A | L | F | B')
+        raise click.BadParameter(value + '. Possible values: L | F | B')
 
     return value
 
@@ -48,3 +45,5 @@ def validate_new_order_resp_type(ctx, param, value):
 
     if value not in ['FULL', 'ACK', 'RESULT']:
         raise click.BadParameter(value + '. Possible values: FULL | ACK | RESULT')
+
+    return value
