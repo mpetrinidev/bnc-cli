@@ -5,8 +5,9 @@ from click import BadParameter
 from click.testing import CliRunner
 
 from src.commands.cmd_spot import account_info, cli, new_order, limit, market, stop_loss_limit, take_profit_limit, \
-    limit_maker, cancel_order, open_orders, order_status, cancel_all_orders
+    limit_maker, cancel_order, open_orders, order_status, cancel_all_orders, all_orders
 from src.utils.utils import json_to_str
+from tests.responses.base import read_json_file
 from tests.responses.res_spot import get_full_order_limit, get_full_order_market, get_ack_order_stop_loss_limit, \
     get_ack_order_take_profit_limit, get_ack_order_limit_maker, get_account_info, get_cancel_order, get_open_orders, \
     get_order_status, get_cancel_all_orders
@@ -316,3 +317,54 @@ def test_order_status_return_ok(runner, params, mock_default_deps):
     result = runner.invoke(order_status, params)
     assert result.exit_code == 0
     assert result.output == json_to_str(get_order_status()) + '\n'
+
+
+@pytest.mark.parametrize("params", [
+    ['-sy', 'LTCBTC'],
+    ['--symbol', 'LTCBTC'],
+])
+def test_all_orders_return_all(runner, params, mock_default_deps):
+    response = read_json_file('./responses/spot/all_orders.json')
+
+    mock_response = Mock(status_code=200)
+    mock_response.json.return_value = response['all']
+
+    mock_default_deps.patch('src.builder.requests.get', return_value=mock_response)
+
+    result = runner.invoke(all_orders, params)
+    assert result.exit_code == 0
+    assert result.output == json_to_str(response['all']) + '\n'
+
+
+@pytest.mark.parametrize("params", [
+    ['-sy', 'LTCBTC', '-q', "[?status=='EXPIRED']"],
+    ['--symbol', 'LTCBTC', '--query', "[?status=='EXPIRED']"],
+])
+def test_all_orders_return_all_expired(runner, params, mock_default_deps):
+    response = read_json_file('./responses/spot/all_orders.json')
+
+    mock_response = Mock(status_code=200)
+    mock_response.json.return_value = response['all']
+
+    mock_default_deps.patch('src.builder.requests.get', return_value=mock_response)
+
+    result = runner.invoke(all_orders, params)
+    assert result.exit_code == 0
+    assert result.output == json_to_str(response['expired']) + '\n'
+
+
+@pytest.mark.parametrize("params", [
+    ['-sy', 'LTCBTC', '-q', "[?type=='STOP_LOSS_LIMIT']"],
+    ['--symbol', 'LTCBTC', '--query', "[?type=='STOP_LOSS_LIMIT']"],
+])
+def test_all_orders_return_all_stop_loss_limit(runner, params, mock_default_deps):
+    response = read_json_file('./responses/spot/all_orders.json')
+
+    mock_response = Mock(status_code=200)
+    mock_response.json.return_value = response['all']
+
+    mock_default_deps.patch('src.builder.requests.get', return_value=mock_response)
+
+    result = runner.invoke(all_orders, params)
+    assert result.exit_code == 0
+    assert result.output == json_to_str(response['stop_loss_limit']) + '\n'

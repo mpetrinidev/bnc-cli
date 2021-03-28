@@ -140,9 +140,9 @@ class MarketOrderBuilder(Builder):
 
     def add_optional_params_to_payload(self, **kwargs):
         quantity, time_in_force, \
-            quote_order_qty, price, \
-            new_client_order_id, stop_price, \
-            iceberg_qty = kwargs.values()
+        quote_order_qty, price, \
+        new_client_order_id, stop_price, \
+        iceberg_qty = kwargs.values()
 
         if quantity is not None:
             self.payload['quantity'] = quantity
@@ -172,8 +172,8 @@ class StopLossBuilder(Builder):
 
     def add_optional_params_to_payload(self, **kwargs):
         time_in_force, quote_order_qty, \
-            price, new_client_order_id, \
-            iceberg_qty = kwargs.values()
+        price, new_client_order_id, \
+        iceberg_qty = kwargs.values()
 
         if time_in_force is not None:
             self.payload['timeInForce'] = time_in_force
@@ -214,8 +214,8 @@ class TakeProfitBuilder(Builder):
 
     def add_optional_params_to_payload(self, **kwargs):
         time_in_force, quote_order_qty, \
-            price, new_client_order_id, \
-            iceberg_qty = kwargs.values()
+        price, new_client_order_id, \
+        iceberg_qty = kwargs.values()
 
         if time_in_force is not None:
             self.payload['timeInForce'] = time_in_force
@@ -239,8 +239,8 @@ class TakeProfitLimitBuilder(Builder):
 
     def add_optional_params_to_payload(self, **kwargs):
         quote_order_qty, \
-            new_client_order_id, \
-            iceberg_qty = kwargs.values()
+        new_client_order_id, \
+        iceberg_qty = kwargs.values()
 
         if quote_order_qty is not None:
             self.payload['quoteOrderQty'] = quote_order_qty
@@ -258,8 +258,8 @@ class LimitMakerBuilder(Builder):
 
     def add_optional_params_to_payload(self, **kwargs):
         time_in_force, quote_order_qty, \
-            stop_price, new_client_order_id, \
-            iceberg_qty = kwargs.values()
+        stop_price, new_client_order_id, \
+        iceberg_qty = kwargs.values()
 
         if time_in_force is not None:
             self.payload['timeInForce'] = time_in_force
@@ -374,5 +374,21 @@ class Ticker24AndPriceBuilder(Builder):
 
         if symbol is not None:
             self.payload = {'symbol': symbol}
+
+        return self
+
+
+class AllOrderBuilder(Builder):
+    def add_optional_params_to_payload(self, **kwargs):
+        order_id, start_time, end_time = kwargs.values()
+
+        if order_id is not None:
+            self.payload['orderId'] = order_id
+
+        if start_time is not None:
+            self.payload['startTime'] = start_time
+
+        if end_time is not None:
+            self.payload['endTime'] = end_time
 
         return self
