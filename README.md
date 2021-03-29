@@ -1,5 +1,7 @@
 # Binance CLI
 
+[![Run tests](https://github.com/mpetrinidev/bnc-cli/actions/workflows/python-app.yml/badge.svg)](https://github.com/mpetrinidev/bnc-cli/actions/workflows/python-app.yml) [![codecov](https://codecov.io/gh/mpetrinidev/bnc-cli/branch/main/graph/badge.svg?token=ION6F3XIA1)](https://codecov.io/gh/mpetrinidev/bnc-cli)
+
 This package provides a unified command-line interface to interact with Binance API ([https://binance-docs.github.io/apidocs](https://binance-docs.github.io/apidocs))
 
 > ℹ️ *This is an unofficial package, and this project is not related or affiliated with Binance. Use at your own risk.*
