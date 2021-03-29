@@ -1,6 +1,6 @@
+import os
 from unittest.mock import Mock
 
-import jmespath
 import pytest
 from click import BadParameter
 from click.testing import CliRunner
@@ -12,6 +12,11 @@ from tests.responses.base import read_json_file
 from tests.responses.res_spot import get_full_order_limit, get_full_order_market, get_ack_order_stop_loss_limit, \
     get_ack_order_take_profit_limit, get_ack_order_limit_maker, get_account_info, get_cancel_order, get_open_orders, \
     get_order_status, get_cancel_all_orders
+
+
+def all_orders_json_file():
+    return os.path.abspath(os.path.join(os.path.dirname(os.path.abspath(__file__)), '..',
+                                        'responses', 'spot', 'all_orders.json'))
 
 
 @pytest.fixture
@@ -325,7 +330,7 @@ def test_order_status_return_ok(runner, params, mock_default_deps):
     ['--symbol', 'LTCBTC'],
 ])
 def test_all_orders_return_all(runner, params, mock_default_deps):
-    response = read_json_file('./responses/spot/all_orders.json')
+    response = read_json_file(all_orders_json_file())
 
     mock_response = Mock(status_code=200)
     mock_response.json.return_value = response['all']
@@ -342,7 +347,7 @@ def test_all_orders_return_all(runner, params, mock_default_deps):
     ['--symbol', 'LTCBTC', '--order_id', 37764]
 ])
 def test_all_orders_get_by_order_id(runner, params, mock_default_deps):
-    response = read_json_file('./responses/spot/all_orders.json')
+    response = read_json_file(all_orders_json_file())
 
     mock_response = Mock(status_code=200)
     mock_response.json.return_value = response['match_order_id']
@@ -360,7 +365,7 @@ def test_all_orders_get_by_order_id(runner, params, mock_default_deps):
     ['--symbol', 'LTCBTC', '--start_time', 1615176222817, '--end_time', 1615176222818],
 ])
 def test_all_orders_start_time_and_end_time(runner, params, mock_default_deps):
-    response = read_json_file('./responses/spot/all_orders.json')
+    response = read_json_file(all_orders_json_file())
 
     mock_response = Mock(status_code=200)
     mock_response.json.return_value = response['start_and_end_time']
@@ -378,7 +383,7 @@ def test_all_orders_start_time_and_end_time(runner, params, mock_default_deps):
     ['--symbol', 'LTCBTC', '--query', "[?status=='EXPIRED']"],
 ])
 def test_all_orders_return_all_filter_by_expired(runner, params, mock_default_deps):
-    response = read_json_file('./responses/spot/all_orders.json')
+    response = read_json_file(all_orders_json_file())
 
     mock_response = Mock(status_code=200)
     mock_response.json.return_value = response['all']
@@ -395,7 +400,7 @@ def test_all_orders_return_all_filter_by_expired(runner, params, mock_default_de
     ['--symbol', 'LTCBTC', '--query', "[?type=='STOP_LOSS_LIMIT']"],
 ])
 def test_all_orders_return_all_filter_by_stop_loss_limit(runner, params, mock_default_deps):
-    response = read_json_file('./responses/spot/all_orders.json')
+    response = read_json_file(all_orders_json_file())
 
     mock_response = Mock(status_code=200)
     mock_response.json.return_value = response['all']
