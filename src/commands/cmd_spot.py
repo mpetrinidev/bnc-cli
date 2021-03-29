@@ -431,7 +431,7 @@ async def all_orders(symbol, order_id, start_time, end_time, limit, recv_window,
     builder = AllOrderBuilder(endpoint='api/v3/allOrders', payload=payload) \
         .add_optional_params_to_payload(order_id=order_id,
                                         start_time=start_time,
-                                        end_time=end_time,) \
+                                        end_time=end_time) \
         .set_security()
 
     await builder.send_http_req()
