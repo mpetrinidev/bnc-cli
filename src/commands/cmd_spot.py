@@ -2,7 +2,7 @@ import click
 
 from src.builder import AccountInfoBuilder, LimitOrderBuilder, MarketOrderBuilder, StopLossBuilder, \
     StopLossLimitBuilder, TakeProfitBuilder, TakeProfitLimitBuilder, LimitMakerBuilder, CancelOrderBuilder, \
-    OpenOrdersBuilder, OrderStatusBuilder, Builder, AllOrderBuilder
+    OpenOrdersBuilder, OrderStatusBuilder, Builder, AllOrderBuilder, MyTradesBuilder
 from src.cli import pass_environment
 from src.decorators import coro, new_order_options
 from src.utils.api_time import get_timestamp
@@ -432,6 +432,44 @@ async def all_orders(symbol, order_id, start_time, end_time, limit, recv_window,
         .add_optional_params_to_payload(order_id=order_id,
                                         start_time=start_time,
                                         end_time=end_time) \
+        .set_security()
+
+    await builder.send_http_req()
+
+    builder.handle_response().filter(query).generate_output()
+
+
+@cli.command("my_trades", short_help="Get trades for a specific account and symbol.")
+@click.option("-sy", "--symbol", required=True, type=click.types.STRING)
+@click.option("-st", "--start_time", type=click.types.INT)
+@click.option("-et", "--end_time", type=click.types.INT)
+@click.option("-fid", "--from_id", type=click.types.INT)
+@click.option("-l", "--limit", default=500, show_default=True, type=click.types.IntRange(1, 1000))
+@click.option("-rw", "--recv_window", default=5000, show_default=True, callback=validate_recv_window,
+              type=click.types.INT)
+@click.option("-q", "--query", type=click.types.STRING)
+@coro
+async def my_trades(symbol, start_time, end_time, from_id, limit, recv_window, query):
+    """
+    Get trades for a specific account and symbol.
+
+    Weight: 5
+
+    NOTES:
+
+        If fromId is set, it will get id >= that fromId. Otherwise most recent trades are returned.
+    """
+    payload = {
+        'symbol': symbol,
+        'limit': limit,
+        'recvWindow': recv_window,
+        'timestamp': get_timestamp()
+    }
+
+    builder = MyTradesBuilder(endpoint='api/v3/myTrades', payload=payload) \
+        .add_optional_params_to_payload(start_time=start_time,
+                                        end_time=end_time,
+                                        from_id=from_id) \
         .set_security()
 
     await builder.send_http_req()

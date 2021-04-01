@@ -392,3 +392,19 @@ class AllOrderBuilder(Builder):
             self.payload['endTime'] = end_time
 
         return self
+
+
+class MyTradesBuilder(Builder):
+    def add_optional_params_to_payload(self, **kwargs):
+        start_time, end_time, from_id = kwargs.values()
+
+        if start_time is not None:
+            self.payload['startTime'] = start_time
+
+        if end_time is not None:
+            self.payload['endTime'] = end_time
+
+        if from_id is not None:
+            self.payload['fromId'] = from_id
+
+        return self
