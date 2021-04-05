@@ -1,14 +1,13 @@
 from unittest.mock import Mock
 
 import pytest
-from click import BadParameter
 from click.testing import CliRunner
 
-from src.commands.cmd_spot import account_info, cli, new_order, limit, market, stop_loss_limit, take_profit_limit, \
-    limit_maker, cancel_order, open_orders, cancel_all_orders
+from src.commands.cmd_spot import cli, new_order, limit, market, stop_loss_limit, take_profit_limit, \
+    limit_maker, cancel_order, cancel_all_orders
 from src.utils.utils import json_to_str
 from tests.responses.res_spot import get_full_order_limit, get_full_order_market, get_ack_order_stop_loss_limit, \
-    get_ack_order_take_profit_limit, get_ack_order_limit_maker, get_account_info, get_cancel_order, get_open_orders, \
+    get_ack_order_take_profit_limit, get_ack_order_limit_maker, get_cancel_order, \
     get_cancel_all_orders
 
 
