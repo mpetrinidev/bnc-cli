@@ -3,16 +3,17 @@ from unittest.mock import Mock
 
 from src.commands.cmd_spot import all_orders
 from src.utils.utils import json_to_str
+from tests.commands.common import read_json_test_file
 from tests.commands.common_fixtures import *
 
 
-def all_orders_json_file():
+def get_json_filename():
     return os.path.join(os.path.dirname(os.path.abspath(__file__)), 'res', 'all_orders.json')
 
 
 @pytest.fixture(scope='session')
 def data():
-    return read_json_file(all_orders_json_file())
+    return read_json_test_file(get_json_filename())
 
 
 @pytest.mark.parametrize("params", [

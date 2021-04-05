@@ -1,14 +1,5 @@
-import json
-
 import pytest
 from click.testing import CliRunner
-
-
-def read_json_file(name):
-    with open(name) as json_file:
-        response = json.load(json_file)
-
-        return response
 
 
 @pytest.fixture(scope='session')
