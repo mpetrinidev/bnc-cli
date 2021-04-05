@@ -65,26 +65,6 @@ def get_ack_order_limit_maker():
         "transactTime": 1616031749054
     }
 
-
-def get_cancel_order():
-    return {
-        "symbol": "LTCBTC",
-        "origClientOrderId": "oM1oUenAxizVURTgnsG3pU",
-        "orderId": 44590,
-        "orderListId": -1,
-        "clientOrderId": "vmITMP7NPf3EfSmcyzX6JF",
-        "price": "0.00362100",
-        "origQty": "1.00000000",
-        "executedQty": "0.00000000",
-        "cummulativeQuoteQty": "0.00000000",
-        "status": "CANCELED",
-        "timeInForce": "GTC",
-        "type": "STOP_LOSS_LIMIT",
-        "side": "SELL",
-        "stopPrice": "0.00100000"
-    }
-
-
 def get_cancel_all_orders():
     return [
         {
