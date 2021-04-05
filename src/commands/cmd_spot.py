@@ -1,12 +1,11 @@
 import click
 
-from src.builder import AccountInfoBuilder, LimitOrderBuilder, MarketOrderBuilder, StopLossBuilder, \
+from src.builder import LimitOrderBuilder, MarketOrderBuilder, StopLossBuilder, \
     StopLossLimitBuilder, TakeProfitBuilder, TakeProfitLimitBuilder, LimitMakerBuilder, CancelOrderBuilder, \
     OpenOrdersBuilder, OrderStatusBuilder, Builder, AllOrderBuilder, MyTradesBuilder
 from src.cli import pass_environment
 from src.decorators import coro, new_order_options
 from src.utils.api_time import get_timestamp
-from src.validation.val_spot import validate_locked_free
 from src.validation.val_spot import validate_recv_window
 
 
@@ -317,23 +316,23 @@ async def cancel_all_orders(symbol, recv_window):
 
 
 @cli.command("account_info", short_help="Get current account information")
+@click.option("-q", "--query", type=click.types.STRING)
 @click.option("-rw", "--recv_window", default=5000, show_default=True, callback=validate_recv_window,
               type=click.types.INT)
-@click.option("-lf", "--locked_free", callback=validate_locked_free, type=click.types.STRING)
 @coro
-async def account_info(recv_window, locked_free):
+async def account_info(recv_window, query):
     """Get current account information"""
     payload = {
         'recvWindow': recv_window,
         'timestamp': get_timestamp()
     }
 
-    builder = AccountInfoBuilder(endpoint='api/v3/account', payload=payload) \
+    builder = Builder(endpoint='api/v3/account', payload=payload) \
         .set_security()
 
     await builder.send_http_req()
 
-    builder.handle_response().filter(locked_free=locked_free).generate_output()
+    builder.handle_response().filter(query).generate_output()
 
 
 @cli.command("order_status", short_help="Check an order's status")

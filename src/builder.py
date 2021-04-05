@@ -296,39 +296,6 @@ class CancelOrderBuilder(Builder):
         return self
 
 
-class AccountInfoBuilder(Builder):
-    def add_optional_params_to_payload(self, **kwargs):
-        pass
-
-    def filter(self, **kwargs):
-        if self.has_error:
-            return self
-
-        if 'locked_free' in kwargs and kwargs['locked_free'] is not None:
-            locked_free = str(kwargs['locked_free']).upper()
-
-            if self.result['results']['balances'] is None:
-                self.result['results']['balances'] = []
-                return self
-
-            if len(self.result['results']['balances']) == 0:
-                return self
-
-            filter_func = None
-
-            if locked_free == 'B':
-                filter_func = lambda balances: [x for x in balances if
-                                                float(x['free']) > 0.0 or float(x['locked']) > 0.0]
-            elif locked_free == 'F':
-                filter_func = lambda balances: [x for x in balances if float(x['free']) > 0.0]
-            elif locked_free == 'L':
-                filter_func = lambda balances: [x for x in balances if float(x['locked']) > 0.0]
-
-            self.result['results']['balances'] = filter_func(self.result['results']['balances'])
-
-        return self
-
-
 class OpenOrdersBuilder(Builder):
     def add_optional_params_to_payload(self, **kwargs):
         symbol = kwargs['symbol']

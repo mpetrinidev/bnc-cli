@@ -8,17 +8,6 @@ def validate_recv_window(ctx, param, value):
     return value
 
 
-def validate_locked_free(ctx, param, value):
-    if value is None:
-        return
-
-    value = str(value).upper()
-    if value not in ['L', 'F', 'B']:
-        raise click.BadParameter(value + '. Possible values: L | F | B')
-
-    return value
-
-
 def validate_side(ctx, param, value):
     value = str(value).upper()
 

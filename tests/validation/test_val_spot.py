@@ -1,7 +1,7 @@
 import pytest
 from click import BadParameter
 
-from src.validation.val_spot import validate_recv_window, validate_locked_free, validate_side, validate_time_in_force, \
+from src.validation.val_spot import validate_recv_window, validate_side, validate_time_in_force, \
     validate_new_order_resp_type
 
 
@@ -14,17 +14,6 @@ def test_validate_recv_window_greater_than_60000(value):
 @pytest.mark.parametrize("value", [60000, '60000', 5000, '5000', 1000, '1000'])
 def test_validate_recv_window_correct_value(value):
     assert validate_recv_window(None, None, value) == value
-
-
-@pytest.mark.parametrize("value", ['G', 'LL', 'FF', 'BB', 2])
-def test_validate_locked_free_incorrect_value(value):
-    with pytest.raises(BadParameter, match=f'{value}. Possible values: L | F | B'):
-        validate_locked_free(None, None, value)
-
-
-@pytest.mark.parametrize("value", ['L', 'F', 'B'])
-def test_validate_locked_free_correct_value(value):
-    assert validate_locked_free(None, None, value) == value
 
 
 @pytest.mark.parametrize("value", ['B', 'BUYY', 'S', 'SELLL', ''])
