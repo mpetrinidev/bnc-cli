@@ -1,41 +1,3 @@
-def get_account_info():
-    return {
-        "makerCommission": 15,
-        "takerCommission": 15,
-        "buyerCommission": 0,
-        "sellerCommission": 0,
-        "canTrade": True,
-        "canWithdraw": True,
-        "canDeposit": True,
-        "updateTime": 123456789,
-        "accountType": "SPOT",
-        "balances": get_balances(),
-        "permissions": [
-            "SPOT"
-        ]
-    }
-
-
-def get_balances():
-    return [
-        {
-            "asset": "BTC",
-            "free": "4723846.89208129",
-            "locked": "0.00000000"
-        },
-        {
-            "asset": "LTC",
-            "free": "4763368.68006011",
-            "locked": "0.00000000"
-        },
-        {
-            "asset": "BNB",
-            "free": "0.00000000",
-            "locked": "10.250"
-        }
-    ]
-
-
 def get_full_order_limit():
     return {
         "symbol": "LTCBTC",
@@ -139,31 +101,6 @@ def get_cancel_all_orders():
             "timeInForce": "GTC",
             "type": "LIMIT",
             "side": "BUY"
-        }
-    ]
-
-
-def get_open_orders():
-    return [
-        {
-            "symbol": "LTCBTC",
-            "orderId": 44590,
-            "orderListId": -1,
-            "clientOrderId": "oM1oUenAxizVURTgnsG3pU",
-            "price": "0.00362100",
-            "origQty": "1.00000000",
-            "executedQty": "0.00000000",
-            "cummulativeQuoteQty": "0.00000000",
-            "status": "NEW",
-            "timeInForce": "GTC",
-            "type": "STOP_LOSS_LIMIT",
-            "side": "SELL",
-            "stopPrice": "0.00100000",
-            "icebergQty": "0.00000000",
-            "time": 1616030090950,
-            "updateTime": 1616301810266,
-            "isWorking": True,
-            "origQuoteOrderQty": "0.00000000"
         }
     ]
 
