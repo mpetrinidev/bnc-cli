@@ -66,23 +66,7 @@ def get_ack_order_limit_maker():
     }
 
 def get_cancel_all_orders():
-    return [
-        {
-            "symbol": "LTCBTC",
-            "origClientOrderId": "GJb7QAsvYw4x3jGdFHB7Br",
-            "orderId": 48064,
-            "orderListId": -1,
-            "clientOrderId": "oGcceYqOQVC8jfglV45951",
-            "price": "0.00362100",
-            "origQty": "1.00000000",
-            "executedQty": "0.00000000",
-            "cummulativeQuoteQty": "0.00000000",
-            "status": "CANCELED",
-            "timeInForce": "GTC",
-            "type": "LIMIT",
-            "side": "BUY"
-        }
-    ]
+    return
 
 
 def get_order_status():

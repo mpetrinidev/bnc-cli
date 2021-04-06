@@ -196,18 +196,3 @@ def test_new_order_limit_maker_return_ack_resp(runner, params, mock_default_deps
     result = runner.invoke(limit_maker, params)
     assert result.exit_code == 0
     assert result.output == json_to_str(get_ack_order_limit_maker()) + '\n'
-
-
-@pytest.mark.parametrize("params", [
-    ['-sy', 'LTCBTC'],
-    ['--symbol', 'LTCBTC']
-])
-def test_cancel_all_orders_return_ok(runner, params, mock_default_deps):
-    mock_response = Mock(status_code=200)
-    mock_response.json.return_value = get_cancel_all_orders()
-
-    mock_default_deps.patch('src.builder.requests.delete', return_value=mock_response)
-
-    result = runner.invoke(cancel_all_orders, params)
-    assert result.exit_code == 0
-    assert result.output == json_to_str(get_cancel_all_orders()) + '\n'
