@@ -16,16 +16,20 @@ def coro(f):
 
 def new_order_options(overrides: [] = None):
     def wrapper(func):
-        for config_option in reversed(get_new_order_default_options()):
+        options = get_new_order_default_options()
+        for i in reversed(range(len(options))):
+            def_opt = options[i]
+            keys = list(def_opt.keys())
+
             if overrides is not None:
-                for name in reversed(config_option['params']):
-                    lst = list(filter(lambda d: d['name'] == name, overrides))
-                    if not lst:
+                ov = next((i for i in overrides if i['name'] == keys[0] or i['name'] == keys[1]), None)
+                if ov is not None:
+                    if 'exclude' in ov and ov['exclude'] is True:
                         continue
 
-                    config_option['attrs'].update(lst[0]['attrs'])
+                    def_opt['attrs'].update(ov['attrs'])
 
-            option = click.option(*config_option['params'], **config_option['attrs'])
+            option = click.option(*[keys[0], keys[1]], **def_opt['attrs'])
             func = option(func)
 
         return func

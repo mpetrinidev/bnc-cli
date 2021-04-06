@@ -225,10 +225,12 @@ async def take_profit_limit(symbol, side, time_in_force, quantity, quote_order_q
 @new_order.command("limit_maker", short_help="Send in a new limit_maker order")
 @new_order_options([{'name': '-q', 'attrs': {'required': True}},
                     {'name': '-p', 'attrs': {'required': True}},
+                    {'name': '-tif', 'exclude': True},
+                    {'name': '-qoq', 'exclude': True},
+                    {'name': '-sp', 'exclude': True},
                     {'name': '-nort', 'attrs': {'default': "ACK"}}])
 @coro
-async def limit_maker(symbol, side, time_in_force, quantity, quote_order_qty, price, new_client_order_id,
-                      stop_price, iceberg_qty, recv_window, new_order_resp_type):
+async def limit_maker(symbol, side, quantity, price, new_client_order_id, iceberg_qty, recv_window, new_order_resp_type):
     """Send in a new limit_maker order"""
     payload = {
         'symbol': symbol,
@@ -242,10 +244,7 @@ async def limit_maker(symbol, side, time_in_force, quantity, quote_order_qty, pr
     }
 
     builder = LimitMakerBuilder(endpoint='api/v3/order', payload=payload, method='POST') \
-        .add_optional_params_to_payload(time_in_force=time_in_force,
-                                        quote_order_qty=quote_order_qty,
-                                        stop_price=stop_price,
-                                        new_client_order_id=new_client_order_id,
+        .add_optional_params_to_payload(new_client_order_id=new_client_order_id,
                                         iceberg_qty=iceberg_qty) \
         .set_security()
 

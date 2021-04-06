@@ -1,0 +1,40 @@
+{
+  "limit_maker_ack": {
+    "symbol": "LTCBTC",
+    "orderId": 44592,
+    "orderListId": -1,
+    "clientOrderId": "iuq4RTzy2HHjw0LZp19JoT",
+    "transactTime": 1616031749054
+  },
+  "limit_maker_full": {
+    "symbol": "LTCBTC",
+    "orderId": 385,
+    "orderListId": -1,
+    "clientOrderId": "q5sBk6OzdnmOWMhtT9uCug",
+    "transactTime": 1617730623356,
+    "price": "0.00200000",
+    "origQty": "1.00000000",
+    "executedQty": "0.00000000",
+    "cummulativeQuoteQty": "0.00000000",
+    "status": "NEW",
+    "timeInForce": "GTC",
+    "type": "LIMIT_MAKER",
+    "side": "BUY",
+    "fills": []
+  },
+  "limit_maker_result": {
+    "symbol": "LTCBTC",
+    "orderId": 386,
+    "orderListId": -1,
+    "clientOrderId": "RBum99FXt4yyTougwmcR5F",
+    "transactTime": 1617730786673,
+    "price": "0.00200000",
+    "origQty": "1.00000000",
+    "executedQty": "0.00000000",
+    "cummulativeQuoteQty": "0.00000000",
+    "status": "NEW",
+    "timeInForce": "GTC",
+    "type": "LIMIT_MAKER",
+    "side": "BUY"
+  }
+}

@@ -4,10 +4,10 @@ import pytest
 from click.testing import CliRunner
 
 from src.commands.cmd_spot import cli, new_order, limit, market, stop_loss_limit, take_profit_limit, \
-    limit_maker, cancel_all_orders
+    limit_maker
 from src.utils.utils import json_to_str
 from tests.responses.res_spot import get_full_order_limit, get_full_order_market, get_ack_order_stop_loss_limit, \
-    get_ack_order_take_profit_limit, get_ack_order_limit_maker, get_cancel_all_orders
+    get_ack_order_take_profit_limit, get_ack_order_limit_maker
 
 
 @pytest.fixture
@@ -168,31 +168,3 @@ def test_new_order_take_profit_limit_return_ack_resp(runner, params, mock_defaul
     assert result.exit_code == 0
     assert result.output == json_to_str(get_ack_order_take_profit_limit()) + '\n'
 
-
-@pytest.mark.parametrize("params", [
-    ['-sy', 'LTCBTC', '-si', 'BUY', '-q', 1, '-p', 0.003621],
-    ['--symbol', 'LTCBTC', '--side', 'BUY', '--quantity', 1, '--price', 0.003621],
-    ['-sy', 'LTCBTC', '-si', 'BUY', '-q', 1, '-p', 0.003621, '-tif', 'GTC'],
-    ['--symbol', 'LTCBTC', '--side', 'BUY', '--quantity', 1, '--price', 0.003621, '--time_in_force', 'GTC'],
-    ['-sy', 'LTCBTC', '-si', 'BUY', '-q', 1, '-p', 0.003621, '-qoq', 0.0],
-    ['--symbol', 'LTCBTC', '--side', 'BUY', '--quantity', 1, '--price', 0.003621, '--quote_order_qty', 0.0],
-    ['-sy', 'LTCBTC', '-si', 'BUY', '-q', 1, '-p', 0.003621, '-sp', 0.1],
-    ['--symbol', 'LTCBTC', '--side', 'BUY', '--quantity', 1, '--price', 0.003621, '--stop_price', 0.1],
-    ['-sy', 'LTCBTC', '-si', 'BUY', '-q', 1, '-p', 0.003621, '-ncoid', 'test'],
-    ['--symbol', 'LTCBTC', '--side', 'BUY', '--quantity', 1, '--price', 0.003621, '--new_client_order_id', 'test'],
-    ['-sy', 'LTCBTC', '-si', 'BUY', '-q', 1, '-p', 0.003621, '-iq', 0.0],
-    ['--symbol', 'LTCBTC', '--side', 'BUY', '--quantity', 1, '--price', 0.003621, '--iceberg_qty', 0.0],
-    ['-sy', 'LTCBTC', '-si', 'BUY', '-q', 1, '-p', 0.003621, '-tif', 'GTC', '-qoq', 0.0, '-sp', 0.1, '-ncoid', 'test',
-     '-iq', 0.0],
-    ['--symbol', 'LTCBTC', '--side', 'BUY', '--quantity', 1, '--price', 0.003621, '--time_in_force', 'GTC',
-     '--quote_order_qty', 0.0, '--stop_price', 0.1, '--new_client_order_id', 'test', '--iceberg_qty', 0.0]
-])
-def test_new_order_limit_maker_return_ack_resp(runner, params, mock_default_deps):
-    mock_response = Mock(status_code=200)
-    mock_response.json.return_value = get_ack_order_limit_maker()
-
-    mock_default_deps.patch('src.builder.requests.post', return_value=mock_response)
-
-    result = runner.invoke(limit_maker, params)
-    assert result.exit_code == 0
-    assert result.output == json_to_str(get_ack_order_limit_maker()) + '\n'

@@ -56,19 +56,6 @@ def get_ack_order_take_profit_limit():
     }
 
 
-def get_ack_order_limit_maker():
-    return {
-        "symbol": "LTCBTC",
-        "orderId": 44592,
-        "orderListId": -1,
-        "clientOrderId": "iuq4RTzy2HHjw0LZp19JoT",
-        "transactTime": 1616031749054
-    }
-
-def get_cancel_all_orders():
-    return
-
-
 def get_order_status():
     return {
         "symbol": "LTCBTC",

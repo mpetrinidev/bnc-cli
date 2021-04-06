@@ -257,18 +257,8 @@ class TakeProfitLimitBuilder(Builder):
 class LimitMakerBuilder(Builder):
 
     def add_optional_params_to_payload(self, **kwargs):
-        time_in_force, quote_order_qty, \
-        stop_price, new_client_order_id, \
-        iceberg_qty = kwargs.values()
-
-        if time_in_force is not None:
-            self.payload['timeInForce'] = time_in_force
-
-        if quote_order_qty is not None:
-            self.payload['quoteOrderQty'] = quote_order_qty
-
-        if stop_price is not None:
-            self.payload['stopPrice'] = stop_price
+        new_client_order_id, \
+            iceberg_qty = kwargs.values()
 
         if new_client_order_id is not None:
             self.payload['newClientOrderId'] = new_client_order_id
