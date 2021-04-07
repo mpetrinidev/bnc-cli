@@ -133,31 +133,17 @@ class LimitOrderBuilder(Builder):
 class MarketOrderBuilder(Builder):
 
     def add_optional_params_to_payload(self, **kwargs):
-        quantity, time_in_force, \
-        quote_order_qty, price, \
-        new_client_order_id, stop_price, \
-        iceberg_qty = kwargs.values()
+        quantity, quote_order_qty, \
+            new_client_order_id = kwargs.values()
 
         if quantity is not None:
             self.payload['quantity'] = quantity
 
-        if time_in_force is not None:
-            self.payload['timeInForce'] = time_in_force
-
         if quote_order_qty is not None:
             self.payload['quoteOrderQty'] = quote_order_qty
 
-        if price is not None:
-            self.payload['price'] = price
-
         if new_client_order_id is not None:
             self.payload['newClientOrderId'] = new_client_order_id
-
-        if stop_price is not None:
-            self.payload['stopPrice'] = stop_price
-
-        if iceberg_qty is not None:
-            self.payload['icebergQty'] = iceberg_qty
 
         return self
 
@@ -252,7 +238,7 @@ class LimitMakerBuilder(Builder):
 
     def add_optional_params_to_payload(self, **kwargs):
         new_client_order_id, \
-            iceberg_qty = kwargs.values()
+        iceberg_qty = kwargs.values()
 
         if new_client_order_id is not None:
             self.payload['newClientOrderId'] = new_client_order_id

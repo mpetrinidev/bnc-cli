@@ -59,11 +59,14 @@ async def limit(symbol, side, time_in_force, quantity, price, new_client_order_i
 
 
 @new_order.command("market", short_help="Send in a new market order")
-@new_order_options()
+@new_order_options([{'name': '-tif', 'exclude': True},
+                    {'name': '-p', 'exclude': True},
+                    {'name': '-sp', 'exclude': True},
+                    {'name': '-iq', 'exclude': True}])
 @pass_environment
 @coro
-async def market(ctx, symbol, side, time_in_force, quantity, quote_order_qty, price, new_client_order_id,
-                 stop_price, iceberg_qty, recv_window, new_order_resp_type):
+async def market(ctx, symbol, side, quantity, quote_order_qty, new_client_order_id,
+                 recv_window, new_order_resp_type):
     """Send in a new market order"""
     if quantity is None and quote_order_qty is None:
         ctx.log('Either --quantity (-q) or --quote_order_qty (-qoq) must be sent.')
@@ -79,10 +82,9 @@ async def market(ctx, symbol, side, time_in_force, quantity, quote_order_qty, pr
     }
 
     builder = MarketOrderBuilder(endpoint='api/v3/order', payload=payload, method='POST') \
-        .add_optional_params_to_payload(quantity=quantity, time_in_force=time_in_force,
-                                        quote_order_qty=quote_order_qty, price=price,
-                                        new_client_order_id=new_client_order_id,
-                                        stop_price=stop_price, iceberg_qty=iceberg_qty) \
+        .add_optional_params_to_payload(quantity=quantity,
+                                        quote_order_qty=quote_order_qty,
+                                        new_client_order_id=new_client_order_id) \
         .set_security()
 
     await builder.send_http_req()

@@ -1,22 +1,3 @@
-def get_full_order_market():
-    return {
-        "symbol": "LTCBTC",
-        "orderId": 44589,
-        "orderListId": -1,
-        "clientOrderId": "6lcsZpGiMMwCQlwVLtfMXz",
-        "transactTime": 1616029239160,
-        "price": "0.00000000",
-        "origQty": "1.00000000",
-        "executedQty": "0.00000000",
-        "cummulativeQuoteQty": "0.00000000",
-        "status": "EXPIRED",
-        "timeInForce": "GTC",
-        "type": "MARKET",
-        "side": "BUY",
-        "fills": []
-    }
-
-
 def get_ack_order_stop_loss_limit():
     return {
         "symbol": "LTCBTC",
