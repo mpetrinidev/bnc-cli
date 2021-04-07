@@ -29,10 +29,12 @@ def new_order():
 @new_order.command("limit", short_help="Send in a new limit order")
 @new_order_options([{'name': '-tif', 'attrs': {'required': True}},
                     {'name': '-q', 'attrs': {'required': True}},
-                    {'name': '-p', 'attrs': {'required': True}}])
+                    {'name': '-p', 'attrs': {'required': True}},
+                    {'name': '-qoq', 'exclude': True},
+                    {'name': '-sp', 'exclude': True}])
 @coro
-async def limit(symbol, side, time_in_force, quantity, quote_order_qty, price, new_client_order_id,
-                stop_price, iceberg_qty, recv_window, new_order_resp_type):
+async def limit(symbol, side, time_in_force, quantity, price, new_client_order_id,
+                iceberg_qty, recv_window, new_order_resp_type):
     """Send in a new limit order"""
     payload = {
         'symbol': symbol,
@@ -47,9 +49,7 @@ async def limit(symbol, side, time_in_force, quantity, quote_order_qty, price, n
     }
 
     builder = LimitOrderBuilder(endpoint='api/v3/order', payload=payload, method='POST') \
-        .add_optional_params_to_payload(quote_order_qty=quote_order_qty,
-                                        new_client_order_id=new_client_order_id,
-                                        stop_price=stop_price,
+        .add_optional_params_to_payload(new_client_order_id=new_client_order_id,
                                         iceberg_qty=iceberg_qty) \
         .set_security()
 
