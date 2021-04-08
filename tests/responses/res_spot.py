@@ -8,16 +8,6 @@ def get_ack_order_stop_loss_limit():
     }
 
 
-def get_ack_order_take_profit_limit():
-    return {
-        "symbol": "LTCBTC",
-        "orderId": 44591,
-        "orderListId": -1,
-        "clientOrderId": "WHnGqkVEOYf6aIcJTuHfJa",
-        "transactTime": 1616031609028
-    }
-
-
 def get_order_status():
     return {
         "symbol": "LTCBTC",

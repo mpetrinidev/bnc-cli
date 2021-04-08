@@ -218,12 +218,8 @@ class TakeProfitBuilder(Builder):
 class TakeProfitLimitBuilder(Builder):
 
     def add_optional_params_to_payload(self, **kwargs):
-        quote_order_qty, \
         new_client_order_id, \
-        iceberg_qty = kwargs.values()
-
-        if quote_order_qty is not None:
-            self.payload['quoteOrderQty'] = quote_order_qty
+            iceberg_qty = kwargs.values()
 
         if new_client_order_id is not None:
             self.payload['newClientOrderId'] = new_client_order_id

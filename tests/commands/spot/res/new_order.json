@@ -1,4 +1,44 @@
 {
+  "take_profit_limit_result": {
+    "symbol": "LTCBTC",
+    "orderId": 471,
+    "orderListId": -1,
+    "clientOrderId": "eqnKd4svYhAGwVOV352Xfi",
+    "transactTime": 1617849306945,
+    "price": "0.00200000",
+    "origQty": "1.00000000",
+    "executedQty": "0.00000000",
+    "cummulativeQuoteQty": "0.00000000",
+    "status": "NEW",
+    "timeInForce": "GTC",
+    "type": "TAKE_PROFIT_LIMIT",
+    "side": "BUY",
+    "stopPrice": "0.00150000"
+  },
+  "take_profit_limit_full": {
+    "symbol": "LTCBTC",
+    "orderId": 469,
+    "orderListId": -1,
+    "clientOrderId": "3CUurepc8QRjk81sFJIeKG",
+    "transactTime": 1617849216464,
+    "price": "0.00200000",
+    "origQty": "1.00000000",
+    "executedQty": "0.00000000",
+    "cummulativeQuoteQty": "0.00000000",
+    "status": "NEW",
+    "timeInForce": "GTC",
+    "type": "TAKE_PROFIT_LIMIT",
+    "side": "BUY",
+    "stopPrice": "0.00150000",
+    "fills": []
+  },
+  "take_profit_limit_ack": {
+    "symbol": "LTCBTC",
+    "orderId": 44591,
+    "orderListId": -1,
+    "clientOrderId": "WHnGqkVEOYf6aIcJTuHfJa",
+    "transactTime": 1616031609028
+  },
   "market_result": {
     "symbol": "LTCBTC",
     "orderId": 464,
