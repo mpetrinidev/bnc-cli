@@ -35,3 +35,35 @@ def test_new_order_limit_return_full_resp(runner, params, mock_default_deps, dat
     result = runner.invoke(limit, params)
     assert result.exit_code == 0
     assert result.output == json_to_str(data['limit_full']) + '\n'
+
+
+@pytest.mark.parametrize("params", [
+    ['-sy', 'LTCBTC', '-si', 'BUY', '-tif', 'GTC', '-q', 1, '-p', 0.003621, '-nort', 'ACK'],
+    ['--symbol', 'LTCBTC', '--side', 'BUY', '--time_in_force', 'GTC', '--quantity', 1, '--price', 0.003621,
+     '--new_order_resp_type', 'ACK']
+])
+def test_new_order_limit_return_ack_resp(runner, params, mock_default_deps, data):
+    mock_response = Mock(status_code=200)
+    mock_response.json.return_value = data['limit_ack']
+
+    mock_default_deps.patch('src.builder.requests.post', return_value=mock_response)
+
+    result = runner.invoke(limit, params)
+    assert result.exit_code == 0
+    assert result.output == json_to_str(data['limit_ack']) + '\n'
+
+
+@pytest.mark.parametrize("params", [
+    ['-sy', 'LTCBTC', '-si', 'BUY', '-tif', 'GTC', '-q', 1, '-p', 0.003621, '-nort', 'RESULT'],
+    ['--symbol', 'LTCBTC', '--side', 'BUY', '--time_in_force', 'GTC', '--quantity', 1, '--price', 0.003621,
+     '--new_order_resp_type', 'RESULT']
+])
+def test_new_order_limit_return_ack_resp(runner, params, mock_default_deps, data):
+    mock_response = Mock(status_code=200)
+    mock_response.json.return_value = data['limit_result']
+
+    mock_default_deps.patch('src.builder.requests.post', return_value=mock_response)
+
+    result = runner.invoke(limit, params)
+    assert result.exit_code == 0
+    assert result.output == json_to_str(data['limit_result']) + '\n'

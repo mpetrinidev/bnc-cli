@@ -46,3 +46,33 @@ def test_new_order_market_return_full_resp(runner, params, mock_default_deps, da
     result = runner.invoke(market, params)
     assert result.exit_code == 0
     assert result.output == json_to_str(data['market_full']) + '\n'
+
+
+@pytest.mark.parametrize("params", [
+    ['-sy', 'LTCBTC', '-si', 'BUY', '-q', 1, '-nort', 'RESULT'],
+    ['--symbol', 'LTCBTC', '--side', 'BUY', '--quantity', 1, '--new_order_resp_type', 'RESULT']
+])
+def test_new_order_market_return_result_resp(runner, params, mock_default_deps, data):
+    mock_response = Mock(status_code=200)
+    mock_response.json.return_value = data['market_result']
+
+    mock_default_deps.patch('src.builder.requests.post', return_value=mock_response)
+
+    result = runner.invoke(market, params)
+    assert result.exit_code == 0
+    assert result.output == json_to_str(data['market_result']) + '\n'
+
+
+@pytest.mark.parametrize("params", [
+    ['-sy', 'LTCBTC', '-si', 'BUY', '-q', 1, '-nort', 'ACK'],
+    ['--symbol', 'LTCBTC', '--side', 'BUY', '--quantity', 1, '--new_order_resp_type', 'ACK']
+])
+def test_new_order_market_return_ack_resp(runner, params, mock_default_deps, data):
+    mock_response = Mock(status_code=200)
+    mock_response.json.return_value = data['market_ack']
+
+    mock_default_deps.patch('src.builder.requests.post', return_value=mock_response)
+
+    result = runner.invoke(market, params)
+    assert result.exit_code == 0
+    assert result.output == json_to_str(data['market_ack']) + '\n'
