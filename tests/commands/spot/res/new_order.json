@@ -1,4 +1,44 @@
 {
+  "stop_loss_limit_result": {
+    "symbol": "LTCBTC",
+    "orderId": 497,
+    "orderListId": -1,
+    "clientOrderId": "hiwt1cV93g8otYYzGOLcPz",
+    "transactTime": 1617896183262,
+    "price": "0.00600000",
+    "origQty": "1.00000000",
+    "executedQty": "0.00000000",
+    "cummulativeQuoteQty": "0.00000000",
+    "status": "NEW",
+    "timeInForce": "GTC",
+    "type": "STOP_LOSS_LIMIT",
+    "side": "BUY",
+    "stopPrice": "0.00500000"
+  },
+  "stop_loss_limit_full": {
+    "symbol": "LTCBTC",
+    "orderId": 496,
+    "orderListId": -1,
+    "clientOrderId": "5qm2d66O1fi0GO6918C0qy",
+    "transactTime": 1617896147394,
+    "price": "0.00600000",
+    "origQty": "1.00000000",
+    "executedQty": "0.00000000",
+    "cummulativeQuoteQty": "0.00000000",
+    "status": "NEW",
+    "timeInForce": "GTC",
+    "type": "STOP_LOSS_LIMIT",
+    "side": "BUY",
+    "stopPrice": "0.00500000",
+    "fills": []
+  },
+  "stop_loss_limit_ack": {
+    "symbol": "LTCBTC",
+    "orderId": 44590,
+    "orderListId": -1,
+    "clientOrderId": "oM1oUenAxizVURTgnsG3pU",
+    "transactTime": 1616030090950
+  },
   "take_profit_limit_result": {
     "symbol": "LTCBTC",
     "orderId": 471,

@@ -129,9 +129,10 @@ async def stop_loss(symbol, side, time_in_force, quantity, quote_order_qty, pric
                     {'name': '-q', 'attrs': {'required': True}},
                     {'name': '-p', 'attrs': {'required': True}},
                     {'name': '-sp', 'attrs': {'required': True}},
-                    {'name': '-nort', 'attrs': {'default': "ACK"}}])
+                    {'name': '-nort', 'attrs': {'default': "ACK"}},
+                    {'name': '-qoq', 'exclude': True}])
 @coro
-async def stop_loss_limit(symbol, side, time_in_force, quantity, quote_order_qty, price, new_client_order_id,
+async def stop_loss_limit(symbol, side, time_in_force, quantity, price, new_client_order_id,
                           stop_price, iceberg_qty, recv_window, new_order_resp_type):
     """Send in a new stop_loss_limit order"""
     payload = {
@@ -148,8 +149,7 @@ async def stop_loss_limit(symbol, side, time_in_force, quantity, quote_order_qty
     }
 
     builder = StopLossLimitBuilder(endpoint='api/v3/order', payload=payload, method='POST') \
-        .add_optional_params_to_payload(quote_order_qty=quote_order_qty,
-                                        new_client_order_id=new_client_order_id,
+        .add_optional_params_to_payload(new_client_order_id=new_client_order_id,
                                         iceberg_qty=iceberg_qty) \
         .set_security()
 

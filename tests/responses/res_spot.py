@@ -1,11 +1,5 @@
 def get_ack_order_stop_loss_limit():
-    return {
-        "symbol": "LTCBTC",
-        "orderId": 44590,
-        "orderListId": -1,
-        "clientOrderId": "oM1oUenAxizVURTgnsG3pU",
-        "transactTime": 1616030090950
-    }
+    return
 
 
 def get_order_status():
