@@ -38,3 +38,35 @@ def test_new_order_take_profit_limit_return_ack_resp(runner, params, mock_defaul
     result = runner.invoke(take_profit_limit, params)
     assert result.exit_code == 0
     assert result.output == json_to_str(data['take_profit_limit_ack']) + '\n'
+
+
+@pytest.mark.parametrize("params", [
+    ['-sy', 'LTCBTC', '-si', 'BUY', '-tif', 'GTC', '-q', 1, '-p', 0.0020, '-sp', 0.0015, '-nort', 'FULL'],
+    ['--symbol', 'LTCBTC', '--side', 'BUY', '--time_in_force', 'GTC',
+     '--quantity', 1, '--price', 0.0020, '--stop_price', 0.0015, '--new_order_resp_type', 'FULL'],
+])
+def test_new_order_take_profit_limit_return_full_resp(runner, params, mock_default_deps, data):
+    mock_response = Mock(status_code=200)
+    mock_response.json.return_value = data['take_profit_limit_full']
+
+    mock_default_deps.patch('src.builder.requests.post', return_value=mock_response)
+
+    result = runner.invoke(take_profit_limit, params)
+    assert result.exit_code == 0
+    assert result.output == json_to_str(data['take_profit_limit_full']) + '\n'
+
+
+@pytest.mark.parametrize("params", [
+    ['-sy', 'LTCBTC', '-si', 'BUY', '-tif', 'GTC', '-q', 1, '-p', 0.0020, '-sp', 0.0015, '-nort', 'RESULT'],
+    ['--symbol', 'LTCBTC', '--side', 'BUY', '--time_in_force', 'GTC',
+     '--quantity', 1, '--price', 0.0020, '--stop_price', 0.0015, '--new_order_resp_type', 'RESULT'],
+])
+def test_new_order_take_profit_limit_return_result_resp(runner, params, mock_default_deps, data):
+    mock_response = Mock(status_code=200)
+    mock_response.json.return_value = data['take_profit_limit_result']
+
+    mock_default_deps.patch('src.builder.requests.post', return_value=mock_response)
+
+    result = runner.invoke(take_profit_limit, params)
+    assert result.exit_code == 0
+    assert result.output == json_to_str(data['take_profit_limit_result']) + '\n'

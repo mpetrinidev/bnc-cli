@@ -61,7 +61,7 @@ def test_new_order_stop_loss_limit_return_full_resp(runner, params, mock_default
     ['--symbol', 'LTCBTC', '--side', 'SELL', '--time_in_force', 'GTC',
      '--quantity', 1, '--price', 0.0060, '--stop_price', 0.0050, '--new_order_resp_type', 'RESULT'],
 ])
-def test_new_order_stop_loss_limit_return_full_resp(runner, params, mock_default_deps, data):
+def test_new_order_stop_loss_limit_return_result_resp(runner, params, mock_default_deps, data):
     mock_response = Mock(status_code=200)
     mock_response.json.return_value = data['stop_loss_limit_result']
 
