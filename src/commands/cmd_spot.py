@@ -407,7 +407,7 @@ async def open_orders(symbol, recv_window):
 @click.option("-l", "--limit", default=500, show_default=True, type=click.types.IntRange(1, 1000))
 @click.option("-rw", "--recv_window", default=5000, show_default=True, callback=validate_recv_window,
               type=click.types.INT)
-@click.option("-q", "--query", type=click.types.STRING)
+@click.option("--query", type=click.types.STRING)
 @coro
 async def all_orders(symbol, order_id, start_time, end_time, limit, recv_window, query):
     """
@@ -447,7 +447,7 @@ async def all_orders(symbol, order_id, start_time, end_time, limit, recv_window,
 @click.option("-l", "--limit", default=500, show_default=True, type=click.types.IntRange(1, 1000))
 @click.option("-rw", "--recv_window", default=5000, show_default=True, callback=validate_recv_window,
               type=click.types.INT)
-@click.option("-q", "--query", type=click.types.STRING)
+@click.option("--query", type=click.types.STRING)
 @coro
 async def my_trades(symbol, start_time, end_time, from_id, limit, recv_window, query):
     """

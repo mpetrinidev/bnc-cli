@@ -1,0 +1,145 @@
+{
+  "all": [
+    {
+      "symbol": "LTCBTC",
+      "id": 107,
+      "orderId": 394,
+      "orderListId": -1,
+      "price": "0.00360000",
+      "qty": "0.20000000",
+      "quoteQty": "0.00072000",
+      "commission": "0.00000000",
+      "commissionAsset": "LTC",
+      "time": 1617817295769,
+      "isBuyer": true,
+      "isMaker": true,
+      "isBestMatch": true
+    },
+    {
+      "symbol": "LTCBTC",
+      "id": 108,
+      "orderId": 394,
+      "orderListId": -1,
+      "price": "0.00360000",
+      "qty": "0.20000000",
+      "quoteQty": "0.00072000",
+      "commission": "0.00000000",
+      "commissionAsset": "LTC",
+      "time": 1617817295769,
+      "isBuyer": true,
+      "isMaker": true,
+      "isBestMatch": true
+    },
+    {
+      "symbol": "LTCBTC",
+      "id": 109,
+      "orderId": 394,
+      "orderListId": -1,
+      "price": "0.00360000",
+      "qty": "0.20000000",
+      "quoteQty": "0.00072000",
+      "commission": "0.00000000",
+      "commissionAsset": "LTC",
+      "time": 1617817295769,
+      "isBuyer": true,
+      "isMaker": true,
+      "isBestMatch": true
+    },
+    {
+      "symbol": "LTCBTC",
+      "id": 114,
+      "orderId": 385,
+      "orderListId": -1,
+      "price": "0.00200000",
+      "qty": "1.00000000",
+      "quoteQty": "0.00200000",
+      "commission": "0.00000000",
+      "commissionAsset": "LTC",
+      "time": 1617817295769,
+      "isBuyer": true,
+      "isMaker": true,
+      "isBestMatch": true
+    },
+    {
+      "symbol": "LTCBTC",
+      "id": 115,
+      "orderId": 386,
+      "orderListId": -1,
+      "price": "0.00200000",
+      "qty": "1.00000000",
+      "quoteQty": "0.00200000",
+      "commission": "0.00000000",
+      "commissionAsset": "LTC",
+      "time": 1617817295769,
+      "isBuyer": true,
+      "isMaker": true,
+      "isBestMatch": true
+    }
+  ],
+  "from_id": [
+    {
+      "symbol": "LTCBTC",
+      "id": 114,
+      "orderId": 385,
+      "orderListId": -1,
+      "price": "0.00200000",
+      "qty": "1.00000000",
+      "quoteQty": "0.00200000",
+      "commission": "0.00000000",
+      "commissionAsset": "LTC",
+      "time": 1617817295769,
+      "isBuyer": true,
+      "isMaker": true,
+      "isBestMatch": true
+    },
+    {
+      "symbol": "LTCBTC",
+      "id": 115,
+      "orderId": 386,
+      "orderListId": -1,
+      "price": "0.00200000",
+      "qty": "1.00000000",
+      "quoteQty": "0.00200000",
+      "commission": "0.00000000",
+      "commissionAsset": "LTC",
+      "time": 1617817295769,
+      "isBuyer": true,
+      "isMaker": true,
+      "isBestMatch": true
+    }
+  ],
+  "start_and_end_time": [
+    {
+      "symbol": "LTCBTC",
+      "id": 52,
+      "orderId": 151,
+      "orderListId": -1,
+      "price": "0.00200000",
+      "qty": "0.50000000",
+      "quoteQty": "0.00100000",
+      "commission": "0.00000000",
+      "commissionAsset": "LTC",
+      "time": 1617712185235,
+      "isBuyer": true,
+      "isMaker": true,
+      "isBestMatch": true
+    }
+  ],
+  "price_less_or_equal": [
+    {
+      "symbol": "LTCBTC",
+      "id": 115,
+      "orderId": 386,
+      "orderListId": -1,
+      "price": "0.00200000",
+      "qty": "1.00000000",
+      "quoteQty": "0.00200000",
+      "commission": "0.00000000",
+      "commissionAsset": "LTC",
+      "time": 1617817295769,
+      "isBuyer": true,
+      "isMaker": true,
+      "isBestMatch": true
+    }
+  ]
+}

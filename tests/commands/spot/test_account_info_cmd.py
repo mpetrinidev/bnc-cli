@@ -1,8 +1,6 @@
 import os
 from unittest.mock import Mock
 
-from click import BadParameter
-
 from src.commands.cmd_spot import account_info
 from src.utils.utils import json_to_str
 from tests.commands.common import read_json_test_file
