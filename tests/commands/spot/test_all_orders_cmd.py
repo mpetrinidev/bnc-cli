@@ -64,7 +64,7 @@ def test_all_orders_start_time_and_end_time(runner, params, mock_default_deps, d
 
 
 @pytest.mark.parametrize("params", [
-    ['-sy', 'LTCBTC', '-q', "[?status=='EXPIRED']"],
+    ['-sy', 'LTCBTC', '--query', "[?status=='EXPIRED']"],
     ['--symbol', 'LTCBTC', '--query', "[?status=='EXPIRED']"],
 ])
 def test_all_orders_return_all_filter_by_expired(runner, params, mock_default_deps, data):
@@ -79,7 +79,7 @@ def test_all_orders_return_all_filter_by_expired(runner, params, mock_default_de
 
 
 @pytest.mark.parametrize("params", [
-    ['-sy', 'LTCBTC', '-q', "[?type=='STOP_LOSS_LIMIT']"],
+    ['-sy', 'LTCBTC', '--query', "[?type=='STOP_LOSS_LIMIT']"],
     ['--symbol', 'LTCBTC', '--query', "[?type=='STOP_LOSS_LIMIT']"],
 ])
 def test_all_orders_return_all_filter_by_stop_loss_limit(runner, params, mock_default_deps, data):
