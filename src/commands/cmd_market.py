@@ -49,7 +49,7 @@ async def server_time(ctx):
 
 
 @cli.command("exchange_info", short_help='Current exchange trading rules and symbol information.')
-@click.option("-q", "--query", type=click.types.STRING)
+@click.option("--query", type=click.types.STRING)
 @coro
 async def exchange_info(query):
     """Current exchange trading rules and symbol information."""

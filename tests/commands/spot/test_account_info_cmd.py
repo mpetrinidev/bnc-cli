@@ -29,8 +29,7 @@ def test_account_info_is_ok(runner, mock_default_deps, data):
 
 
 @pytest.mark.parametrize("params", [
-    ['-q', 'balances[?to_number(free)>`0.0`] | { balances: @ }'],
-    ['--query', 'balances[?to_number(free)>`0.0`] | { balances: @ }'],
+    ['--query', 'balances[?to_number(free)>`0.0`] | { balances: @ }']
 ])
 def test_account_info_only_free_balances(runner, params, mock_default_deps, data):
     mock_response = Mock(status_code=200)
@@ -45,8 +44,7 @@ def test_account_info_only_free_balances(runner, params, mock_default_deps, data
 
 
 @pytest.mark.parametrize("params", [
-    ['-q', 'balances[?to_number(locked)>`0.0`] | { balances: @ }'],
-    ['--query', 'balances[?to_number(locked)>`0.0`] | { balances: @ }'],
+    ['--query', 'balances[?to_number(locked)>`0.0`] | { balances: @ }']
 ])
 def test_account_info_only_locked_balances(runner, params, mock_default_deps, data):
     mock_response = Mock(status_code=200)

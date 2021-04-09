@@ -317,7 +317,7 @@ async def cancel_all_orders(symbol, recv_window):
 
 
 @cli.command("account_info", short_help="Get current account information")
-@click.option("-q", "--query", type=click.types.STRING)
+@click.option("--query", type=click.types.STRING)
 @click.option("-rw", "--recv_window", default=5000, show_default=True, callback=validate_recv_window,
               type=click.types.INT)
 @coro
