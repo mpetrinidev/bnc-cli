@@ -1,0 +1,25 @@
+{
+  "ticker_24hr": {
+    "symbol": "LTCBTC",
+    "priceChange": "-0.00017500",
+    "priceChangePercent": "-5.023",
+    "weightedAvgPrice": "0.00348384",
+    "prevClosePrice": "0.00348400",
+    "lastPrice": "0.00330900",
+    "lastQty": "0.03272000",
+    "bidPrice": "0.00000000",
+    "bidQty": "0.00000000",
+    "askPrice": "0.00348400",
+    "askQty": "94.50899000",
+    "openPrice": "0.00348400",
+    "highPrice": "0.00348400",
+    "lowPrice": "0.00330900",
+    "volume": "149.58702000",
+    "quoteVolume": "0.52113708",
+    "openTime": 1616616213627,
+    "closeTime": 1616702613627,
+    "firstId": 1072,
+    "lastId": 1103,
+    "count": 32
+  }
+}

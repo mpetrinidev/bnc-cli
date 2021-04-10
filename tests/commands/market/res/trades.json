@@ -1,0 +1,22 @@
+{
+  "trades": [
+    {
+      "id": 1035,
+      "price": "0.00346000",
+      "qty": "0.08203000",
+      "quoteQty": "0.00028382",
+      "time": 1616520055355,
+      "isBuyerMaker": true,
+      "isBestMatch": true
+    },
+    {
+      "id": 1036,
+      "price": "0.00341200",
+      "qty": "0.06255000",
+      "quoteQty": "0.00021342",
+      "time": 1616520055355,
+      "isBuyerMaker": true,
+      "isBestMatch": true
+    }
+  ]
+}
