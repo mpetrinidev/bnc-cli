@@ -201,5 +201,63 @@
         "side": "SELL"
       }
     ]
+  },
+  "new_oco_order_iceberg_qty": {
+    "orderListId": 540,
+    "contingencyType": "OCO",
+    "listStatusType": "EXEC_STARTED",
+    "listOrderStatus": "EXECUTING",
+    "listClientOrderId": "wfNOnxULQpwgIkYjWoTj12",
+    "transactionTime": 1618198392032,
+    "symbol": "LTCBTC",
+    "orders": [
+      {
+        "symbol": "LTCBTC",
+        "orderId": 645,
+        "clientOrderId": "kbBMB3YLNneEipPtQ1D3Wu"
+      },
+      {
+        "symbol": "LTCBTC",
+        "orderId": 646,
+        "clientOrderId": "dhyjr8dHChqiDzYkUera4e"
+      }
+    ],
+    "orderReports": [
+      {
+        "symbol": "LTCBTC",
+        "orderId": 645,
+        "orderListId": 540,
+        "clientOrderId": "kbBMB3YLNneEipPtQ1D3Wu",
+        "transactTime": 1618198392032,
+        "price": "0.00750000",
+        "origQty": "1.00000000",
+        "executedQty": "0.00000000",
+        "cummulativeQuoteQty": "0.00000000",
+        "status": "NEW",
+        "timeInForce": "GTC",
+        "type": "STOP_LOSS_LIMIT",
+        "side": "SELL",
+        "stopPrice": "0.00800000",
+        "icebergQty": "0.50000000",
+        "fills": []
+      },
+      {
+        "symbol": "LTCBTC",
+        "orderId": 646,
+        "orderListId": 540,
+        "clientOrderId": "dhyjr8dHChqiDzYkUera4e",
+        "transactTime": 1618198392032,
+        "price": "0.01500000",
+        "origQty": "1.00000000",
+        "executedQty": "0.00000000",
+        "cummulativeQuoteQty": "0.00000000",
+        "status": "NEW",
+        "timeInForce": "GTC",
+        "type": "LIMIT_MAKER",
+        "side": "SELL",
+        "icebergQty": "0.50000000",
+        "fills": []
+      }
+    ]
   }
 }
