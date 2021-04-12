@@ -2,11 +2,12 @@ import click
 
 from src.builder import LimitOrderBuilder, MarketOrderBuilder, StopLossBuilder, \
     StopLossLimitBuilder, TakeProfitBuilder, TakeProfitLimitBuilder, LimitMakerBuilder, CancelOrderBuilder, \
-    OpenOrdersBuilder, OrderStatusBuilder, Builder, AllOrderBuilder, MyTradesBuilder
+    OpenOrdersBuilder, OrderStatusBuilder, Builder, AllOrderBuilder, MyTradesBuilder, NewOcoOrderBuilder
 from src.cli import pass_environment
 from src.decorators import coro, new_order_options
 from src.utils.api_time import get_timestamp
-from src.validation.val_spot import validate_recv_window
+from src.validation.val_spot import validate_recv_window, validate_side, validate_time_in_force, \
+    validate_new_order_resp_type
 
 
 @click.group(short_help="Spot Account/Trade operations")
@@ -437,6 +438,81 @@ async def all_orders(symbol, order_id, start_time, end_time, limit, recv_window,
     await builder.send_http_req()
 
     builder.handle_response().filter(query).generate_output()
+
+
+@cli.command("new_oco_order", short_help="Send in a new OCO")
+@click.option("-sy", "--symbol", required=True, type=click.types.STRING)
+@click.option("-lcoid", "--list_client_order_id", type=click.types.STRING)
+@click.option("-si", "--side", required=True, callback=validate_side, type=click.types.STRING)
+@click.option("-q", "--quantity", required=True, type=click.types.FLOAT)
+@click.option("-limcoid", "--limit_client_order_id", type=click.types.STRING)
+@click.option("-p", "--price", required=True, type=click.types.FLOAT)
+@click.option("-liq", "--limit_iceberg_qty", type=click.types.FLOAT)
+@click.option("-scoid", "--stop_client_order_id", type=click.types.STRING)
+@click.option("-sp", "--stop_price", required=True, type=click.types.FLOAT)
+@click.option("-slp", "--stop_limit_price", type=click.types.FLOAT)
+@click.option("-siq", "--stop_iceberg_qty", type=click.types.FLOAT)
+@click.option("-sltif", "--stop_limit_time_in_force", callback=validate_time_in_force, type=click.types.STRING)
+@click.option("-nort", "--new_order_resp_type", default="FULL", callback=validate_new_order_resp_type,
+              type=click.types.STRING)
+@click.option("-rw", "--recv_window", default=5000, show_default=True, callback=validate_recv_window,
+              type=click.types.INT)
+@coro
+@pass_environment
+async def new_oco_order(ctx, symbol, list_client_order_id, side, quantity, limit_client_order_id,
+                        price, limit_iceberg_qty, stop_client_order_id, stop_price,
+                        stop_limit_price, stop_iceberg_qty, stop_limit_time_in_force,
+                        new_order_resp_type, recv_window):
+    """
+    Send in a new OCO.
+    
+    Other Info:
+
+        Price Restrictions:
+
+            SELL: Limit Price > Last Price > Stop Price
+
+            BUY: Limit Price < Last Price < Stop Price
+
+        Quantity Restrictions:
+
+            Both legs must have the same quantity
+
+            ICEBERG quantities however do not have to be the same.
+
+        Order Rate Limit
+
+            OCO counts as 2 orders against the order rate limit.
+    """
+
+    if stop_limit_price is not None and stop_limit_time_in_force is None:
+        ctx.log('--stop_limit_time_in_force (-sltif) is required when you sent --stop_limit_price (-slp).')
+        return
+
+    payload = {
+        'symbol': symbol,
+        'side': side,
+        'quantity': quantity,
+        'price': price,
+        'stopPrice': stop_price,
+        'newOrderRespType': new_order_resp_type,
+        'recvWindow': recv_window,
+        'timestamp': get_timestamp()
+    }
+
+    builder = NewOcoOrderBuilder(endpoint='api/v3/order/oco', method='POST', payload=payload)\
+        .add_optional_params_to_payload(list_client_order_id=list_client_order_id,
+                                        limit_client_order_id=limit_client_order_id,
+                                        limit_iceberg_qty=limit_iceberg_qty,
+                                        stop_client_order_id=stop_client_order_id,
+                                        stop_limit_price=stop_limit_price,
+                                        stop_iceberg_qty=stop_iceberg_qty,
+                                        stop_limit_time_in_force=stop_limit_time_in_force)\
+        .set_security()
+
+    await builder.send_http_req()
+
+    builder.handle_response().generate_output()
 
 
 @cli.command("my_trades", short_help="Get trades for a specific account and symbol.")

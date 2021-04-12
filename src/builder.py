@@ -134,7 +134,7 @@ class MarketOrderBuilder(Builder):
 
     def add_optional_params_to_payload(self, **kwargs):
         quantity, quote_order_qty, \
-            new_client_order_id = kwargs.values()
+        new_client_order_id = kwargs.values()
 
         if quantity is not None:
             self.payload['quantity'] = quantity
@@ -216,7 +216,7 @@ class TakeProfitLimitBuilder(Builder):
 
     def add_optional_params_to_payload(self, **kwargs):
         new_client_order_id, \
-            iceberg_qty = kwargs.values()
+        iceberg_qty = kwargs.values()
 
         if new_client_order_id is not None:
             self.payload['newClientOrderId'] = new_client_order_id
@@ -320,6 +320,37 @@ class AllOrderBuilder(Builder):
 
         if end_time is not None:
             self.payload['endTime'] = end_time
+
+        return self
+
+
+class NewOcoOrderBuilder(Builder):
+    def add_optional_params_to_payload(self, **kwargs):
+        list_client_order_id, limit_client_order_id, \
+            limit_iceberg_qty, stop_client_order_id, \
+            stop_limit_price, stop_iceberg_qty, \
+            stop_limit_time_in_force = kwargs.values()
+
+        if list_client_order_id is not None:
+            self.payload['listClientOrderId'] = list_client_order_id
+
+        if limit_client_order_id is not None:
+            self.payload['limitClientOrderId'] = limit_client_order_id
+
+        if limit_iceberg_qty is not None:
+            self.payload['limitIcebergQty'] = limit_iceberg_qty
+
+        if stop_client_order_id is not None:
+            self.payload['stopClientOrderId'] = stop_client_order_id
+
+        if stop_limit_price is not None:
+            self.payload['stopLimitPrice'] = stop_limit_price
+
+        if stop_iceberg_qty is not None:
+            self.payload['stopIcebergQty'] = stop_iceberg_qty
+
+        if stop_limit_time_in_force is not None:
+            self.payload['stopLimitTimeInForce'] = stop_limit_time_in_force
 
         return self
 
