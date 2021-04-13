@@ -2,7 +2,8 @@ import click
 
 from src.builder import LimitOrderBuilder, MarketOrderBuilder, StopLossBuilder, \
     StopLossLimitBuilder, TakeProfitBuilder, TakeProfitLimitBuilder, LimitMakerBuilder, CancelOrderBuilder, \
-    OpenOrdersBuilder, OrderStatusBuilder, Builder, AllOrderBuilder, MyTradesBuilder, NewOcoOrderBuilder
+    OpenOrdersBuilder, OrderStatusBuilder, Builder, AllOrderBuilder, MyTradesBuilder, NewOcoOrderBuilder, \
+    CancelOcoOrderBuilder
 from src.cli import pass_environment
 from src.decorators import coro, new_order_options
 from src.utils.api_time import get_timestamp
@@ -508,6 +509,48 @@ async def new_oco_order(ctx, symbol, list_client_order_id, side, quantity, limit
                                         stop_limit_price=stop_limit_price,
                                         stop_iceberg_qty=stop_iceberg_qty,
                                         stop_limit_time_in_force=stop_limit_time_in_force)\
+        .set_security()
+
+    await builder.send_http_req()
+
+    builder.handle_response().generate_output()
+
+
+@cli.command("cancel_oco_order", short_help="Cancel an entire Order List.")
+@click.option("-sy", "--symbol", required=True, type=click.types.STRING)
+@click.option("-olid", "--order_list_id", type=click.types.INT)
+@click.option("-lcoid", "--list_client_order_id", type=click.types.STRING)
+@click.option("-ncoid", "--new_client_order_id", type=click.types.STRING)
+@click.option("-rw", "--recv_window", default=5000, show_default=True, callback=validate_recv_window,
+              type=click.types.INT)
+@coro
+@pass_environment
+async def cancel_oco_order(ctx, symbol, order_list_id, list_client_order_id,
+                           new_client_order_id, recv_window):
+    """
+    Cancel an entire Order List.
+
+    Weight: 1
+
+    Additional notes:
+
+        Canceling an individual leg will cancel the entire OCO
+    """
+
+    if order_list_id is None and list_client_order_id is None:
+        ctx.log('Either --order_list_id (-olid) or --list_client_order_id (-lcoid) must be sent.')
+        return
+
+    payload = {
+        'symbol': symbol,
+        'recvWindow': recv_window,
+        'timestamp': get_timestamp()
+    }
+
+    builder = CancelOcoOrderBuilder(endpoint='api/v3/orderList', method='DELETE', payload=payload) \
+        .add_optional_params_to_payload(order_list_id=order_list_id,
+                                        list_client_order_id=list_client_order_id,
+                                        new_client_order_id=new_client_order_id) \
         .set_security()
 
     await builder.send_http_req()

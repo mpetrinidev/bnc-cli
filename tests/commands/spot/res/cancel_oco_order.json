@@ -1,0 +1,110 @@
+{
+  "cancel_oco_order_olid_ncoid": {
+    "orderListId": 580,
+    "contingencyType": "OCO",
+    "listStatusType": "ALL_DONE",
+    "listOrderStatus": "ALL_DONE",
+    "listClientOrderId": "NYpHb5qhPcxKkC5vWivXZ8",
+    "transactionTime": 1618281277270,
+    "symbol": "LTCBTC",
+    "orders": [
+      {
+        "symbol": "LTCBTC",
+        "orderId": 694,
+        "clientOrderId": "tKTpu9lI1BjNq8vmnNjtsM"
+      },
+      {
+        "symbol": "LTCBTC",
+        "orderId": 695,
+        "clientOrderId": "otyf6YEH5VBh4KT1SVedS8"
+      }
+    ],
+    "orderReports": [
+      {
+        "symbol": "LTCBTC",
+        "origClientOrderId": "tKTpu9lI1BjNq8vmnNjtsM",
+        "orderId": 694,
+        "orderListId": 580,
+        "clientOrderId": "tKTpu9lI1BjNq8vmnNjtsM",
+        "price": "0.00350000",
+        "origQty": "1.00000000",
+        "executedQty": "0.00000000",
+        "cummulativeQuoteQty": "0.00000000",
+        "status": "CANCELED",
+        "timeInForce": "GTC",
+        "type": "STOP_LOSS_LIMIT",
+        "side": "SELL",
+        "stopPrice": "0.00500000"
+      },
+      {
+        "symbol": "LTCBTC",
+        "origClientOrderId": "otyf6YEH5VBh4KT1SVedS8",
+        "orderId": 695,
+        "orderListId": 580,
+        "clientOrderId": "tKTpu9lI1BjNq8vmnNjtsM",
+        "price": "0.00800000",
+        "origQty": "1.00000000",
+        "executedQty": "0.00000000",
+        "cummulativeQuoteQty": "0.00000000",
+        "status": "CANCELED",
+        "timeInForce": "GTC",
+        "type": "LIMIT_MAKER",
+        "side": "SELL"
+      }
+    ]
+  },
+  "cancel_oco_order_lcoid": {
+    "orderListId": 579,
+    "contingencyType": "OCO",
+    "listStatusType": "ALL_DONE",
+    "listOrderStatus": "ALL_DONE",
+    "listClientOrderId": "QEOBf6o3NyCf2w6jfj1mrP",
+    "transactionTime": 1618281053145,
+    "symbol": "LTCBTC",
+    "orders": [
+      {
+        "symbol": "LTCBTC",
+        "orderId": 692,
+        "clientOrderId": "eP4fjsRI9uOhfAQlmTzT4k"
+      },
+      {
+        "symbol": "LTCBTC",
+        "orderId": 693,
+        "clientOrderId": "TVpag902mTJ6PeG6oZU5SH"
+      }
+    ],
+    "orderReports": [
+      {
+        "symbol": "LTCBTC",
+        "origClientOrderId": "eP4fjsRI9uOhfAQlmTzT4k",
+        "orderId": 692,
+        "orderListId": 579,
+        "clientOrderId": "Mw0hoUumGVjK0aiMJmYPZK",
+        "price": "0.00350000",
+        "origQty": "1.00000000",
+        "executedQty": "0.00000000",
+        "cummulativeQuoteQty": "0.00000000",
+        "status": "CANCELED",
+        "timeInForce": "GTC",
+        "type": "STOP_LOSS_LIMIT",
+        "side": "SELL",
+        "stopPrice": "0.00500000"
+      },
+      {
+        "symbol": "LTCBTC",
+        "origClientOrderId": "TVpag902mTJ6PeG6oZU5SH",
+        "orderId": 693,
+        "orderListId": 579,
+        "clientOrderId": "Mw0hoUumGVjK0aiMJmYPZK",
+        "price": "0.00800000",
+        "origQty": "1.00000000",
+        "executedQty": "0.00000000",
+        "cummulativeQuoteQty": "0.00000000",
+        "status": "CANCELED",
+        "timeInForce": "GTC",
+        "type": "LIMIT_MAKER",
+        "side": "SELL"
+      }
+    ]
+  }
+}

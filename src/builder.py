@@ -327,9 +327,9 @@ class AllOrderBuilder(Builder):
 class NewOcoOrderBuilder(Builder):
     def add_optional_params_to_payload(self, **kwargs):
         list_client_order_id, limit_client_order_id, \
-            limit_iceberg_qty, stop_client_order_id, \
-            stop_limit_price, stop_iceberg_qty, \
-            stop_limit_time_in_force = kwargs.values()
+        limit_iceberg_qty, stop_client_order_id, \
+        stop_limit_price, stop_iceberg_qty, \
+        stop_limit_time_in_force = kwargs.values()
 
         if list_client_order_id is not None:
             self.payload['listClientOrderId'] = list_client_order_id
@@ -351,6 +351,22 @@ class NewOcoOrderBuilder(Builder):
 
         if stop_limit_time_in_force is not None:
             self.payload['stopLimitTimeInForce'] = stop_limit_time_in_force
+
+        return self
+
+
+class CancelOcoOrderBuilder(Builder):
+    def add_optional_params_to_payload(self, **kwargs):
+        order_list_id, list_client_order_id, new_client_order_id = kwargs.values()
+
+        if order_list_id is not None:
+            self.payload['orderListId'] = order_list_id
+
+        if list_client_order_id is not None:
+            self.payload['listClientOrderId'] = list_client_order_id
+
+        if new_client_order_id is not None:
+            self.payload['newClientOrderId'] = new_client_order_id
 
         return self
 
