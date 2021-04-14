@@ -234,7 +234,8 @@ async def take_profit_limit(symbol, side, time_in_force, quantity, price, new_cl
                     {'name': '-sp', 'exclude': True},
                     {'name': '-nort', 'attrs': {'default': "ACK"}}])
 @coro
-async def limit_maker(symbol, side, quantity, price, new_client_order_id, iceberg_qty, recv_window, new_order_resp_type):
+async def limit_maker(symbol, side, quantity, price, new_client_order_id, iceberg_qty, recv_window,
+                      new_order_resp_type):
     """Send in a new limit_maker order"""
     payload = {
         'symbol': symbol,
@@ -501,14 +502,14 @@ async def new_oco_order(ctx, symbol, list_client_order_id, side, quantity, limit
         'timestamp': get_timestamp()
     }
 
-    builder = NewOcoOrderBuilder(endpoint='api/v3/order/oco', method='POST', payload=payload)\
+    builder = NewOcoOrderBuilder(endpoint='api/v3/order/oco', method='POST', payload=payload) \
         .add_optional_params_to_payload(list_client_order_id=list_client_order_id,
                                         limit_client_order_id=limit_client_order_id,
                                         limit_iceberg_qty=limit_iceberg_qty,
                                         stop_client_order_id=stop_client_order_id,
                                         stop_limit_price=stop_limit_price,
                                         stop_iceberg_qty=stop_iceberg_qty,
-                                        stop_limit_time_in_force=stop_limit_time_in_force)\
+                                        stop_limit_time_in_force=stop_limit_time_in_force) \
         .set_security()
 
     await builder.send_http_req()
@@ -616,6 +617,26 @@ async def all_oco_orders(from_id, start_time, end_time, limit, recv_window):
                                         start_time=start_time,
                                         end_time=end_time) \
         .set_security()
+
+    await builder.send_http_req()
+
+    builder.handle_response().generate_output()
+
+
+@cli.command("open_oco_orders")
+@click.option("-rw", "--recv_window", default=5000, show_default=True, callback=validate_recv_window,
+              type=click.types.INT)
+@coro
+async def open_oco_orders(recv_window):
+    """
+    Weight: 2
+    """
+    payload = {
+        'recvWindow': recv_window,
+        'timestamp': get_timestamp()
+    }
+
+    builder = Builder(endpoint='api/v3/openOrderList', payload=payload).set_security()
 
     await builder.send_http_req()
 
