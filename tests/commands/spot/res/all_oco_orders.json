@@ -1,0 +1,157 @@
+{
+  "all_oco_orders_id": [
+    {
+      "orderListId": 592,
+      "contingencyType": "OCO",
+      "listStatusType": "EXEC_STARTED",
+      "listOrderStatus": "EXECUTING",
+      "listClientOrderId": "ykprg1hXtgmNjHVcZ3YKNM",
+      "transactionTime": 1618359398564,
+      "symbol": "LTCBTC",
+      "orders": [
+        {
+          "symbol": "LTCBTC",
+          "orderId": 714,
+          "clientOrderId": "uISdx7NcyMY0qB9eIfVKs9"
+        },
+        {
+          "symbol": "LTCBTC",
+          "orderId": 715,
+          "clientOrderId": "MsDydAMjDkQWVjBN3yIOLy"
+        }
+      ]
+    }
+  ],
+  "all_oco_orders_limit": [
+    {
+      "orderListId": 580,
+      "contingencyType": "OCO",
+      "listStatusType": "ALL_DONE",
+      "listOrderStatus": "ALL_DONE",
+      "listClientOrderId": "NYpHb5qhPcxKkC5vWivXZ8",
+      "transactionTime": 1618281158697,
+      "symbol": "LTCBTC",
+      "orders": [
+        {
+          "symbol": "LTCBTC",
+          "orderId": 694,
+          "clientOrderId": "tKTpu9lI1BjNq8vmnNjtsM"
+        },
+        {
+          "symbol": "LTCBTC",
+          "orderId": 695,
+          "clientOrderId": "otyf6YEH5VBh4KT1SVedS8"
+        }
+      ]
+    },
+    {
+      "orderListId": 592,
+      "contingencyType": "OCO",
+      "listStatusType": "EXEC_STARTED",
+      "listOrderStatus": "EXECUTING",
+      "listClientOrderId": "ykprg1hXtgmNjHVcZ3YKNM",
+      "transactionTime": 1618359398564,
+      "symbol": "LTCBTC",
+      "orders": [
+        {
+          "symbol": "LTCBTC",
+          "orderId": 714,
+          "clientOrderId": "uISdx7NcyMY0qB9eIfVKs9"
+        },
+        {
+          "symbol": "LTCBTC",
+          "orderId": 715,
+          "clientOrderId": "MsDydAMjDkQWVjBN3yIOLy"
+        }
+      ]
+    }
+  ],
+  "all_oco_orders_st_and_et": [
+    {
+      "orderListId": 592,
+      "contingencyType": "OCO",
+      "listStatusType": "EXEC_STARTED",
+      "listOrderStatus": "EXECUTING",
+      "listClientOrderId": "ykprg1hXtgmNjHVcZ3YKNM",
+      "transactionTime": 1618359398564,
+      "symbol": "LTCBTC",
+      "orders": [
+        {
+          "symbol": "LTCBTC",
+          "orderId": 714,
+          "clientOrderId": "uISdx7NcyMY0qB9eIfVKs9"
+        },
+        {
+          "symbol": "LTCBTC",
+          "orderId": 715,
+          "clientOrderId": "MsDydAMjDkQWVjBN3yIOLy"
+        }
+      ]
+    }
+  ],
+  "all_oco_orders_without_params": [
+    {
+      "orderListId": 533,
+      "contingencyType": "OCO",
+      "listStatusType": "ALL_DONE",
+      "listOrderStatus": "ALL_DONE",
+      "listClientOrderId": "rw3rVMsVlwBsDZTke3E9mL",
+      "transactionTime": 1618193332980,
+      "symbol": "LTCBTC",
+      "orders": [
+        {
+          "symbol": "LTCBTC",
+          "orderId": 631,
+          "clientOrderId": "vSMVDkR33r2fqgMKu0RI98"
+        },
+        {
+          "symbol": "LTCBTC",
+          "orderId": 632,
+          "clientOrderId": "lSi3j5pnji6elk3KDaQSig"
+        }
+      ]
+    },
+    {
+      "orderListId": 534,
+      "contingencyType": "OCO",
+      "listStatusType": "ALL_DONE",
+      "listOrderStatus": "ALL_DONE",
+      "listClientOrderId": "custom_list_client_order_id",
+      "transactionTime": 1618193622791,
+      "symbol": "LTCBTC",
+      "orders": [
+        {
+          "symbol": "LTCBTC",
+          "orderId": 633,
+          "clientOrderId": "0nJ3oHVZ7PaByjqwDbbw8U"
+        },
+        {
+          "symbol": "LTCBTC",
+          "orderId": 634,
+          "clientOrderId": "PdIkE6nvXWlYIGvtcZ5yFF"
+        }
+      ]
+    },
+    {
+      "orderListId": 535,
+      "contingencyType": "OCO",
+      "listStatusType": "ALL_DONE",
+      "listOrderStatus": "ALL_DONE",
+      "listClientOrderId": "custom1_list_client_order_id",
+      "transactionTime": 1618193730151,
+      "symbol": "LTCBTC",
+      "orders": [
+        {
+          "symbol": "LTCBTC",
+          "orderId": 635,
+          "clientOrderId": "custom_stop_client_order_id"
+        },
+        {
+          "symbol": "LTCBTC",
+          "orderId": 636,
+          "clientOrderId": "custom_limit_client_order_id"
+        }
+      ]
+    }
+  ]
+}
