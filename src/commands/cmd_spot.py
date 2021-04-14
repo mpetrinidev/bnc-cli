@@ -3,7 +3,7 @@ import click
 from src.builder import LimitOrderBuilder, MarketOrderBuilder, StopLossBuilder, \
     StopLossLimitBuilder, TakeProfitBuilder, TakeProfitLimitBuilder, LimitMakerBuilder, CancelOrderBuilder, \
     OpenOrdersBuilder, OrderStatusBuilder, Builder, AllOrderBuilder, MyTradesBuilder, NewOcoOrderBuilder, \
-    CancelOcoOrderBuilder
+    CancelOcoOrderBuilder, OcoOrderBuilder
 from src.cli import pass_environment
 from src.decorators import coro, new_order_options
 from src.utils.api_time import get_timestamp
@@ -551,6 +551,39 @@ async def cancel_oco_order(ctx, symbol, order_list_id, list_client_order_id,
         .add_optional_params_to_payload(order_list_id=order_list_id,
                                         list_client_order_id=list_client_order_id,
                                         new_client_order_id=new_client_order_id) \
+        .set_security()
+
+    await builder.send_http_req()
+
+    builder.handle_response().generate_output()
+
+
+@cli.command("oco_order", short_help="Retrieves a specific OCO based on provided optional parameters.")
+@click.option("-olid", "--order_list_id", type=click.types.INT)
+@click.option("-lcoid", "--list_client_order_id", type=click.types.STRING)
+@click.option("-rw", "--recv_window", default=5000, show_default=True, callback=validate_recv_window,
+              type=click.types.INT)
+@coro
+@pass_environment
+async def oco_order(ctx, order_list_id, list_client_order_id, recv_window):
+    """
+    Retrieves a specific OCO based on provided optional parameters
+
+    Weight: 1
+    """
+
+    if order_list_id is None and list_client_order_id is None:
+        ctx.log('Either --order_list_id (-olid) or --list_client_order_id (-lcoid) must be sent.')
+        return
+
+    payload = {
+        'recvWindow': recv_window,
+        'timestamp': get_timestamp()
+    }
+
+    builder = OcoOrderBuilder(endpoint='api/v3/orderList', payload=payload) \
+        .add_optional_params_to_payload(order_list_id=order_list_id,
+                                        list_client_order_id=list_client_order_id) \
         .set_security()
 
     await builder.send_http_req()

@@ -371,6 +371,19 @@ class CancelOcoOrderBuilder(Builder):
         return self
 
 
+class OcoOrderBuilder(Builder):
+    def add_optional_params_to_payload(self, **kwargs):
+        order_list_id, list_client_order_id = kwargs.values()
+
+        if order_list_id is not None:
+            self.payload['orderListId'] = order_list_id
+
+        if list_client_order_id is not None:
+            self.payload['origClientOrderId'] = list_client_order_id
+
+        return self
+
+
 class MyTradesBuilder(Builder):
     def add_optional_params_to_payload(self, **kwargs):
         start_time, end_time, from_id = kwargs.values()

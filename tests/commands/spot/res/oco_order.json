@@ -1,0 +1,23 @@
+{
+  "get_oco_order": {
+    "orderListId": 592,
+    "contingencyType": "OCO",
+    "listStatusType": "EXEC_STARTED",
+    "listOrderStatus": "EXECUTING",
+    "listClientOrderId": "ykprg1hXtgmNjHVcZ3YKNM",
+    "transactionTime": 1618359398564,
+    "symbol": "LTCBTC",
+    "orders": [
+      {
+        "symbol": "LTCBTC",
+        "orderId": 714,
+        "clientOrderId": "uISdx7NcyMY0qB9eIfVKs9"
+      },
+      {
+        "symbol": "LTCBTC",
+        "orderId": 715,
+        "clientOrderId": "MsDydAMjDkQWVjBN3yIOLy"
+      }
+    ]
+  }
+}
