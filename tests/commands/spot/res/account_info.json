@@ -27,11 +27,11 @@
       }
     ],
     "permissions": [
-        "SPOT"
+      "SPOT"
     ]
   },
   "balances_filter_1": {
-    "balances":[
+    "balances": [
       {
         "asset": "BTC",
         "free": "4723846.89208129",
