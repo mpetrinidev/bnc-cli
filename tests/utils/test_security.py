@@ -14,6 +14,15 @@ SECRET_KEY = 'SET_YOUR_SECRET_KEY'
 API_KEY_HEADER = {'X-MBX-APIKEY': API_KEY}
 
 
+@pytest.fixture()
+def mocked_bnc_config_path(mocker):
+    mocker.patch('src.utils.config.get_bnc_config_path', return_value=get_bnc_test_config_path())
+
+
+def get_bnc_test_config_path():
+    return os.path.join(os.path.expanduser("~"), '.bnc-tests')
+
+
 def test_get_hmac_hash_total_params_is_empty_string():
     with pytest.raises(ValueError, match='total_params cannot be empty'):
         get_hmac_hash('', 'secret')
@@ -37,7 +46,7 @@ def test_get_api_key_from_env_ok():
     del os.environ['BNC_CLI_API_KEY']
 
 
-def test_get_api_key_from_config_file():
+def test_get_api_key_from_config_file(mocked_bnc_config_path):
     write_credentials(API_KEY, SECRET_KEY)
     assert get_api_key() == API_KEY
     remove_credentials()
@@ -62,7 +71,7 @@ def test_get_secret_from_env_ok():
     del os.environ['BNC_CLI_SECRET_KEY']
 
 
-def test_get_secret_from_config_file():
+def test_get_secret_from_config_file(mocked_bnc_config_path):
     write_credentials(API_KEY, SECRET_KEY)
     assert get_secret_key() == SECRET_KEY
     remove_credentials()
@@ -87,7 +96,7 @@ def test_get_api_key_header_from_env_ok():
     del os.environ['BNC_CLI_API_KEY']
 
 
-def test_get_api_key_header_from_config_file_ok():
+def test_get_api_key_header_from_config_file_ok(mocked_bnc_config_path):
     write_credentials(API_KEY, SECRET_KEY)
     assert get_api_key_header() == API_KEY_HEADER
     remove_credentials()
