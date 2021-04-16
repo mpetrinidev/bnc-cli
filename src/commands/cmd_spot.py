@@ -25,7 +25,6 @@ def new_order():
     """
     Send in a new limit, market, stop_loss, stop_loss_limit, take_profit, take_profit_limit or limit_maker order
     """
-    pass
 
 
 @new_order.command("limit", short_help="Send in a new limit order")
