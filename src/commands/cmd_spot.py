@@ -5,16 +5,16 @@ from src.builder import LimitOrderBuilder, MarketOrderBuilder, StopLossBuilder, 
     OpenOrdersBuilder, OrderStatusBuilder, Builder, AllOrderBuilder, MyTradesBuilder, NewOcoOrderBuilder, \
     CancelOcoOrderBuilder, OcoOrderBuilder, AllOcoOrderBuilder
 from src.cli import pass_environment
-from src.decorators import coro, new_order_options
+from src.decorators import coro, new_order_options, check_credentials
 from src.utils.api_time import get_timestamp
 from src.validation.val_spot import validate_recv_window, validate_side, validate_time_in_force, \
     validate_new_order_resp_type
 
 
 @click.group(short_help="Spot Account/Trade operations")
+@check_credentials
 def cli():
     """Spot Account/Trade operations"""
-    pass
 
 
 @cli.group("new_order", short_help="Send in a new limit, "

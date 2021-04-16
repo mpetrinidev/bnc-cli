@@ -4,6 +4,16 @@ from functools import wraps
 import click
 
 from src.options import get_new_order_default_options
+from src.utils.security import get_api_key, get_secret_key
+
+
+def check_credentials(f):
+    def inner():
+        _ = get_api_key()
+        _ = get_secret_key()
+        f()
+
+    return inner
 
 
 def coro(f):

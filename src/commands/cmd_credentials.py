@@ -9,7 +9,7 @@ from src.utils.security import get_secret_key
 
 @click.group(short_help="Add or remove Binance CLI credentials (api_key and secret)")
 def cli():
-    pass
+    """Add or remove Binance CLI credentials (api_key and secret)"""
 
 
 @cli.command("add", short_help="Add Binance CLI's credentials (api_key and secret) to start using Binance CLI")

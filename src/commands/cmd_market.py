@@ -8,10 +8,7 @@ from src.validation.val_market import validate_interval
 
 @click.group(short_help='Market data endpoints')
 def cli():
-    """
-    Market data endpoints
-    """
-    pass
+    """Market data endpoints"""
 
 
 @cli.command("test", short_help='Test connectivity to the Rest API.')
