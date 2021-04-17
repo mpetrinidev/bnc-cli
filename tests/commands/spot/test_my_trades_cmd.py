@@ -61,3 +61,19 @@ def test_my_trades_filter_price_less_or_equal_than(runner, params, mock_default_
 
     assert result.exit_code == 0
     assert result.output == json_to_str(data['price_less_or_equal']) + '\n'
+
+
+@pytest.mark.parametrize("params", [
+    ['-sy', 'LTCBTC', '-st', 1617896183262, '-et', 1617896193262],
+    ['--symbol', 'LTCBTC', '--start_time', 1617896183262, '--end_time', 1617896193262]
+])
+def test_my_trades_start_time_and_end_time(runner, params, mock_default_deps, data):
+    mock_response = Mock(status_code=200)
+    mock_response.json.return_value = data['start_and_end_time']
+
+    mock_default_deps.patch('src.builder.requests.get', return_value=mock_response)
+
+    result = runner.invoke(my_trades, params)
+
+    assert result.exit_code == 0
+    assert result.output == json_to_str(data['start_and_end_time']) + '\n'
