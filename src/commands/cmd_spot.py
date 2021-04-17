@@ -1,7 +1,7 @@
 import click
 
-from src.builder import LimitOrderBuilder, MarketOrderBuilder, StopLossBuilder, \
-    StopLossLimitBuilder, TakeProfitBuilder, TakeProfitLimitBuilder, LimitMakerBuilder, CancelOrderBuilder, \
+from src.builder import LimitOrderBuilder, MarketOrderBuilder, \
+    StopLossLimitBuilder, TakeProfitLimitBuilder, LimitMakerBuilder, CancelOrderBuilder, \
     OpenOrdersBuilder, OrderStatusBuilder, Builder, AllOrderBuilder, MyTradesBuilder, NewOcoOrderBuilder, \
     CancelOcoOrderBuilder, OcoOrderBuilder, AllOcoOrderBuilder
 from src.cli import pass_environment
@@ -93,38 +93,6 @@ async def market(ctx, symbol, side, quantity, quote_order_qty, new_client_order_
     builder.handle_response().generate_output()
 
 
-@new_order.command("stop_loss", short_help="Send in a new stop_loss order")
-@new_order_options([{'name': '-q', 'attrs': {'required': True}},
-                    {'name': '-sp', 'attrs': {'required': True}},
-                    {'name': '-nort', 'attrs': {'default': "ACK"}}])
-@coro
-async def stop_loss(symbol, side, time_in_force, quantity, quote_order_qty, price, new_client_order_id,
-                    stop_price, iceberg_qty, recv_window, new_order_resp_type):
-    """Send in a new stop_loss order"""
-    payload = {
-        'symbol': symbol,
-        'side': side,
-        'type': "STOP_LOSS",
-        'quantity': quantity,
-        'stopPrice': stop_price,
-        'newOrderRespType': new_order_resp_type,
-        'recvWindow': recv_window,
-        'timestamp': get_timestamp()
-    }
-
-    builder = StopLossBuilder(endpoint='api/v3/order', payload=payload, method='POST') \
-        .add_optional_params_to_payload(time_in_force=time_in_force,
-                                        quote_order_qty=quote_order_qty,
-                                        price=price,
-                                        new_client_order_id=new_client_order_id,
-                                        iceberg_qty=iceberg_qty) \
-        .set_security()
-
-    await builder.send_http_req()
-
-    builder.handle_response().generate_output()
-
-
 @new_order.command("stop_loss_limit", short_help="Send in a new stop_loss_limit order")
 @new_order_options([{'name': '-tif', 'attrs': {'required': True}},
                     {'name': '-q', 'attrs': {'required': True}},
@@ -151,38 +119,6 @@ async def stop_loss_limit(symbol, side, time_in_force, quantity, price, new_clie
 
     builder = StopLossLimitBuilder(endpoint='api/v3/order', payload=payload, method='POST') \
         .add_optional_params_to_payload(new_client_order_id=new_client_order_id,
-                                        iceberg_qty=iceberg_qty) \
-        .set_security()
-
-    await builder.send_http_req()
-
-    builder.handle_response().generate_output()
-
-
-@new_order.command("take_profit", short_help="Send in a new take_profit order")
-@new_order_options([{'name': '-q', 'attrs': {'required': True}},
-                    {'name': '-sp', 'attrs': {'required': True}},
-                    {'name': '-nort', 'attrs': {'default': "ACK"}}])
-@coro
-async def take_profit(symbol, side, time_in_force, quantity, quote_order_qty, price, new_client_order_id,
-                      stop_price, iceberg_qty, recv_window, new_order_resp_type):
-    """Send in a new take_profit order"""
-    payload = {
-        'symbol': symbol,
-        'side': side,
-        'type': "TAKE_PROFIT",
-        'quantity': quantity,
-        'stopPrice': stop_price,
-        'newOrderRespType': new_order_resp_type,
-        'recvWindow': recv_window,
-        'timestamp': get_timestamp()
-    }
-
-    builder = TakeProfitBuilder(endpoint='api/v3/order', payload=payload, method='POST') \
-        .add_optional_params_to_payload(time_in_force=time_in_force,
-                                        quote_order_qty=quote_order_qty,
-                                        price=price,
-                                        new_client_order_id=new_client_order_id,
                                         iceberg_qty=iceberg_qty) \
         .set_security()
 

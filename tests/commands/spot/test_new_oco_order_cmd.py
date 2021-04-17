@@ -105,3 +105,15 @@ def test_new_oco_order_set_iceberg_qty(runner, params, mock_default_deps, data):
     result = runner.invoke(new_oco_order, params)
     assert result.exit_code == 0
     assert result.output == json_to_str(data['new_oco_order_iceberg_qty']) + '\n'
+
+
+@pytest.mark.parametrize("params", [
+    ['-sy', "LTCBTC", '-si', "SELL", '-q', 1, '-p', 0.015, '-sp', 0.008, '-slp', 0.0075],
+    ['--symbol', "LTCBTC", '--side', "SELL", '--quantity', 1, '--price', 0.015, '--stop_price', 0.008,
+     '--stop_limit_price', 0.0075]
+])
+def test_new_oco_order_stop_limit_time_in_force_error(runner, params):
+    result = runner.invoke(new_oco_order, params)
+    assert result.exit_code == 0
+    assert result.output == '--stop_limit_time_in_force (-sltif) is required when you sent --stop_limit_price (-slp).' \
+           + '\n'
