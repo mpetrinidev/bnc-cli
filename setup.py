@@ -24,9 +24,9 @@ setup(
         'Development Status :: 3 - Alpha',
 
         # Indicate who your project is intended for
-        'Intended Audience :: Developers',
-        "Intended Audience :: Binance's Traders",
-        'Topic :: Software Development :: Command Line Interface',
+        'Intended Audience :: Other Audience',
+        'Topic :: Terminals',
+        'Topic :: Utilities',
 
         # Pick your license as you wish
         'License :: OSI Approved :: MIT License',
