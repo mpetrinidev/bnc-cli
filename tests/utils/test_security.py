@@ -2,7 +2,7 @@ import os
 
 import pytest
 
-from src.exceptions import SecurityException
+from src.exceptions import SecurityException, ConfigException
 from src.utils.security import get_secret_key
 from src.utils.security import get_hmac_hash
 from src.utils.security import get_api_key_header
@@ -52,11 +52,9 @@ def test_get_api_key_from_config_file(mocked_bnc_config_path):
     remove_credentials()
 
 
-def test_get_api_key_null_or_empty():
-    if os.environ.get('BNC_CLI_API_KEY'):
-        del os.environ['BNC_CLI_API_KEY']
-
-    remove_credentials()
+def test_get_api_key_null_or_empty(mocker):
+    mocker.patch('os.environ.get', return_value=None)
+    mocker.patch('src.utils.security.read_credentials', side_effect=ConfigException('Custom_Exception'))
 
     with pytest.raises(SecurityException,
                        match='Credentials are required. Run: bnc credentials add --api_key="your_api_key" '
@@ -77,11 +75,9 @@ def test_get_secret_from_config_file(mocked_bnc_config_path):
     remove_credentials()
 
 
-def test_get_secret_null_or_empty():
-    if os.environ.get('BNC_CLI_SECRET_KEY'):
-        del os.environ['BNC_CLI_SECRET_KEY']
-
-    remove_credentials()
+def test_get_secret_null_or_empty(mocker):
+    mocker.patch('os.environ.get', return_value=None)
+    mocker.patch('src.utils.security.read_credentials', side_effect=ConfigException('Custom_Exception'))
 
     with pytest.raises(SecurityException, match='Credentials are required. Run: bnc credentials add '
                                                 '--api_key="your_api_key" '

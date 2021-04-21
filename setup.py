@@ -1,4 +1,5 @@
 import pathlib
+import os
 
 from setuptools import setup
 
@@ -8,8 +9,8 @@ here = pathlib.Path(__file__).parent.resolve()
 long_description = (here / 'README.md').read_text(encoding='utf-8')
 
 setup(
-    name='bnc',  # Required
-    version='0.0.1-alpha',  # Required
+    name=os.environ.get('BNC_SETUP_PKG_NAME'),  # Required (bnc or bnc-testnet)
+    version=os.environ.get('BNC_SETUP_PKG_VERSION'),  # Required 0.0.1-alpha
     description='Unofficial Binance CLI to interact with Binance API',  # Optional
     long_description=long_description,  # Optional
     long_description_content_type='text/markdown',  # Optional (see note above)
@@ -52,7 +53,8 @@ setup(
         bnc=src.cli:cli
     """,
     project_urls={  # Optional
-        'Bug Reports': 'https://github.com/mpetrinidev/bnc-cli/issues',
         'Source': 'https://github.com/mpetrinidev/bnc-cli',
+        'Documentation': 'https://github.com/mpetrinidev/bnc-cli/wiki',
+        'Bug Reports': 'https://github.com/mpetrinidev/bnc-cli/issues'
     },
 )
