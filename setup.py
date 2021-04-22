@@ -50,8 +50,8 @@ setup(
     ],  # Optional
     entry_points="""
         [console_scripts]
-        bnc=src.cli:cli
-    """,
+        {command}=src.cli:cli
+    """.format(command=os.environ.get('BNC_SETUP_PKG_NAME')),
     project_urls={  # Optional
         'Source': 'https://github.com/mpetrinidev/bnc-cli',
         'Documentation': 'https://github.com/mpetrinidev/bnc-cli/wiki',

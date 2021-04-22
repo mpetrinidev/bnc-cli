@@ -50,7 +50,7 @@ class BncCLI(click.MultiCommand):
 @click.command(cls=BncCLI, context_settings=CONTEXT_SETTINGS)
 @click.option("-v", "--verbose", is_flag=True, help="Show more information about CLI's execution")
 @click.option("-o", "--output", default='json', callback=validate_output_value, type=click.types.STRING)
-@click.version_option(message="Bnc %(version)s")
+@click.version_option(message="%(prog)s %(version)s")
 @pass_environment
 def cli(ctx, verbose, output):
     """Binance command line interface to interact with Binance API."""
