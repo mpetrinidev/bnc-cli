@@ -20,7 +20,7 @@ jobs:
     steps:
     - name: Get tag version and set to BNC_SETUP_PKG_VERSION env variable 
       id: get_version
-      run: echo ::set-env name=BNC_SETUP_PKG_VERSION::${GITHUB_REF/refs\/tags\//}
+      run: echo BNC_SETUP_PKG_VERSION=${GITHUB_REF/refs\/tags\//} >> $GITHUB_ENV
     - uses: actions/checkout@v2
     - name: Set up Python
       uses: actions/setup-python@v2
