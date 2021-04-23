@@ -1,7 +1,7 @@
 import pathlib
 import os
 
-from setuptools import setup
+from setuptools import setup, find_packages
 
 here = pathlib.Path(__file__).parent.resolve()
 
@@ -39,7 +39,8 @@ setup(
         'Programming Language :: Python :: 3.9'
     ],
     keywords='bnc, binance, binance-api, binance-cli, bnc-cli',  # Optional
-    packages=['src', 'src.commands', 'src.utils', 'src.validation'],  # Required
+    packages=find_packages(where='src'),  # Required
+    package_dir={'': 'src'},
     python_requires='>=3.8, <4',
     install_requires=[
         'requests_async~=0.6.2',
@@ -52,7 +53,6 @@ setup(
         [console_scripts]
         {command}=src.cli:cli
     """.format(command=os.environ.get('BNC_SETUP_PKG_NAME')),
-    package_dir={"": os.environ.get('BNC_SETUP_PKG_NAME')},
     project_urls={  # Optional
         'Source': 'https://github.com/mpetrinidev/bnc-cli',
         'Documentation': 'https://github.com/mpetrinidev/bnc-cli/wiki',
