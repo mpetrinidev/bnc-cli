@@ -39,8 +39,8 @@ setup(
         'Programming Language :: Python :: 3.9'
     ],
     keywords='bnc, binance, binance-api, binance-cli, bnc-cli',  # Optional
-    packages=find_packages(where='src'),  # Required
-    package_dir={'': 'src'},
+    packages=['src', 'src.commands', 'src.utils', 'src.validation'],  # Required
+    include_package_data=True,
     python_requires='>=3.8, <4',
     install_requires=[
         'requests_async~=0.6.2',
