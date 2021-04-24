@@ -7,9 +7,10 @@ here = pathlib.Path(__file__).parent.resolve()
 
 # Get the long description from the README file
 long_description = (here / 'README.md').read_text(encoding='utf-8')
+bnc_package_name = os.environ.get('BNC_SETUP_PKG_NAME')
 
 setup(
-    name=os.environ.get('BNC_SETUP_PKG_NAME'),  # Required (bnc or bnc-testnet)
+    name=bnc_package_name,  # Required (bnc or bnc-testnet)
     version=os.environ.get('BNC_SETUP_PKG_VERSION'),  # Required 0.0.1-alpha
     description='Unofficial Binance CLI to interact with Binance API',  # Optional
     long_description=long_description,  # Optional
@@ -39,8 +40,9 @@ setup(
         'Programming Language :: Python :: 3.9'
     ],
     keywords='bnc, binance, binance-api, binance-cli, bnc-cli',  # Optional
-    package_dir={f'{os.environ.get("BNC_SETUP_PKG_NAME")}': 'src'},
-    packages=['src', 'src.commands', 'src.utils', 'src.validation'],  # Required
+    package_dir={f'{bnc_package_name}': 'src'},
+    packages=[f'{bnc_package_name}', f'{bnc_package_name}.commands', f'{bnc_package_name}.utils',
+              f'{bnc_package_name}.validation'],  # Required
     include_package_data=True,
     python_requires='>=3.8, <4',
     install_requires=[
@@ -53,7 +55,7 @@ setup(
     entry_points="""
         [console_scripts]
         {command}=src.cli:cli
-    """.format(command=os.environ.get('BNC_SETUP_PKG_NAME')),
+    """.format(command=bnc_package_name),
     project_urls={  # Optional
         'Source': 'https://github.com/mpetrinidev/bnc-cli',
         'Documentation': 'https://github.com/mpetrinidev/bnc-cli/wiki',
