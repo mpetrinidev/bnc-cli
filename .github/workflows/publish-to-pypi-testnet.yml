@@ -27,7 +27,7 @@ jobs:
         cp -T testnet/config.json bnc/config.json
     - name: Rename bnc folder
       run: |
-        mv bnc bnc-testnet
+        mv bnc bnc_testnet
     - name: Set up Python
       uses: actions/setup-python@v2
       with:
