@@ -9,7 +9,7 @@ on:
     - '*'
 
 env:
-  BNC_SETUP_PKG_NAME: bnc-testnet
+  BNC_SETUP_PKG_NAME: bnc_testnet
   BNC_SETUP_PKG_VERSION: ''
 
 jobs:

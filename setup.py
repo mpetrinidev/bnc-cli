@@ -10,7 +10,7 @@ long_description = (here / 'README.md').read_text(encoding='utf-8')
 bnc_package_name = os.environ.get('BNC_SETUP_PKG_NAME')
 
 setup(
-    name=bnc_package_name,  # Required (bnc or bnc-testnet)
+    name=bnc_package_name,  # Required (bnc or bnc_testnet)
     version=os.environ.get('BNC_SETUP_PKG_VERSION'),  # Required 0.0.1-alpha
     description='Unofficial Binance CLI to interact with Binance API',  # Optional
     long_description=long_description,  # Optional
@@ -55,7 +55,7 @@ setup(
     entry_points="""
         [console_scripts]
         {command}={module_prefix}.cli:cli
-    """.format(command=bnc_package_name, module_prefix=str(bnc_package_name).replace('-', '_')),
+    """.format(command=bnc_package_name, module_prefix=bnc_package_name),
     project_urls={  # Optional
         'Source': 'https://github.com/mpetrinidev/bnc-cli',
         'Documentation': 'https://github.com/mpetrinidev/bnc-cli/wiki',
