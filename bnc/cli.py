@@ -7,7 +7,6 @@ from .utils.config import write_initial_configuration
 from .validation.val_cli import validate_output_value
 
 CONTEXT_SETTINGS = dict(auto_envvar_prefix="BNC")
-bnc_package_name = os.environ.get('BNC_SETUP_PKG_NAME')
 
 
 class Environment:
@@ -42,7 +41,10 @@ class BncCLI(click.MultiCommand):
 
     def get_command(self, ctx, name):
         try:
-            mod = __import__(f"{bnc_package_name}.commands.cmd_{name}", None, None, ["cli"])
+            path = os.path.dirname(__file__)
+            folder_name = os.path.basename(path)
+
+            mod = __import__(f"{folder_name}.commands.cmd_{name}", None, None, ["cli"])
         except ImportError:
             return
         return mod.cli
