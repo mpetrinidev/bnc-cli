@@ -43,7 +43,7 @@ setup(
     packages=[f'{bnc_package_name}', f'{bnc_package_name}.commands', f'{bnc_package_name}.utils',
               f'{bnc_package_name}.validation'],  # Required
     include_package_data=True,
-    package_data={'': [f'{bnc_package_name}/config.json']},
+    package_data={'': ['config.json']},
     python_requires='>=3.8, <4',
     install_requires=[
         'requests_async~=0.6.2',
@@ -60,5 +60,5 @@ setup(
         'Source': 'https://github.com/mpetrinidev/bnc-cli',
         'Documentation': 'https://github.com/mpetrinidev/bnc-cli/wiki',
         'Bug Reports': 'https://github.com/mpetrinidev/bnc-cli/issues'
-    },
+    }
 )
