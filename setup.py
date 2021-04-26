@@ -43,6 +43,7 @@ setup(
     packages=[f'{bnc_package_name}', f'{bnc_package_name}.commands', f'{bnc_package_name}.utils',
               f'{bnc_package_name}.validation'],  # Required
     include_package_data=True,
+    package_data={'': [f'{bnc_package_name}/config.json']},
     python_requires='>=3.8, <4',
     install_requires=[
         'requests_async~=0.6.2',
