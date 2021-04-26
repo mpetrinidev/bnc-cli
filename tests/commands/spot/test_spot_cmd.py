@@ -1,5 +1,5 @@
-from tests.commands.common_fixtures import runner
-from src.commands.cmd_spot import cli, new_order
+from bnc.commands.cmd_spot import cli, new_order
+from tests.commands.common_fixtures import *
 
 
 def test_cli_root_is_ok(runner):

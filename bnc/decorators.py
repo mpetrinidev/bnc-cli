@@ -3,8 +3,8 @@ from functools import wraps
 
 import click
 
-from src.options import get_new_order_default_options
-from src.utils.security import get_api_key, get_secret_key
+from .options import get_new_order_default_options
+from .utils.security import get_api_key, get_secret_key
 
 
 def check_credentials(f):

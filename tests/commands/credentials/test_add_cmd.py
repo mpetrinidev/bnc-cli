@@ -1,4 +1,4 @@
-from src.commands.cmd_credentials import add
+from bnc.commands.cmd_credentials import add
 from tests.commands.common_fixtures import *
 
 
@@ -7,7 +7,7 @@ from tests.commands.common_fixtures import *
                                      ['-ak', 'API_KEY_VALUE', '--secret', 'SECRET_VALUE'],
                                      ['-ak', 'API_KEY_VALUE', '-s', 'SECRET_VALUE']])
 def test_credentials_add_options_successfully(runner, options, mocker):
-    mocker.patch('src.commands.cmd_credentials.write_credentials', return_value=None)
+    mocker.patch('bnc.commands.cmd_credentials.write_credentials', return_value=None)
     result = runner.invoke(add, options)
     assert result.exit_code == 0
     assert result.output == "Binance CLI's credentials added successfully\n"

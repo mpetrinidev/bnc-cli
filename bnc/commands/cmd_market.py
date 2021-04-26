@@ -1,9 +1,13 @@
 import click
 
-from src.builder import Builder, KlinesBuilder, Ticker24AndPriceBuilder
-from src.cli import pass_environment
-from src.decorators import coro
-from src.validation.val_market import validate_interval
+from ..builder import Builder
+from ..builder import KlinesBuilder
+from ..builder import Ticker24AndPriceBuilder
+
+from ..cli import pass_environment
+
+from ..decorators import coro
+from ..validation.val_market import validate_interval
 
 
 @click.group(short_help='Market data endpoints')

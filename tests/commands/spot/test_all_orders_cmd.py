@@ -1,8 +1,8 @@
 import os
 from unittest.mock import Mock
 
-from src.commands.cmd_spot import all_orders
-from src.utils.utils import json_to_str
+from bnc.commands.cmd_spot import all_orders
+from bnc.utils.utils import json_to_str
 from tests.commands.common import read_json_test_file
 from tests.commands.common_fixtures import *
 
@@ -24,7 +24,7 @@ def test_all_orders_return_all(runner, params, mock_default_deps, data):
     mock_response = Mock(status_code=200)
     mock_response.json.return_value = data['all']
 
-    mock_default_deps.patch('src.builder.requests.get', return_value=mock_response)
+    mock_default_deps.patch('bnc.builder.requests.get', return_value=mock_response)
 
     result = runner.invoke(all_orders, params)
     assert result.exit_code == 0
@@ -39,7 +39,7 @@ def test_all_orders_get_by_order_id(runner, params, mock_default_deps, data):
     mock_response = Mock(status_code=200)
     mock_response.json.return_value = data['match_order_id']
 
-    mock_default_deps.patch('src.builder.requests.get', return_value=mock_response)
+    mock_default_deps.patch('bnc.builder.requests.get', return_value=mock_response)
 
     result = runner.invoke(all_orders, params)
 
@@ -55,7 +55,7 @@ def test_all_orders_start_time_and_end_time(runner, params, mock_default_deps, d
     mock_response = Mock(status_code=200)
     mock_response.json.return_value = data['start_and_end_time']
 
-    mock_default_deps.patch('src.builder.requests.get', return_value=mock_response)
+    mock_default_deps.patch('bnc.builder.requests.get', return_value=mock_response)
 
     result = runner.invoke(all_orders, params)
 
@@ -71,7 +71,7 @@ def test_all_orders_return_all_filter_by_expired(runner, params, mock_default_de
     mock_response = Mock(status_code=200)
     mock_response.json.return_value = data['all']
 
-    mock_default_deps.patch('src.builder.requests.get', return_value=mock_response)
+    mock_default_deps.patch('bnc.builder.requests.get', return_value=mock_response)
 
     result = runner.invoke(all_orders, params)
     assert result.exit_code == 0
@@ -86,7 +86,7 @@ def test_all_orders_return_all_filter_by_stop_loss_limit(runner, params, mock_de
     mock_response = Mock(status_code=200)
     mock_response.json.return_value = data['all']
 
-    mock_default_deps.patch('src.builder.requests.get', return_value=mock_response)
+    mock_default_deps.patch('bnc.builder.requests.get', return_value=mock_response)
 
     result = runner.invoke(all_orders, params)
     assert result.exit_code == 0

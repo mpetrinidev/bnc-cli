@@ -1,8 +1,8 @@
 import os
 from unittest.mock import Mock
 
-from src.commands.cmd_spot import cancel_all_orders
-from src.utils.utils import json_to_str
+from bnc.commands.cmd_spot import cancel_all_orders
+from bnc.utils.utils import json_to_str
 from tests.commands.common import read_json_test_file
 from tests.commands.common_fixtures import *
 
@@ -24,7 +24,7 @@ def test_cancel_all_orders_return_ok(runner, params, mock_default_deps, data):
     mock_response = Mock(status_code=200)
     mock_response.json.return_value = data['cancel_all_orders']
 
-    mock_default_deps.patch('src.builder.requests.delete', return_value=mock_response)
+    mock_default_deps.patch('bnc.builder.requests.delete', return_value=mock_response)
 
     result = runner.invoke(cancel_all_orders, params)
     assert result.exit_code == 0

@@ -1,6 +1,6 @@
 import pytest
 
-from src.utils.utils import to_query_string_parameters
+from bnc.utils.utils import to_query_string_parameters
 
 
 def test_to_query_string_parameters_empty_values():

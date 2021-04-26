@@ -1,8 +1,8 @@
 import os
 from unittest.mock import Mock
 
-from src.commands.cmd_market import ticker_price
-from src.utils.utils import json_to_str
+from bnc.commands.cmd_market import ticker_price
+from bnc.utils.utils import json_to_str
 from tests.commands.common import read_json_test_file
 from tests.commands.common_fixtures import *
 
@@ -20,7 +20,7 @@ def test_ticker_price_return_values(runner, mocker, data):
     mock_response = Mock(status_code=200)
     mock_response.json.return_value = data['ticker_price']
 
-    mocker.patch('src.builder.requests.get', return_value=mock_response)
+    mocker.patch('bnc.builder.requests.get', return_value=mock_response)
 
     result = runner.invoke(ticker_price, ['--symbol', 'LTCBTC'])
     assert result.exit_code == 0

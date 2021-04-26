@@ -1,17 +1,17 @@
 import pytest
 import os
 
-from src.exceptions import ConfigException
-from src.utils.config import write_credentials, get_bnc_config_path, write_initial_configuration
-from src.utils.config import read_credentials
-from src.utils.config import get_config_parser
-from src.utils.config import get_bnc_config_filename_path
-from src.utils.config import CREDENTIALS_SECTION
+from bnc.exceptions import ConfigException
+from bnc.utils.config import write_credentials, get_bnc_config_path, write_initial_configuration
+from bnc.utils.config import read_credentials
+from bnc.utils.config import get_config_parser
+from bnc.utils.config import get_bnc_config_filename_path
+from bnc.utils.config import CREDENTIALS_SECTION
 
 
 @pytest.fixture()
 def mocked_bnc_config_path(mocker):
-    mocker.patch('src.utils.config.get_bnc_config_path', return_value=get_bnc_test_config_path())
+    mocker.patch('bnc.utils.config.get_bnc_config_path', return_value=get_bnc_test_config_path())
 
 
 def get_bnc_test_config_path():
@@ -30,28 +30,28 @@ def test_get_bnc_config_path_config_json_file_is_ok():
 
 
 def test_get_bnc_config_path_config_json_file_is_none(mocker):
-    mocker.patch('src.utils.config.read_json_config_file', return_value={})
+    mocker.patch('bnc.utils.config.read_json_config_file', return_value={})
 
     with pytest.raises(ConfigException, match='You must set bnc_config_path in config.json'):
         get_bnc_config_path()
 
 
 def test_get_bnc_config_path_config_json_file_is_empty(mocker):
-    mocker.patch('src.utils.config.read_json_config_file', return_value={'bnc_config_path': ''})
+    mocker.patch('bnc.utils.config.read_json_config_file', return_value={'bnc_config_path': ''})
 
     with pytest.raises(ConfigException, match='bnc_config_path cannot be null or empty in config.json'):
         get_bnc_config_path()
 
 
 def test_write_initial_configuration_config_json_file_is_none(mocker):
-    mocker.patch('src.utils.config.read_json_config_file', return_value={})
+    mocker.patch('bnc.utils.config.read_json_config_file', return_value={})
 
     with pytest.raises(ConfigException, match='You must set bnc_api_endpoint in config.json'):
         write_initial_configuration()
 
 
 def test_write_initial_configuration_config_json_file_is_empty(mocker):
-    mocker.patch('src.utils.config.read_json_config_file', return_value={'bnc_api_endpoint': ''})
+    mocker.patch('bnc.utils.config.read_json_config_file', return_value={'bnc_api_endpoint': ''})
 
     with pytest.raises(ConfigException, match='bnc_api_endpoint cannot be null or empty in config.json'):
         write_initial_configuration()

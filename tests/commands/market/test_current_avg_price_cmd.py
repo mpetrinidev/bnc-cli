@@ -1,9 +1,9 @@
 import os
 from unittest.mock import Mock
 
+from bnc.utils.utils import json_to_str
 from tests.commands.common_fixtures import *
-from src.commands.cmd_market import current_avg_price
-from src.utils.utils import json_to_str
+from bnc.commands.cmd_market import current_avg_price
 from tests.commands.common import read_json_test_file
 
 
@@ -20,7 +20,7 @@ def test_current_avg_price_return_values(runner, mocker, data):
     mock_response = Mock(status_code=200)
     mock_response.json.return_value = data['current_avg_price']
 
-    mocker.patch('src.builder.requests.get', return_value=mock_response)
+    mocker.patch('bnc.builder.requests.get', return_value=mock_response)
 
     result = runner.invoke(current_avg_price, ['--symbol', 'LTCBTC'])
     assert result.exit_code == 0

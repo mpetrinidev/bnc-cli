@@ -1,7 +1,9 @@
 import click
 
-from src.validation.val_spot import validate_side, validate_time_in_force, validate_recv_window, \
-    validate_new_order_resp_type
+from .validation.val_spot import validate_side
+from .validation.val_spot import validate_time_in_force
+from .validation.val_spot import validate_recv_window
+from .validation.val_spot import validate_new_order_resp_type
 
 
 def get_new_order_default_options():

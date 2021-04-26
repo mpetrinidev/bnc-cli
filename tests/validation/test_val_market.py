@@ -1,7 +1,7 @@
 import pytest
 from click import BadParameter
 
-from src.validation.val_market import validate_interval
+from bnc.validation.val_market import validate_interval
 
 
 @pytest.mark.parametrize("value", ['seconds', 'minutes', 'days', 'sec', 'min', 'd'])

@@ -1,7 +1,7 @@
 import pytest
 from click import BadParameter
 
-from src.validation.val_cli import validate_output_value
+from bnc.validation.val_cli import validate_output_value
 
 
 @pytest.mark.parametrize("values", ['JSONN', 'YAMLL', 'aml', 'tables', 't', 'y', 'j'])

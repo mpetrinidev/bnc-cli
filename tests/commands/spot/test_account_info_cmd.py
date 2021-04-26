@@ -1,8 +1,8 @@
 import os
 from unittest.mock import Mock
 
-from src.commands.cmd_spot import account_info
-from src.utils.utils import json_to_str
+from bnc.commands.cmd_spot import account_info
+from bnc.utils.utils import json_to_str
 from tests.commands.common import read_json_test_file
 from tests.commands.common_fixtures import *
 
@@ -20,7 +20,7 @@ def test_account_info_is_ok(runner, mock_default_deps, data):
     mock_response = Mock(status_code=200)
     mock_response.json.return_value = data['account_info']
 
-    mock_default_deps.patch('src.builder.requests.get', return_value=mock_response)
+    mock_default_deps.patch('bnc.builder.requests.get', return_value=mock_response)
 
     result = runner.invoke(account_info)
 
@@ -35,7 +35,7 @@ def test_account_info_only_free_balances(runner, params, mock_default_deps, data
     mock_response = Mock(status_code=200)
     mock_response.json.return_value = data['account_info']
 
-    mock_default_deps.patch('src.builder.requests.get', return_value=mock_response)
+    mock_default_deps.patch('bnc.builder.requests.get', return_value=mock_response)
 
     result = runner.invoke(account_info, params)
 
@@ -50,7 +50,7 @@ def test_account_info_only_locked_balances(runner, params, mock_default_deps, da
     mock_response = Mock(status_code=200)
     mock_response.json.return_value = data['account_info']
 
-    mock_default_deps.patch('src.builder.requests.get', return_value=mock_response)
+    mock_default_deps.patch('bnc.builder.requests.get', return_value=mock_response)
 
     result = runner.invoke(account_info, params)
 

@@ -1,8 +1,8 @@
 import os
 from unittest.mock import Mock
 
-from src.commands.cmd_spot import oco_order
-from src.utils.utils import json_to_str
+from bnc.commands.cmd_spot import oco_order
+from bnc.utils.utils import json_to_str
 from tests.commands.common import read_json_test_file
 from tests.commands.common_fixtures import *
 
@@ -24,7 +24,7 @@ def test_oco_order_ocoid_and_lcoid_return_ok(runner, params, mock_default_deps, 
     mock_response = Mock(status_code=200)
     mock_response.json.return_value = data['get_oco_order']
 
-    mock_default_deps.patch('src.builder.requests.get', return_value=mock_response)
+    mock_default_deps.patch('bnc.builder.requests.get', return_value=mock_response)
 
     result = runner.invoke(oco_order, params)
     assert result.exit_code == 0
@@ -39,7 +39,7 @@ def test_oco_order_only_ocoid_return_ok(runner, params, mock_default_deps, data)
     mock_response = Mock(status_code=200)
     mock_response.json.return_value = data['get_oco_order']
 
-    mock_default_deps.patch('src.builder.requests.get', return_value=mock_response)
+    mock_default_deps.patch('bnc.builder.requests.get', return_value=mock_response)
 
     result = runner.invoke(oco_order, params)
     assert result.exit_code == 0
@@ -54,7 +54,7 @@ def test_oco_order_only_lcoid_return_ok(runner, params, mock_default_deps, data)
     mock_response = Mock(status_code=200)
     mock_response.json.return_value = data['get_oco_order']
 
-    mock_default_deps.patch('src.builder.requests.get', return_value=mock_response)
+    mock_default_deps.patch('bnc.builder.requests.get', return_value=mock_response)
 
     result = runner.invoke(oco_order, params)
     assert result.exit_code == 0

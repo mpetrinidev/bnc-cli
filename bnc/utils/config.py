@@ -2,7 +2,7 @@ import configparser
 import json
 import os
 
-from src.exceptions import ConfigException
+from ..exceptions import ConfigException
 
 CREDENTIALS_SECTION = 'api_credentials'
 API_INFO_SECTION = 'api_info'

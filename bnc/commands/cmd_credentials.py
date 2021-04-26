@@ -1,10 +1,12 @@
 import click
 
-from src.cli import pass_environment
-from src.utils.config import write_credentials
-from src.utils.config import remove_credentials
-from src.utils.security import get_api_key
-from src.utils.security import get_secret_key
+from ..cli import pass_environment
+
+from ..utils.config import remove_credentials
+from ..utils.config import write_credentials
+
+from ..utils.security import get_api_key
+from ..utils.security import get_secret_key
 
 
 @click.group(short_help="Add or remove Binance CLI credentials (api_key and secret)")

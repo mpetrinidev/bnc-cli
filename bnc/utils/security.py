@@ -3,8 +3,8 @@ import hmac
 import os
 
 
-from src.exceptions import SecurityException, ConfigException
-from src.utils.config import read_credentials
+from ..exceptions import SecurityException, ConfigException
+from ..utils.config import read_credentials
 
 
 def get_hmac_hash(total_params: str, secret: str) -> str:

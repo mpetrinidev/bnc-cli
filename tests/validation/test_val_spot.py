@@ -1,7 +1,7 @@
 import pytest
 from click import BadParameter
 
-from src.validation.val_spot import validate_recv_window, validate_side, validate_time_in_force, \
+from bnc.validation.val_spot import validate_recv_window, validate_side, validate_time_in_force, \
     validate_new_order_resp_type
 
 

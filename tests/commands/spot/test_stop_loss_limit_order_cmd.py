@@ -1,8 +1,8 @@
 import os
 from unittest.mock import Mock
 
-from src.commands.cmd_spot import stop_loss_limit
-from src.utils.utils import json_to_str
+from bnc.commands.cmd_spot import stop_loss_limit
+from bnc.utils.utils import json_to_str
 from tests.commands.common import read_json_test_file
 from tests.commands.common_fixtures import *
 
@@ -33,7 +33,7 @@ def test_new_order_stop_loss_limit_return_ack_resp(runner, params, mock_default_
     mock_response = Mock(status_code=200)
     mock_response.json.return_value = data['stop_loss_limit_ack']
 
-    mock_default_deps.patch('src.builder.requests.post', return_value=mock_response)
+    mock_default_deps.patch('bnc.builder.requests.post', return_value=mock_response)
 
     result = runner.invoke(stop_loss_limit, params)
     assert result.exit_code == 0
@@ -49,7 +49,7 @@ def test_new_order_stop_loss_limit_return_full_resp(runner, params, mock_default
     mock_response = Mock(status_code=200)
     mock_response.json.return_value = data['stop_loss_limit_full']
 
-    mock_default_deps.patch('src.builder.requests.post', return_value=mock_response)
+    mock_default_deps.patch('bnc.builder.requests.post', return_value=mock_response)
 
     result = runner.invoke(stop_loss_limit, params)
     assert result.exit_code == 0
@@ -65,7 +65,7 @@ def test_new_order_stop_loss_limit_return_result_resp(runner, params, mock_defau
     mock_response = Mock(status_code=200)
     mock_response.json.return_value = data['stop_loss_limit_result']
 
-    mock_default_deps.patch('src.builder.requests.post', return_value=mock_response)
+    mock_default_deps.patch('bnc.builder.requests.post', return_value=mock_response)
 
     result = runner.invoke(stop_loss_limit, params)
     assert result.exit_code == 0

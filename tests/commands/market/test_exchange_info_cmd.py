@@ -3,8 +3,8 @@ from unittest.mock import Mock
 
 from tests.commands.common import read_json_test_file
 from tests.commands.common_fixtures import *
-from src.commands.cmd_market import exchange_info
-from src.utils.utils import json_to_str
+from bnc.commands.cmd_market import exchange_info
+from bnc.utils.utils import json_to_str
 
 
 def get_json_filename():
@@ -20,7 +20,7 @@ def test_exchange_info_return_values(runner, mocker, data):
     mock_response = Mock(status_code=200)
     mock_response.json.return_value = data['exchange_info']
 
-    mocker.patch('src.builder.requests.get', return_value=mock_response)
+    mocker.patch('bnc.builder.requests.get', return_value=mock_response)
 
     result = runner.invoke(exchange_info, [])
     assert result.exit_code == 0

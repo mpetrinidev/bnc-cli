@@ -5,10 +5,15 @@ import requests_async as requests
 import yaml
 import jmespath
 
-from src.cli import Environment
-from src.utils.globals import API_BINANCE
-from src.utils.security import get_api_key_header, get_hmac_hash, get_secret_key
-from src.utils.utils import to_query_string_parameters, json_to_str
+from .cli import Environment
+from .utils.globals import API_BINANCE
+
+from .utils.security import get_api_key_header
+from .utils.security import get_hmac_hash
+from .utils.security import get_secret_key
+
+from .utils.utils import to_query_string_parameters
+from .utils.utils import json_to_str
 
 
 class Builder:

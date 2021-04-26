@@ -2,7 +2,7 @@ from unittest.mock import Mock
 
 from tests.commands.common_fixtures import *
 
-from src.commands.cmd_market import cli, test, exchange_info, trades, klines, current_avg_price, ticker_24hr, \
+from bnc.commands.cmd_market import cli, test, exchange_info, trades, klines, current_avg_price, ticker_24hr, \
     ticker_price, server_time
 
 
@@ -20,7 +20,7 @@ def test_cli_root_is_ok(runner):
                                               (ticker_price, ['--symbol', 'LTCBTC'])])
 def test_market_http_get_commands_return_500(runner, mocker, commands, options):
     mock_response = Mock(status_code=500)
-    mocker.patch('src.builder.requests.get', return_value=mock_response)
+    mocker.patch('bnc.builder.requests.get', return_value=mock_response)
 
     result = runner.invoke(commands, options)
     assert result.exit_code == 0
