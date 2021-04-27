@@ -2,7 +2,7 @@ import pytest
 import os
 
 from bnc.exceptions import ConfigException
-from bnc.utils.config import write_credentials, get_bnc_config_path, write_configuration_file, GENERAL_CONFIG_SECTION, \
+from bnc.utils.config import write_credentials_file, get_bnc_config_path, write_configuration_file, GENERAL_CONFIG_SECTION, \
     API_INFO_SECTION
 from bnc.utils.config import read_credentials
 from bnc.utils.config import get_config_parser
@@ -137,16 +137,16 @@ def test_write_configuration_file_is_ok(mocked_bnc_config_path):
 
 def test_write_credentials_api_key_is_empty(mocked_bnc_config_path):
     with pytest.raises(ValueError, match='api_key cannot be empty'):
-        write_credentials('', 'secret')
+        write_credentials_file('', 'secret')
 
 
 def test_write_credentials_secret_is_empty(mocked_bnc_config_path):
     with pytest.raises(ValueError, match='secret cannot be empty'):
-        write_credentials('api_key', '')
+        write_credentials_file('api_key', '')
 
 
 def test_write_credentials_file_is_ok(mocked_bnc_config_path):
-    write_credentials('MY_API_KEY', 'MY_SECRET_KEY')
+    write_credentials_file('MY_API_KEY', 'MY_SECRET_KEY')
     assert os.path.isfile(get_bnc_config_filename_path('credentials'))
 
     config_parser = get_config_parser()
@@ -209,7 +209,7 @@ def test_read_credentials_file_no_secret_option(mocked_bnc_config_path):
 
 
 def test_read_credentials_file_is_ok(mocked_bnc_config_path):
-    write_credentials('MY_API_KEY', 'MY_SECRET')
+    write_credentials_file('MY_API_KEY', 'MY_SECRET')
     result = read_credentials()
 
     assert isinstance(result, dict)

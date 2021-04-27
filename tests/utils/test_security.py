@@ -7,7 +7,7 @@ from bnc.utils.security import get_secret_key
 from bnc.utils.security import get_hmac_hash
 from bnc.utils.security import get_api_key_header
 from bnc.utils.security import get_api_key
-from bnc.utils.config import write_credentials, remove_credentials
+from bnc.utils.config import write_credentials_file, remove_credentials
 
 API_KEY = 'SET_YOUR_API_KEY'
 SECRET_KEY = 'SET_YOUR_SECRET_KEY'
@@ -47,7 +47,7 @@ def test_get_api_key_from_env_ok():
 
 
 def test_get_api_key_from_config_file(mocked_bnc_config_path):
-    write_credentials(API_KEY, SECRET_KEY)
+    write_credentials_file(API_KEY, SECRET_KEY)
     assert get_api_key() == API_KEY
     remove_credentials()
 
@@ -70,7 +70,7 @@ def test_get_secret_from_env_ok():
 
 
 def test_get_secret_from_config_file(mocked_bnc_config_path):
-    write_credentials(API_KEY, SECRET_KEY)
+    write_credentials_file(API_KEY, SECRET_KEY)
     assert get_secret_key() == SECRET_KEY
     remove_credentials()
 
@@ -93,6 +93,6 @@ def test_get_api_key_header_from_env_ok():
 
 
 def test_get_api_key_header_from_config_file_ok(mocked_bnc_config_path):
-    write_credentials(API_KEY, SECRET_KEY)
+    write_credentials_file(API_KEY, SECRET_KEY)
     assert get_api_key_header() == API_KEY_HEADER
     remove_credentials()

@@ -81,7 +81,7 @@ def write_configuration_file():
         config_parser.write(f)
 
 
-def write_credentials(api_key: str, secret: str):
+def write_credentials_file(api_key: str, secret: str):
     if len(api_key) == 0:
         raise ValueError('api_key cannot be empty')
 

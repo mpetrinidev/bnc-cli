@@ -3,7 +3,7 @@ import click
 from ..cli import pass_environment
 
 from ..utils.config import remove_credentials
-from ..utils.config import write_credentials
+from ..utils.config import write_credentials_file
 
 from ..utils.security import get_api_key
 from ..utils.security import get_secret_key
@@ -20,7 +20,7 @@ def cli():
 @pass_environment
 def add(ctx, api_key: str, secret: str):
     """Add Binance CLI's credentials (api_key and secret) to start using Binance CLI"""
-    write_credentials(api_key, secret)
+    write_credentials_file(api_key, secret)
     ctx.log("Binance CLI's credentials added successfully")
 
 
