@@ -106,6 +106,40 @@ def write_credentials_file(api_key: str, secret: str):
         config_parser.write(f)
 
 
+def read_configuration():
+    configuration_file = get_bnc_config_filename_path('configuration')
+
+    if not exists_config_file('configuration'):
+        raise ConfigException('Configuration file does not exists')
+
+    config_parser = get_config_parser()
+    config_parser.read(configuration_file)
+
+    if not config_parser.has_section(GENERAL_CONFIG_SECTION):
+        raise ConfigException("general section cannot be found in configuration file")
+
+    if not config_parser.has_section(API_INFO_SECTION):
+        raise ConfigException("api_info section cannot be found in configuration file")
+
+    general_section = config_parser[GENERAL_CONFIG_SECTION]
+    api_info_section = config_parser[API_INFO_SECTION]
+
+    if not config_parser.has_option(GENERAL_CONFIG_SECTION, 'IS_TESTNET'):
+        raise ConfigException('IS_TESTNET cannot be found in configuration file inside general section')
+
+    if not config_parser.has_option(GENERAL_CONFIG_SECTION, 'BNC_CONFIG_PATH'):
+        raise ConfigException('BNC_CONFIG_PATH cannot be found in configuration file inside general section')
+
+    if not config_parser.has_option(API_INFO_SECTION, 'BNC_API_ENDPOINT'):
+        raise ConfigException('BNC_API_ENDPOINT cannot be found in configuration file inside api_info section')
+
+    return {
+        "is_testnet": general_section.getboolean('IS_TESTNET'),
+        "bnc_config_path": general_section['BNC_CONFIG_PATH'],
+        "bnc_api_endpoint": api_info_section['BNC_API_ENDPOINT']
+    }
+
+
 def read_credentials():
     credentials_file = get_bnc_config_filename_path('credentials')
 
@@ -121,10 +155,10 @@ def read_credentials():
     section = config_parser[CREDENTIALS_SECTION]
 
     if not config_parser.has_option(CREDENTIALS_SECTION, 'BNC_CLI_API_KEY'):
-        raise ConfigException('BNC_CLI_API_KEY cannot be found in credentials file')
+        raise ConfigException('BNC_CLI_API_KEY cannot be found in credentials file inside api_credentials section')
 
     if not config_parser.has_option(CREDENTIALS_SECTION, 'BNC_CLI_SECRET_KEY'):
-        raise ConfigException('BNC_CLI_SECRET_KEY cannot be found in credentials file')
+        raise ConfigException('BNC_CLI_SECRET_KEY cannot be found in credentials file inside api_credentials section')
 
     return {
         "api_key": section['BNC_CLI_API_KEY'],

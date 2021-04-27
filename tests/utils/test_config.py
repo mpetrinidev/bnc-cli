@@ -2,8 +2,9 @@ import pytest
 import os
 
 from bnc.exceptions import ConfigException
-from bnc.utils.config import write_credentials_file, get_bnc_config_path, write_configuration_file, GENERAL_CONFIG_SECTION, \
-    API_INFO_SECTION
+from bnc.utils.config import write_credentials_file, get_bnc_config_path, write_configuration_file, \
+    GENERAL_CONFIG_SECTION, \
+    API_INFO_SECTION, read_configuration
 from bnc.utils.config import read_credentials
 from bnc.utils.config import get_config_parser
 from bnc.utils.config import get_bnc_config_filename_path
@@ -131,6 +132,23 @@ def test_write_configuration_file_is_ok(mocked_bnc_config_path):
     section = config_parser[API_INFO_SECTION]
 
     assert section['BNC_API_ENDPOINT'] == "https://api.binance.com"
+
+    remove_configuration_file()
+
+
+def test_read_configuration_file_is_ok(mocked_bnc_config_path):
+    mocked_bnc_config_path.patch('bnc.utils.config.read_json_config_file', return_value={
+        "is_testnet": False,
+        "bnc_config_path": ".bnc",
+        "bnc_api_endpoint": "https://api.binance.com"
+    })
+
+    write_configuration_file()
+    config = read_configuration()
+
+    assert config['is_testnet'] is False
+    assert config['bnc_config_path'] == '.bnc'
+    assert config['bnc_api_endpoint'] == 'https://api.binance.com'
 
     remove_configuration_file()
 
