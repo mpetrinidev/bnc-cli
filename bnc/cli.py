@@ -3,7 +3,7 @@ import sys
 
 import click
 
-from .utils.config import write_initial_configuration
+from .utils.config import write_configuration_file
 from .validation.val_cli import validate_output_value
 
 CONTEXT_SETTINGS = dict(auto_envvar_prefix="BNC")
@@ -57,7 +57,7 @@ class BncCLI(click.MultiCommand):
 @pass_environment
 def cli(ctx, verbose, output):
     """Binance command line interface to interact with Binance API."""
-    write_initial_configuration()
+    write_configuration_file()
 
     ctx.verbose = verbose
     ctx.output = output

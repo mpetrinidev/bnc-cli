@@ -6,6 +6,7 @@ from ..exceptions import ConfigException
 
 CREDENTIALS_SECTION = 'api_credentials'
 API_INFO_SECTION = 'api_info'
+GENERAL_CONFIG_SECTION = 'general'
 
 
 def get_config_parser():
@@ -39,8 +40,17 @@ def read_json_config_file():
         return dic
 
 
-def write_initial_configuration():
+def write_configuration_file():
     dic_config = read_json_config_file()
+
+    if 'is_testnet' not in dic_config:
+        raise ConfigException('You must set is_testnet in config.json')
+
+    if 'bnc_config_path' not in dic_config:
+        raise ConfigException('You must set bnc_config_path in config.json')
+
+    if len(dic_config['bnc_config_path']) == 0:
+        raise ConfigException('bnc_config_path cannot be null or empty in config.json')
 
     if 'bnc_api_endpoint' not in dic_config:
         raise ConfigException('You must set bnc_api_endpoint in config.json')
@@ -56,10 +66,16 @@ def write_initial_configuration():
     config_parser = get_config_parser()
     config_parser.read(configuration_file)
 
+    if not config_parser.has_section(GENERAL_CONFIG_SECTION):
+        config_parser.add_section(GENERAL_CONFIG_SECTION)
+
+    config_parser.set(GENERAL_CONFIG_SECTION, 'IS_TESTNET', 'yes' if dic_config['is_testnet'] is True else 'no')
+    config_parser.set(GENERAL_CONFIG_SECTION, 'BNC_CONFIG_PATH', dic_config['bnc_config_path'])
+
     if not config_parser.has_section(API_INFO_SECTION):
         config_parser.add_section(API_INFO_SECTION)
 
-    config_parser.set(API_INFO_SECTION, 'BNC_ENDPOINT', dic_config['bnc_api_endpoint'])
+    config_parser.set(API_INFO_SECTION, 'BNC_API_ENDPOINT', dic_config['bnc_api_endpoint'])
 
     with open(configuration_file, 'w') as f:
         config_parser.write(f)
