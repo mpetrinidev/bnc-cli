@@ -2,9 +2,13 @@ import pytest
 import os
 
 from bnc.exceptions import ConfigException
-from bnc.utils.config import write_credentials_file, get_bnc_config_path, write_configuration_file, \
-    GENERAL_CONFIG_SECTION, \
-    API_INFO_SECTION, read_configuration
+
+from bnc.utils.config import write_credentials_file
+from bnc.utils.config import get_bnc_config_path
+from bnc.utils.config import write_configuration_file
+from bnc.utils.config import read_configuration
+from bnc.utils.config import GENERAL_CONFIG_SECTION
+from bnc.utils.config import API_INFO_SECTION
 from bnc.utils.config import read_credentials
 from bnc.utils.config import get_config_parser
 from bnc.utils.config import get_bnc_config_filename_path
@@ -149,6 +153,88 @@ def test_read_configuration_file_is_ok(mocked_bnc_config_path):
     assert config['is_testnet'] is False
     assert config['bnc_config_path'] == '.bnc'
     assert config['bnc_api_endpoint'] == 'https://api.binance.com'
+
+    remove_configuration_file()
+
+
+def test_read_configuration_file_not_found(mocked_bnc_config_path):
+    with pytest.raises(ConfigException, match='Configuration file does not exists'):
+        read_configuration()
+
+
+def test_read_configuration_file_no_general_config_section(mocked_bnc_config_path):
+    remove_configuration_file()
+
+    config_parser = get_config_parser()
+    with open(get_bnc_config_filename_path('configuration'), 'w') as f:
+        config_parser.write(f)
+
+    with pytest.raises(ConfigException, match='general section cannot be found in configuration file'):
+        read_configuration()
+
+    remove_credentials_file()
+
+
+def test_read_configuration_file_no_api_info_section(mocked_bnc_config_path):
+    remove_configuration_file()
+
+    config_parser = get_config_parser()
+    config_parser.add_section(GENERAL_CONFIG_SECTION)
+    with open(get_bnc_config_filename_path('configuration'), 'w') as f:
+        config_parser.write(f)
+
+    with pytest.raises(ConfigException, match='api_info section cannot be found in configuration file'):
+        read_configuration()
+
+    remove_credentials_file()
+
+
+def test_read_configuration_file_is_testnet_option_missing(mocked_bnc_config_path):
+    config_parser = get_config_parser()
+    config_parser.add_section(GENERAL_CONFIG_SECTION)
+    config_parser.add_section(API_INFO_SECTION)
+
+    with open(get_bnc_config_filename_path('configuration'), 'w') as f:
+        config_parser.write(f)
+
+    with pytest.raises(ConfigException,
+                       match='IS_TESTNET cannot be found in configuration file inside general section'):
+        read_configuration()
+
+    remove_configuration_file()
+
+
+def test_read_configuration_file_bnc_config_path_option_missing(mocked_bnc_config_path):
+    config_parser = get_config_parser()
+    config_parser.add_section(GENERAL_CONFIG_SECTION)
+    config_parser.add_section(API_INFO_SECTION)
+
+    config_parser.set(GENERAL_CONFIG_SECTION, 'IS_TESTNET', 'no')
+
+    with open(get_bnc_config_filename_path('configuration'), 'w') as f:
+        config_parser.write(f)
+
+    with pytest.raises(ConfigException,
+                       match='BNC_CONFIG_PATH cannot be found in configuration file inside general section'):
+        read_configuration()
+
+    remove_configuration_file()
+
+
+def test_read_configuration_file_bnc_api_endpoint_option_missing(mocked_bnc_config_path):
+    config_parser = get_config_parser()
+    config_parser.add_section(GENERAL_CONFIG_SECTION)
+    config_parser.add_section(API_INFO_SECTION)
+
+    config_parser.set(GENERAL_CONFIG_SECTION, 'IS_TESTNET', 'no')
+    config_parser.set(GENERAL_CONFIG_SECTION, 'BNC_CONFIG_PATH', '.bnc')
+
+    with open(get_bnc_config_filename_path('configuration'), 'w') as f:
+        config_parser.write(f)
+
+    with pytest.raises(ConfigException,
+                       match='BNC_API_ENDPOINT cannot be found in configuration file inside api_info section'):
+        read_configuration()
 
     remove_configuration_file()
 
