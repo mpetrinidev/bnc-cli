@@ -34,6 +34,10 @@ def exists_config_file(filename: str):
 
 def read_json_config_file():
     config_file_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'config.json')
+
+    if not os.path.isfile(config_file_path):
+        raise ConfigException('config.json file does not exists')
+
     with open(config_file_path) as json_file:
         dic = json.load(json_file)
 

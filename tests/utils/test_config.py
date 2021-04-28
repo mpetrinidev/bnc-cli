@@ -3,7 +3,7 @@ import os
 
 from bnc.exceptions import ConfigException
 
-from bnc.utils.config import write_credentials_file
+from bnc.utils.config import write_credentials_file, read_json_config_file
 from bnc.utils.config import get_bnc_config_path
 from bnc.utils.config import write_configuration_file
 from bnc.utils.config import read_configuration
@@ -321,3 +321,10 @@ def test_read_credentials_file_is_ok(mocked_bnc_config_path):
     assert result['secret'] == 'MY_SECRET'
 
     remove_credentials_file()
+
+
+def test_read_json_config_file_not_exists(mocker):
+    mocker.patch('bnc.utils.config.os.path.join', return_value='')
+
+    with pytest.raises(ConfigException, match='config.json file does not exists'):
+        read_json_config_file()
