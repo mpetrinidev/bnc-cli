@@ -20,11 +20,11 @@ def data():
     ['-sy', "LTCBTC", '-i', '1m'],
     ['--symbol', "LTCBTC", '--interval', '1m']
 ])
-def test_klines_return_values(runner, mocker, data, params):
+def test_klines_return_values(runner, mock_default_deps, data, params):
     mock_response = Mock(status_code=200)
     mock_response.json.return_value = data['klines']
 
-    mocker.patch('bnc.builder.requests.get', return_value=mock_response)
+    mock_default_deps.patch('bnc.builder.requests.get', return_value=mock_response)
 
     result = runner.invoke(klines, params)
     assert result.exit_code == 0
@@ -35,11 +35,11 @@ def test_klines_return_values(runner, mocker, data, params):
     ['-sy', "LTCBTC", '-i', '1m', '-st', 1618670280000, '-et', 1618670579999],
     ['--symbol', "LTCBTC", '--interval', '1m', '--start_time', 1618670280000, '--end_time', 1618670579999]
 ])
-def test_klines_start_time_and_end_time(runner, mocker, data, params):
+def test_klines_start_time_and_end_time(runner, mock_default_deps, data, params):
     mock_response = Mock(status_code=200)
     mock_response.json.return_value = data['klines_st_et']
 
-    mocker.patch('bnc.builder.requests.get', return_value=mock_response)
+    mock_default_deps.patch('bnc.builder.requests.get', return_value=mock_response)
 
     result = runner.invoke(klines, params)
     assert result.exit_code == 0
@@ -50,11 +50,11 @@ def test_klines_start_time_and_end_time(runner, mocker, data, params):
     ['-sy', "LTCBTC", '-i', '1m', '-l', 1],
     ['--symbol', "LTCBTC", '--interval', '1m', '--limit', 1]
 ])
-def test_klines_limit_1(runner, mocker, data, params):
+def test_klines_limit_1(runner, mock_default_deps, data, params):
     mock_response = Mock(status_code=200)
     mock_response.json.return_value = data['klines_limit_1']
 
-    mocker.patch('bnc.builder.requests.get', return_value=mock_response)
+    mock_default_deps.patch('bnc.builder.requests.get', return_value=mock_response)
 
     result = runner.invoke(klines, params)
     assert result.exit_code == 0

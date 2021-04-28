@@ -16,11 +16,11 @@ def data():
     return read_json_test_file(get_json_filename())
 
 
-def test_ticker_24hr_return_values(runner, mocker, data):
+def test_ticker_24hr_return_values(runner, mock_default_deps, data):
     mock_response = Mock(status_code=200)
     mock_response.json.return_value = data['ticker_24hr']
 
-    mocker.patch('bnc.builder.requests.get', return_value=mock_response)
+    mock_default_deps.patch('bnc.builder.requests.get', return_value=mock_response)
 
     result = runner.invoke(ticker_24hr)
     assert result.exit_code == 0

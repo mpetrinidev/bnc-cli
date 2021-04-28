@@ -5,7 +5,7 @@ from bnc.utils.utils import json_to_str
 from tests.commands.common_fixtures import *
 
 
-def test_server_time_is_up_and_running(runner, mocker):
+def test_server_time_is_up_and_running(runner, mock_default_deps):
     resp = {
         "serverTime": 1616520189601
     }
@@ -13,7 +13,7 @@ def test_server_time_is_up_and_running(runner, mocker):
     mock_response = Mock(status_code=200)
     mock_response.json.return_value = resp
 
-    mocker.patch('bnc.builder.requests.get', return_value=mock_response)
+    mock_default_deps.patch('bnc.builder.requests.get', return_value=mock_response)
 
     result = runner.invoke(server_time)
     assert result.exit_code == 0

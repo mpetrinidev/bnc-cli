@@ -6,7 +6,7 @@ import yaml
 import jmespath
 
 from .cli import Environment
-from .utils.globals import API_BINANCE
+from .utils.config import read_configuration
 
 from .utils.security import get_api_key_header
 from .utils.security import get_hmac_hash
@@ -37,6 +37,8 @@ class Builder:
         self.result = None
         self.has_error = False
 
+        self.config_values = read_configuration()
+
         ctx = click.get_current_context(silent=True)
         self.env = None
 
@@ -61,13 +63,13 @@ class Builder:
 
     async def send_http_req(self):
         if self.method == 'GET':
-            self.response = await requests.get(API_BINANCE + self.endpoint, headers=self.headers, params=self.payload)
+            self.response = await requests.get(self.config_values['bnc_api_endpoint'] + self.endpoint, headers=self.headers, params=self.payload)
 
         if self.method == 'POST':
-            self.response = await requests.post(API_BINANCE + self.endpoint, headers=self.headers, params=self.payload)
+            self.response = await requests.post(self.config_values['bnc_api_endpoint'] + self.endpoint, headers=self.headers, params=self.payload)
 
         if self.method == 'DELETE':
-            self.response = await requests.delete(API_BINANCE + self.endpoint, headers=self.headers,
+            self.response = await requests.delete(self.config_values['bnc_api_endpoint'] + self.endpoint, headers=self.headers,
                                                   params=self.payload)
 
         return self
