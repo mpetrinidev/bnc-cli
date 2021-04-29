@@ -81,7 +81,7 @@ $ bnc --verbose <group_commands> <command>
 
 The default output for commands is currently JSON. 
 
-There is also an **ASCII table** format available and **YAML**. You can select either styles with the `--output` option at the root command `bnc`
+**YAML** format is also available to format output. You can select either styles with the `--output` option at the root command `bnc`
 
 ## Example
 
