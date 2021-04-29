@@ -36,7 +36,7 @@ def remove_configuration_file():
 
 
 def test_get_bnc_config_path_config_json_file_is_ok():
-    bnc_path = '.bnc'
+    bnc_path = '.bnc_testnet'
     final_path = get_bnc_config_path()
     assert final_path == os.path.join(os.path.expanduser("~"), str(bnc_path))
 

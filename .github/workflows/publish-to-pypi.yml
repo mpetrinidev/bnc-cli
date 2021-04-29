@@ -23,6 +23,9 @@ jobs:
       id: get_version
       run: echo BNC_SETUP_PKG_VERSION=${GITHUB_REF/refs\/tags\//} >> $GITHUB_ENV
     - uses: actions/checkout@v2
+    - name: Copy config.json
+      run: |
+        cp -T release/config.json bnc/config.json
     - name: Set up Python
       uses: actions/setup-python@v2
       with:

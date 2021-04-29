@@ -23,9 +23,6 @@ jobs:
       id: get_version
       run: echo BNC_SETUP_PKG_VERSION=${GITHUB_REF/refs\/tags\//} >> $GITHUB_ENV
     - uses: actions/checkout@v2
-    - name: Copy config.json
-      run: |
-        cp -T testnet/config.json bnc/config.json
     - name: Rename bnc folder
       run: |
         mv bnc bnc_testnet

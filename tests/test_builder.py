@@ -13,7 +13,8 @@ RESPONSE_OBJ = {'key': 1}
 def mocked_deps(mocker):
     mocker.patch('bnc.builder.get_hmac_hash', return_value=SIGNATURE)
     mocker.patch('bnc.builder.get_secret_key', return_value='MY_SECRET_KEY')
-    mocker.patch('bnc.builder.read_configuration', return_value={'bnc_api_endpoint': 'BINANCE_URL'})
+    mocker.patch('bnc.builder.read_configuration', return_value={'is_testnet': False,
+                                                                 'bnc_api_endpoint': 'BINANCE_URL'})
     mocker.patch('bnc.builder.get_api_key_header', return_value={'X-MBX-APIKEY': API_KEY})
     mocker.patch('bnc.builder.to_query_string_parameters', return_value='KEY=VALUE&KEY1=VALUE1')
 
@@ -26,11 +27,6 @@ def mocked_deps(mocker):
 def test_builder_default_method_is_get(mocked_deps):
     builder = Builder(endpoint='/test', payload={'key': 1})
     assert builder.method == 'GET'
-
-
-def test_builder_empty_headers(mocked_deps):
-    builder = Builder(endpoint='/test', payload={'key': 1})
-    assert not builder.headers
 
 
 @pytest.mark.parametrize("values", [None, ''])

@@ -1,5 +1,5 @@
 {
-  "is_testnet": false,
-  "bnc_config_path": ".bnc",
-  "bnc_api_endpoint": "https://api.binance.com"
+  "is_testnet": true,
+  "bnc_config_path": ".bnc_testnet",
+  "bnc_api_endpoint": "https://testnet.binance.vision/"
 }
