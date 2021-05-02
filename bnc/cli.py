@@ -1,16 +1,18 @@
 import os
 import sys
+import uuid
 
 import click
 
+from .logger import logger
 from .utils.config import write_configuration_file
 from .validation.val_cli import validate_output_value
-
-CONTEXT_SETTINGS = dict(auto_envvar_prefix="BNC")
 
 
 class Environment:
     def __init__(self):
+        self.log_id = str(uuid.uuid4())
+        self.logger = logger
         self.verbose = False
         self.output = 'json'
 
@@ -24,6 +26,10 @@ class Environment:
         """Logs a message to stderr only if verbose is enabled."""
         if self.verbose:
             self.log(msg, *args)
+
+    def json_log(self, msg, extra):
+        extra['log_id'] = self.log_id
+        self.logger.info(msg, extra=extra)
 
 
 pass_environment = click.make_pass_decorator(Environment, ensure=True)
@@ -50,7 +56,7 @@ class BncCLI(click.MultiCommand):
         return mod.cli
 
 
-@click.command(cls=BncCLI, context_settings=CONTEXT_SETTINGS)
+@click.command(cls=BncCLI)
 @click.option("-v", "--verbose", is_flag=True, help="Show more information about CLI's execution")
 @click.option("-o", "--output", default='json', callback=validate_output_value, type=click.types.STRING)
 @click.version_option(message="%(prog)s %(version)s")

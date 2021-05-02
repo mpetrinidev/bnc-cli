@@ -102,6 +102,8 @@ class Builder:
 
         self.result = result
 
+        self.env.json_log('response', extra=self.result)
+
         return self
 
     def filter(self, query):

@@ -50,7 +50,8 @@ setup(
         'click~=7.1.2',
         'pandas~=1.2.2',
         'PyYAML~=5.4.1',
-        'jmespath~=0.10.0'
+        'jmespath~=0.10.0',
+        'JSON-log-formatter~=0.3.1'
     ],  # Optional
     entry_points="""
         [console_scripts]

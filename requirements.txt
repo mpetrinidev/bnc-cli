@@ -6,3 +6,4 @@ pytest-mock~=3.5.1
 pandas~=1.2.2
 PyYAML~=5.4.1
 jmespath~=0.10.0
+JSON-log-formatter~=0.3.1
