@@ -1,4 +1,3 @@
-import sys
 import uuid
 
 import click
@@ -17,7 +16,8 @@ class Environment:
         """Logs a message to stderr."""
         if args:
             msg %= args
-        click.echo(msg, file=sys.stderr)
+
+        click.echo(click.style(msg))
 
     def vlog(self, msg, *args):
         """Logs a message to stderr only if verbose is enabled."""
