@@ -36,7 +36,7 @@ def test_order_status_missing_order_id_or_orig_client_order_id(runner, params):
     ['--symbol', 'LTCBTC', '--order_id', 44590, '--orig_client_order_id', 'oM1oUenAxizVURTgnsG3pU']
 ])
 def test_order_status_return_ok(runner, params, mock_default_deps, data):
-    mock_response = Mock(status_code=200)
+    mock_response = Mock(status_code=200, headers={})
     mock_response.json.return_value = data['order_status']
 
     mock_default_deps.patch('bnc.builder.requests.get', return_value=mock_response)

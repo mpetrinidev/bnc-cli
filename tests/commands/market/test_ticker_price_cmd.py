@@ -17,7 +17,7 @@ def data():
 
 
 def test_ticker_price_return_values(runner, mock_default_deps, data):
-    mock_response = Mock(status_code=200)
+    mock_response = Mock(status_code=200, headers={})
     mock_response.json.return_value = data['ticker_price']
 
     mock_default_deps.patch('bnc.builder.requests.get', return_value=mock_response)

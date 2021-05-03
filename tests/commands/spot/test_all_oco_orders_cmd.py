@@ -17,7 +17,7 @@ def data():
 
 
 def test_all_oco_orders_without_params_ok(runner, mock_default_deps, data):
-    mock_response = Mock(status_code=200)
+    mock_response = Mock(status_code=200, headers={})
     mock_response.json.return_value = data['all_oco_orders_without_params']
 
     mock_default_deps.patch('bnc.builder.requests.get', return_value=mock_response)
@@ -32,7 +32,7 @@ def test_all_oco_orders_without_params_ok(runner, mock_default_deps, data):
     ['--from_id', 590],
 ])
 def test_all_oco_orders_from_id_ok(runner, params, mock_default_deps, data):
-    mock_response = Mock(status_code=200)
+    mock_response = Mock(status_code=200, headers={})
     mock_response.json.return_value = data['all_oco_orders_id']
 
     mock_default_deps.patch('bnc.builder.requests.get', return_value=mock_response)
@@ -47,7 +47,7 @@ def test_all_oco_orders_from_id_ok(runner, params, mock_default_deps, data):
     ['--start_time', 1618359398560, '--end_time', 1618359398567],
 ])
 def test_all_oco_orders_st_and_et_ok(runner, params, mock_default_deps, data):
-    mock_response = Mock(status_code=200)
+    mock_response = Mock(status_code=200, headers={})
     mock_response.json.return_value = data['all_oco_orders_st_and_et']
 
     mock_default_deps.patch('bnc.builder.requests.get', return_value=mock_response)
@@ -62,7 +62,7 @@ def test_all_oco_orders_st_and_et_ok(runner, params, mock_default_deps, data):
     ['--limit', 2]
 ])
 def test_all_oco_orders_limit_ok(runner, params, mock_default_deps, data):
-    mock_response = Mock(status_code=200)
+    mock_response = Mock(status_code=200, headers={})
     mock_response.json.return_value = data['all_oco_orders_limit']
 
     mock_default_deps.patch('bnc.builder.requests.get', return_value=mock_response)

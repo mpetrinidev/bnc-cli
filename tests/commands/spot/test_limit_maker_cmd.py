@@ -33,7 +33,7 @@ def data():
      '--new_client_order_id', 'iuq4RTzy2HHjw0LZp19JoT', '--iceberg_qty', 0.5]
 ])
 def test_new_order_limit_maker_return_ack_resp(runner, params, mock_default_deps, data):
-    mock_response = Mock(status_code=200)
+    mock_response = Mock(status_code=200, headers={})
     mock_response.json.return_value = data['limit_maker_ack']
 
     mock_default_deps.patch('bnc.builder.requests.post', return_value=mock_response)
@@ -48,7 +48,7 @@ def test_new_order_limit_maker_return_ack_resp(runner, params, mock_default_deps
     ['--symbol', 'LTCBTC', '--side', 'BUY', '--quantity', 1, '--price', 0.003621, '--new_order_resp_type', 'FULL']
 ])
 def test_new_order_limit_maker_return_full_resp(runner, params, mock_default_deps, data):
-    mock_response = Mock(status_code=200)
+    mock_response = Mock(status_code=200, headers={})
     mock_response.json.return_value = data['limit_maker_full']
 
     mock_default_deps.patch('bnc.builder.requests.post', return_value=mock_response)
@@ -63,7 +63,7 @@ def test_new_order_limit_maker_return_full_resp(runner, params, mock_default_dep
     ['--symbol', 'LTCBTC', '--side', 'BUY', '--quantity', 1, '--price', 0.003621, '--new_order_resp_type', 'RESULT']
 ])
 def test_new_order_limit_maker_return_full_resp(runner, params, mock_default_deps, data):
-    mock_response = Mock(status_code=200)
+    mock_response = Mock(status_code=200, headers={})
     mock_response.json.return_value = data['limit_maker_result']
 
     mock_default_deps.patch('bnc.builder.requests.post', return_value=mock_response)

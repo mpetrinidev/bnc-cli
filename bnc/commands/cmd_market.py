@@ -4,7 +4,7 @@ from ..builder import Builder
 from ..builder import KlinesBuilder
 from ..builder import Ticker24AndPriceBuilder
 
-from ..cli import pass_environment
+from ..environment import pass_environment
 
 from ..decorators import coro
 from ..validation.val_market import validate_interval

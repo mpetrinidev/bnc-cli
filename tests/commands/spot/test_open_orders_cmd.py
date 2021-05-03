@@ -22,7 +22,7 @@ def data():
     ['--symbol', 'LTCBTC']
 ])
 def test_open_orders_return_ok(runner, params, mock_default_deps, data):
-    mock_response = Mock(status_code=200)
+    mock_response = Mock(status_code=200, headers={})
     mock_response.json.return_value = data["all_open_orders"]
 
     mock_default_deps.patch('bnc.builder.requests.get', return_value=mock_response)

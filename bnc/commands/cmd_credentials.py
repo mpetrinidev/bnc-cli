@@ -1,6 +1,6 @@
 import click
 
-from ..cli import pass_environment
+from ..environment import pass_environment
 
 from ..utils.config import remove_credentials
 from ..utils.config import write_credentials_file

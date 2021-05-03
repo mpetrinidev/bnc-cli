@@ -10,7 +10,7 @@ def test_server_time_is_up_and_running(runner, mock_default_deps):
         "serverTime": 1616520189601
     }
 
-    mock_response = Mock(status_code=200)
+    mock_response = Mock(status_code=200, headers={})
     mock_response.json.return_value = resp
 
     mock_default_deps.patch('bnc.builder.requests.get', return_value=mock_response)

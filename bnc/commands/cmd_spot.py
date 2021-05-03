@@ -16,7 +16,7 @@ from ..builder import CancelOcoOrderBuilder
 from ..builder import OcoOrderBuilder
 from ..builder import AllOcoOrderBuilder
 
-from ..cli import pass_environment
+from ..environment import pass_environment
 
 from ..decorators import coro
 from ..decorators import new_order_options

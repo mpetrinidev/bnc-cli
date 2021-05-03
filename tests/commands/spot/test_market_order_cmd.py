@@ -38,7 +38,7 @@ def test_new_order_market_missing_quantity_or_quote_order_id(runner, params):
     ['--symbol', 'LTCBTC', '--side', 'BUY', '--quantity', 1, '--new_client_order_id', 'custom_id'],
 ])
 def test_new_order_market_return_full_resp(runner, params, mock_default_deps, data):
-    mock_response = Mock(status_code=200)
+    mock_response = Mock(status_code=200, headers={})
     mock_response.json.return_value = data['market_full']
 
     mock_default_deps.patch('bnc.builder.requests.post', return_value=mock_response)
@@ -53,7 +53,7 @@ def test_new_order_market_return_full_resp(runner, params, mock_default_deps, da
     ['--symbol', 'LTCBTC', '--side', 'BUY', '--quantity', 1, '--new_order_resp_type', 'RESULT']
 ])
 def test_new_order_market_return_result_resp(runner, params, mock_default_deps, data):
-    mock_response = Mock(status_code=200)
+    mock_response = Mock(status_code=200, headers={})
     mock_response.json.return_value = data['market_result']
 
     mock_default_deps.patch('bnc.builder.requests.post', return_value=mock_response)
@@ -68,7 +68,7 @@ def test_new_order_market_return_result_resp(runner, params, mock_default_deps, 
     ['--symbol', 'LTCBTC', '--side', 'BUY', '--quantity', 1, '--new_order_resp_type', 'ACK']
 ])
 def test_new_order_market_return_ack_resp(runner, params, mock_default_deps, data):
-    mock_response = Mock(status_code=200)
+    mock_response = Mock(status_code=200, headers={})
     mock_response.json.return_value = data['market_ack']
 
     mock_default_deps.patch('bnc.builder.requests.post', return_value=mock_response)

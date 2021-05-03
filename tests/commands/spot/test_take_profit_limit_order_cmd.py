@@ -30,7 +30,7 @@ def data():
      '--quantity', 1, '--price', 0.0020, '--stop_price', 0.0015, '--iceberg_qty', 0.5],
 ])
 def test_new_order_take_profit_limit_return_ack_resp(runner, params, mock_default_deps, data):
-    mock_response = Mock(status_code=200)
+    mock_response = Mock(status_code=200, headers={})
     mock_response.json.return_value = data['take_profit_limit_ack']
 
     mock_default_deps.patch('bnc.builder.requests.post', return_value=mock_response)
@@ -46,7 +46,7 @@ def test_new_order_take_profit_limit_return_ack_resp(runner, params, mock_defaul
      '--quantity', 1, '--price', 0.0020, '--stop_price', 0.0015, '--new_order_resp_type', 'FULL'],
 ])
 def test_new_order_take_profit_limit_return_full_resp(runner, params, mock_default_deps, data):
-    mock_response = Mock(status_code=200)
+    mock_response = Mock(status_code=200, headers={})
     mock_response.json.return_value = data['take_profit_limit_full']
 
     mock_default_deps.patch('bnc.builder.requests.post', return_value=mock_response)
@@ -62,7 +62,7 @@ def test_new_order_take_profit_limit_return_full_resp(runner, params, mock_defau
      '--quantity', 1, '--price', 0.0020, '--stop_price', 0.0015, '--new_order_resp_type', 'RESULT'],
 ])
 def test_new_order_take_profit_limit_return_result_resp(runner, params, mock_default_deps, data):
-    mock_response = Mock(status_code=200)
+    mock_response = Mock(status_code=200, headers={})
     mock_response.json.return_value = data['take_profit_limit_result']
 
     mock_default_deps.patch('bnc.builder.requests.post', return_value=mock_response)

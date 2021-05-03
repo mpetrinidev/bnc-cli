@@ -5,7 +5,7 @@ import requests_async as requests
 import yaml
 import jmespath
 
-from .cli import Environment
+from .environment import Environment
 from .utils.config import read_configuration
 
 from .utils.security import get_api_key_header
@@ -102,7 +102,7 @@ class Builder:
 
         self.result = result
 
-        self.env.json_log('response', extra=self.result)
+        self.env.json_log('ads', extra=result)
 
         return self
 

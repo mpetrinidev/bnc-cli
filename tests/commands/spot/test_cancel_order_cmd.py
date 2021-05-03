@@ -40,7 +40,7 @@ def test_cancel_order_missing_order_id_or_orig_client_order_id(runner, params):
      '--new_client_order_id', 'vmITMP7NPf3EfSmcyzX6JF'],
 ])
 def test_cancel_order_return_ok(runner, params, mock_default_deps, data):
-    mock_response = Mock(status_code=200)
+    mock_response = Mock(status_code=200, headers={})
     mock_response.json.return_value = data['cancel_order']
 
     mock_default_deps.patch('bnc.builder.requests.delete', return_value=mock_response)

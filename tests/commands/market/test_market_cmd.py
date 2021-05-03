@@ -19,7 +19,8 @@ def test_cli_root_is_ok(runner):
                                               (ticker_24hr, ['--symbol', 'LTCBTC']),
                                               (ticker_price, ['--symbol', 'LTCBTC'])])
 def test_market_http_get_commands_return_500(runner, mock_default_deps, commands, options):
-    mock_response = Mock(status_code=500)
+    mock_response = Mock(status_code=500, headers={})
+    mock_response.json.return_value = None
     mock_default_deps.patch('bnc.builder.requests.get', return_value=mock_response)
 
     result = runner.invoke(commands, options)

@@ -21,7 +21,7 @@ def data():
     ['--symbol', 'LTCBTC'],
 ])
 def test_my_trades_return_all(runner, params, mock_default_deps, data):
-    mock_response = Mock(status_code=200)
+    mock_response = Mock(status_code=200, headers={})
     mock_response.json.return_value = data['all']
 
     mock_default_deps.patch('bnc.builder.requests.get', return_value=mock_response)
@@ -36,7 +36,7 @@ def test_my_trades_return_all(runner, params, mock_default_deps, data):
     ['--symbol', 'LTCBTC', '--from_id', 114]
 ])
 def test_my_trades_get_by_from_id(runner, params, mock_default_deps, data):
-    mock_response = Mock(status_code=200)
+    mock_response = Mock(status_code=200, headers={})
     mock_response.json.return_value = data['from_id']
 
     mock_default_deps.patch('bnc.builder.requests.get', return_value=mock_response)
@@ -52,7 +52,7 @@ def test_my_trades_get_by_from_id(runner, params, mock_default_deps, data):
     ['--symbol', 'LTCBTC', '--query', '[?to_number(price)<=`0.0030`]']
 ])
 def test_my_trades_filter_price_less_or_equal_than(runner, params, mock_default_deps, data):
-    mock_response = Mock(status_code=200)
+    mock_response = Mock(status_code=200, headers={})
     mock_response.json.return_value = data['price_less_or_equal']
 
     mock_default_deps.patch('bnc.builder.requests.get', return_value=mock_response)
@@ -68,7 +68,7 @@ def test_my_trades_filter_price_less_or_equal_than(runner, params, mock_default_
     ['--symbol', 'LTCBTC', '--start_time', 1617896183262, '--end_time', 1617896193262]
 ])
 def test_my_trades_start_time_and_end_time(runner, params, mock_default_deps, data):
-    mock_response = Mock(status_code=200)
+    mock_response = Mock(status_code=200, headers={})
     mock_response.json.return_value = data['start_and_end_time']
 
     mock_default_deps.patch('bnc.builder.requests.get', return_value=mock_response)

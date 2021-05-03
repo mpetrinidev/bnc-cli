@@ -21,7 +21,7 @@ def data():
     ['--symbol', 'LTCBTC'],
 ])
 def test_all_orders_return_all(runner, params, mock_default_deps, data):
-    mock_response = Mock(status_code=200)
+    mock_response = Mock(status_code=200, headers={})
     mock_response.json.return_value = data['all']
 
     mock_default_deps.patch('bnc.builder.requests.get', return_value=mock_response)
@@ -36,7 +36,7 @@ def test_all_orders_return_all(runner, params, mock_default_deps, data):
     ['--symbol', 'LTCBTC', '--order_id', 37764]
 ])
 def test_all_orders_get_by_order_id(runner, params, mock_default_deps, data):
-    mock_response = Mock(status_code=200)
+    mock_response = Mock(status_code=200, headers={})
     mock_response.json.return_value = data['match_order_id']
 
     mock_default_deps.patch('bnc.builder.requests.get', return_value=mock_response)
@@ -52,7 +52,7 @@ def test_all_orders_get_by_order_id(runner, params, mock_default_deps, data):
     ['--symbol', 'LTCBTC', '--start_time', 1615176222817, '--end_time', 1615176222818],
 ])
 def test_all_orders_start_time_and_end_time(runner, params, mock_default_deps, data):
-    mock_response = Mock(status_code=200)
+    mock_response = Mock(status_code=200, headers={})
     mock_response.json.return_value = data['start_and_end_time']
 
     mock_default_deps.patch('bnc.builder.requests.get', return_value=mock_response)
@@ -68,7 +68,7 @@ def test_all_orders_start_time_and_end_time(runner, params, mock_default_deps, d
     ['--symbol', 'LTCBTC', '--query', "[?status=='EXPIRED']"],
 ])
 def test_all_orders_return_all_filter_by_expired(runner, params, mock_default_deps, data):
-    mock_response = Mock(status_code=200)
+    mock_response = Mock(status_code=200, headers={})
     mock_response.json.return_value = data['all']
 
     mock_default_deps.patch('bnc.builder.requests.get', return_value=mock_response)
@@ -83,7 +83,7 @@ def test_all_orders_return_all_filter_by_expired(runner, params, mock_default_de
     ['--symbol', 'LTCBTC', '--query', "[?type=='STOP_LOSS_LIMIT']"],
 ])
 def test_all_orders_return_all_filter_by_stop_loss_limit(runner, params, mock_default_deps, data):
-    mock_response = Mock(status_code=200)
+    mock_response = Mock(status_code=200, headers={})
     mock_response.json.return_value = data['all']
 
     mock_default_deps.patch('bnc.builder.requests.get', return_value=mock_response)

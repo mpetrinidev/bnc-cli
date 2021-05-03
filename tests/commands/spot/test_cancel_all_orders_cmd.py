@@ -21,7 +21,7 @@ def data():
     ['--symbol', 'LTCBTC']
 ])
 def test_cancel_all_orders_return_ok(runner, params, mock_default_deps, data):
-    mock_response = Mock(status_code=200)
+    mock_response = Mock(status_code=200, headers={})
     mock_response.json.return_value = data['cancel_all_orders']
 
     mock_default_deps.patch('bnc.builder.requests.delete', return_value=mock_response)

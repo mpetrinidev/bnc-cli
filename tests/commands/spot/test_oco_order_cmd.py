@@ -21,7 +21,7 @@ def data():
     ['--order_list_id', 592, '--list_client_order_id', "ykprg1hXtgmNjHVcZ3YKNM"]
 ])
 def test_oco_order_ocoid_and_lcoid_return_ok(runner, params, mock_default_deps, data):
-    mock_response = Mock(status_code=200)
+    mock_response = Mock(status_code=200, headers={})
     mock_response.json.return_value = data['get_oco_order']
 
     mock_default_deps.patch('bnc.builder.requests.get', return_value=mock_response)
@@ -36,7 +36,7 @@ def test_oco_order_ocoid_and_lcoid_return_ok(runner, params, mock_default_deps, 
     ['--order_list_id', 592]
 ])
 def test_oco_order_only_ocoid_return_ok(runner, params, mock_default_deps, data):
-    mock_response = Mock(status_code=200)
+    mock_response = Mock(status_code=200, headers={})
     mock_response.json.return_value = data['get_oco_order']
 
     mock_default_deps.patch('bnc.builder.requests.get', return_value=mock_response)
@@ -51,7 +51,7 @@ def test_oco_order_only_ocoid_return_ok(runner, params, mock_default_deps, data)
     ['--list_client_order_id', "ykprg1hXtgmNjHVcZ3YKNM"]
 ])
 def test_oco_order_only_lcoid_return_ok(runner, params, mock_default_deps, data):
-    mock_response = Mock(status_code=200)
+    mock_response = Mock(status_code=200, headers={})
     mock_response.json.return_value = data['get_oco_order']
 
     mock_default_deps.patch('bnc.builder.requests.get', return_value=mock_response)
