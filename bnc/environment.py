@@ -2,13 +2,14 @@ import uuid
 
 import click
 
-from .logger import logger
+from .logger import logger, logger_cli
 
 
 class Environment:
     def __init__(self):
         self.log_id = str(uuid.uuid4())
         self.logger = logger
+        self.logger_cli = logger_cli
         self.verbose = False
         self.output = 'json'
 

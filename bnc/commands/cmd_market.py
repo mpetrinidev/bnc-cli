@@ -45,6 +45,7 @@ async def server_time(ctx):
         return
 
     ctx.log('Binance API is up and running')
+    ctx.logger_cli.debug('Binance API is up and running')
 
     builder.generate_output()
 
