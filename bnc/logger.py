@@ -5,16 +5,14 @@ import click
 
 class BncLoggerColorFormatter(logging.Formatter):
     colors = {
-        'ERRROR': dict(fg='red'),
-        'EXCEPTION': dict(fg='red'),
-        'CRITICAL': dict(fg='red'),
-        'DEBUG': dict(fg='cyan'),
-        'WARNING': dict(fg='yellow')
+        'error': dict(fg='red'),
+        'info': dict(fg='blue'),
+        'warning': dict(fg='yellow')
     }
 
     def format(self, record: logging.LogRecord) -> str:
         if not record.exc_info:
-            level = record.levelname
+            level = record.levelname.lower()
             msg = record.getMessage()
             if level in self.colors:
                 prefix = click.style('[{}] '.format(level),
@@ -34,12 +32,10 @@ class BncLoggerFilter(logging.Filter):
 
 
 class BncLoggerHandler(logging.Handler):
-    _use_stderr = True
-
     def emit(self, record: logging.LogRecord) -> None:
         try:
             msg = self.format(record)
-            click.echo(msg, err=self._use_stderr)
+            click.echo(msg)
         except Exception:
             self.handleError(record)
 
