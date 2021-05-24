@@ -25,10 +25,5 @@ class Environment:
 
         click.echo(click.style(msg))
 
-    def vlog(self, msg, *args):
-        """Logs a message to stderr only if verbose is enabled."""
-        if self.verbose:
-            self.log(msg, *args)
-
 
 pass_environment = click.make_pass_decorator(Environment, ensure=True)
