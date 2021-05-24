@@ -51,7 +51,6 @@ setup(
         'pandas~=1.2.2',
         'PyYAML~=5.4.1',
         'jmespath~=0.10.0',
-        'JSON-log-formatter~=0.3.1',
         'colorama~=0.4.4'
     ],  # Optional
     entry_points="""

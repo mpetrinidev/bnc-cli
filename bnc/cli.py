@@ -39,5 +39,5 @@ def cli(ctx, verbose, output):
     """Binance command line interface to interact with Binance API."""
     write_configuration_file()
 
-    ctx.verbose = verbose
-    ctx.output = output
+    ctx.set_verbose(verbose)
+    ctx.set_output(output)

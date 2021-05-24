@@ -1,17 +1,22 @@
-import uuid
-
 import click
 
-from .logger import logger, logger_cli
+from .logger import logger, BncLoggerFilter
 
 
 class Environment:
     def __init__(self):
-        self.log_id = str(uuid.uuid4())
-        self.logger = logger
-        self.logger_cli = logger_cli
         self.verbose = False
+        self.logger = None
         self.output = 'json'
+
+    def set_verbose(self, verbose):
+        self.verbose = verbose
+
+        logger.addFilter(BncLoggerFilter(verbose))
+        self.logger = logger
+
+    def set_output(self, output):
+        self.output = output
 
     def log(self, msg, *args):
         """Logs a message to stderr."""
@@ -24,10 +29,6 @@ class Environment:
         """Logs a message to stderr only if verbose is enabled."""
         if self.verbose:
             self.log(msg, *args)
-
-    def json_log(self, msg, extra):
-        extra['log_id'] = self.log_id
-        self.logger.info(msg, extra=extra)
 
 
 pass_environment = click.make_pass_decorator(Environment, ensure=True)
