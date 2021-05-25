@@ -1,3 +1,4 @@
+import sys
 from logging import LogRecord
 
 import click
@@ -6,6 +7,7 @@ import pytest
 from bnc.logger import BncLoggerColorFormatter
 from bnc.logger import BncLoggerFilter
 from bnc.logger import BncLoggerHandler
+
 from bnc.logger import logger
 
 
@@ -14,7 +16,7 @@ def msg():
     return "Logging info message"
 
 
-@pytest.fixture(scope='session')
+@pytest.fixture
 def record(msg):
     return LogRecord(name="logger", level=20, pathname=__name__, lineno=1, msg=msg, args={}, exc_info=None)
 
@@ -26,6 +28,20 @@ def test_logger_formatter_info_level_message_ok(msg, record):
     expected_style = click.style('[{}] '.format('info'), **dict(fg='blue'))
 
     assert result == f"{expected_style}{msg}"
+
+
+def test_logger_formatter_exc_info_message_ok(msg, record):
+    logger_formatter = BncLoggerColorFormatter()
+    try:
+        raise Exception('Test Exception')
+    except Exception:
+        record.exc_info = sys.exc_info()
+
+    value = logger_formatter.formatException(record.exc_info)
+
+    result = logger_formatter.format(record)
+
+    assert result == f"{msg}\n{value}"
 
 
 def test_logger_filter_verbose_is_true(record):
