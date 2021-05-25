@@ -1,23 +1,23 @@
 from unittest.mock import Mock
 
+import bnc.commands.cmd_market
 from tests.commands.common_fixtures import *
 
-from bnc.commands.cmd_market import cli, test, exchange_info, trades, klines, current_avg_price, ticker_24hr, \
-    ticker_price, server_time
+from bnc.cli import cli
 
 
 def test_cli_root_is_ok(runner):
-    result = runner.invoke(cli)
+    result = runner.invoke(bnc.commands.cmd_market.cli)
     assert result.exit_code == 0
 
 
-@pytest.mark.parametrize("commands,options", [(test, []), (server_time, []),
-                                              (exchange_info, []),
-                                              (trades, ['--symbol', 'LTCBTC', '--limit', 5]),
-                                              (klines, ['--symbol', 'LTCBTC', '--interval', '1m']),
-                                              (current_avg_price, ['--symbol', 'LTCBTC']),
-                                              (ticker_24hr, ['--symbol', 'LTCBTC']),
-                                              (ticker_price, ['--symbol', 'LTCBTC'])])
+@pytest.mark.parametrize("commands,options", [(cli, ['market', 'test']), (cli, ['market', 'server_time']),
+                                              (cli, ['market', 'exchange_info']),
+                                              (cli, ['market', 'trades', '--symbol', 'LTCBTC', '--limit', 5]),
+                                              (cli, ['market', 'klines', '--symbol', 'LTCBTC', '--interval', '1m']),
+                                              (cli, ['market', 'current_avg_price', '--symbol', 'LTCBTC']),
+                                              (cli, ['market', 'ticker_24hr', '--symbol', 'LTCBTC']),
+                                              (cli, ['market', 'ticker_price', '--symbol', 'LTCBTC'])])
 def test_market_http_get_commands_return_500(runner, mock_default_deps, commands, options):
     mock_response = Mock(status_code=500, headers={})
     mock_response.json.return_value = None

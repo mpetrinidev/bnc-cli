@@ -1,7 +1,7 @@
 import os
 from unittest.mock import Mock
 
-from bnc.commands.cmd_market import ticker_24hr
+from bnc.cli import cli
 from bnc.utils.utils import json_to_str
 from tests.commands.common import read_json_test_file
 from tests.commands.common_fixtures import *
@@ -22,6 +22,6 @@ def test_ticker_24hr_return_values(runner, mock_default_deps, data):
 
     mock_default_deps.patch('bnc.builder.requests.get', return_value=mock_response)
 
-    result = runner.invoke(ticker_24hr)
+    result = runner.invoke(cli, ['market', 'ticker_24hr'])
     assert result.exit_code == 0
     assert result.output == f'{json_to_str(data["ticker_24hr"])}\n'

@@ -1,8 +1,8 @@
 import os
 from unittest.mock import Mock
 
+from bnc.cli import cli
 from tests.commands.common_fixtures import *
-from bnc.commands.cmd_market import exchange_info
 from bnc.utils.utils import json_to_str
 from tests.commands.common import read_json_test_file
 
@@ -22,6 +22,6 @@ def test_trades_return_values(runner, mock_default_deps, data):
 
     mock_default_deps.patch('bnc.builder.requests.get', return_value=mock_response)
 
-    result = runner.invoke(exchange_info)
+    result = runner.invoke(cli, ['market', 'exchange_info'])
     assert result.exit_code == 0
     assert result.output == f'{json_to_str(data["trades"])}\n'

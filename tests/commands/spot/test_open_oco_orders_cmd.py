@@ -1,7 +1,7 @@
 import os
 from unittest.mock import Mock
 
-from bnc.commands.cmd_spot import open_oco_orders
+from bnc.cli import cli
 from bnc.utils.utils import json_to_str
 from tests.commands.common import read_json_test_file
 from tests.commands.common_fixtures import *
@@ -22,6 +22,6 @@ def test_open_oco_orders_return_ok(runner, mock_default_deps, data):
 
     mock_default_deps.patch('bnc.builder.requests.get', return_value=mock_response)
 
-    result = runner.invoke(open_oco_orders)
+    result = runner.invoke(cli, ['spot', 'open_oco_orders'])
     assert result.exit_code == 0
     assert result.output == json_to_str(data['oco_orders_all']) + '\n'
