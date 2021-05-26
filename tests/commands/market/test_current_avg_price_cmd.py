@@ -1,3 +1,4 @@
+import datetime
 import os
 from unittest.mock import Mock
 
@@ -17,7 +18,12 @@ def data():
 
 
 def test_current_avg_price_return_values(runner, mock_default_deps, data):
-    mock_response = Mock(status_code=200, headers={})
+    mock_response = Mock(status_code=200, elapsed=datetime.datetime.now(), headers={
+        'content-type': 'json',
+        'x-mbx-uuid': 'uuid',
+        'x-mbx-used-weight': 10,
+        'x-mbx-used-weight-1m': 1
+    })
     mock_response.json.return_value = data['current_avg_price']
 
     mock_default_deps.patch('bnc.builder.requests.get', return_value=mock_response)

@@ -1,3 +1,4 @@
+import datetime
 from abc import abstractmethod
 
 import click
@@ -12,7 +13,7 @@ from .utils.security import get_api_key_header
 from .utils.security import get_hmac_hash
 from .utils.security import get_secret_key
 
-from .utils.utils import to_query_string_parameters
+from .utils.utils import to_query_string_parameters, mask_dic_values
 from .utils.utils import json_to_str
 
 
@@ -26,11 +27,10 @@ class Builder:
 
         self.without_signature = without_signature
         self.payload = payload
-        self.endpoint = endpoint
-
-        self._validate_http_method(method)
 
         self.method = method.upper()
+        self.__validate_http_method__()
+
         self.headers = headers
 
         self.response = None
@@ -38,6 +38,8 @@ class Builder:
         self.has_error = False
 
         self.config_values = read_configuration()
+
+        self.endpoint = self.config_values['bnc_api_endpoint'] + endpoint
 
         self.headers['User-Agent'] = f'bnc-cli {"" if not self.config_values["is_testnet"] else "- testnet"} ' \
                                      f'(https://github.com/mpetrinidev/bnc-cli)'
@@ -48,8 +50,19 @@ class Builder:
         if ctx is not None:
             self.env = ctx.ensure_object(Environment)
 
-    def _validate_http_method(self, method: str):
-        if method.upper() not in ['POST', 'GET', 'PUT', 'PATCH', 'DELETE']:
+        self.__verbose_constructor_values__()
+
+    def __verbose_constructor_values__(self):
+        self.env.logger.info(f'Initial values', extra={
+            'endpoint': self.endpoint,
+            'without_signature': self.without_signature,
+            'payload': self.payload,
+            'method': self.method,
+            'headers': self.headers
+        })
+
+    def __validate_http_method__(self):
+        if self.method.upper() not in ['POST', 'GET', 'PUT', 'PATCH', 'DELETE']:
             raise ValueError('Http method is invalid')
 
     @abstractmethod
@@ -59,23 +72,35 @@ class Builder:
     def set_security(self):
         if self.payload is not None and not self.without_signature:
             self.payload['signature'] = get_hmac_hash(to_query_string_parameters(self.payload), get_secret_key())
+            self.env.logger.info(f'Signature created successfully')
 
         self.headers.update(get_api_key_header())
+        self.env.logger.info(f'Headers updated successfully at set_security',
+                             extra={'headers': mask_dic_values(self.headers, ['X-MBX-APIKEY'])})
 
         return self
 
     async def send_http_req(self):
+        self.env.logger.debug('Starting HTTP call to Binance API')
+
         if self.method == 'GET':
-            self.response = await requests.get(self.config_values['bnc_api_endpoint'] + self.endpoint,
-                                               headers=self.headers, params=self.payload)
+            self.response = await requests.get(self.endpoint, headers=self.headers, params=self.payload)
 
         if self.method == 'POST':
-            self.response = await requests.post(self.config_values['bnc_api_endpoint'] + self.endpoint,
-                                                headers=self.headers, params=self.payload)
+            self.response = await requests.post(self.endpoint, headers=self.headers, params=self.payload)
 
         if self.method == 'DELETE':
-            self.response = await requests.delete(self.config_values['bnc_api_endpoint'] + self.endpoint,
-                                                  headers=self.headers, params=self.payload)
+            self.response = await requests.delete(self.endpoint, headers=self.headers, params=self.payload)
+
+        self.env.logger.debug('Finishing HTTP call to Binance API')
+        self.env.logger.info('Response details', extra={
+            'status_code': self.response.__dict__['status_code'],
+            'content-type': self.response.__dict__['headers']['content-type'],
+            'x-mbx-uuid': self.response.__dict__['headers']['x-mbx-uuid'],
+            'x-mbx-used-weight': self.response.__dict__['headers']['x-mbx-used-weight'],
+            'x-mbx-used-weight-1m': self.response.__dict__['headers']['x-mbx-used-weight-1m'],
+            'time-taken': str(self.response.__dict__['elapsed'])
+        })
 
         return self
 
@@ -87,14 +112,25 @@ class Builder:
             'headers': self.response.headers
         }
 
+        self.env.logger.debug('Processing response...')
+
         if 200 <= self.response.status_code <= 299:
+            self.env.logger.info('Everything looks good')
+
             result['successful'] = True
 
         if 500 <= self.response.status_code <= 599:
+            self.env.logger.error('HTTP Response error (500 - 599)')
+
             self.env.log("Binance's side internal error has occurred")
             self.has_error = True
 
         if 400 <= self.response.status_code <= 499:
+            self.env.logger.error('HTTP Response error (400-499)', extra={
+                'code': result['results']['code'],
+                'msg': result['results']['msg']
+            })
+
             self.env.log(
                 f'Binance API is reporting the following error: {result["results"]["code"]} | '
                 f'{result["results"]["msg"]}')
@@ -102,14 +138,22 @@ class Builder:
 
         self.result = result
 
+        self.env.logger.debug('Finishing process response')
+
         return self
 
     def filter(self, query):
         if self.has_error:
             return self
 
+        self.env.logger.debug('Applying filter to results')
+
         if query is not None:
             self.result['results'] = jmespath.search(query, self.result['results'])
+        else:
+            self.env.logger.info('No filter provided')
+
+        self.env.logger.debug('Ending filtering results')
 
         return self
 
@@ -119,11 +163,15 @@ class Builder:
 
         output = None
 
+        self.env.logger.info(f'Generating output in {self.env.output} format')
+
         if self.env.output == 'json':
             output = json_to_str(self.result['results'])
 
         if self.env.output == 'yaml':
             output = yaml.safe_dump(self.result['results'], default_flow_style=False, sort_keys=False)
+
+        self.env.logger.info(f'Output generated successfully')
 
         self.env.log(output)
 
@@ -146,7 +194,7 @@ class MarketOrderBuilder(Builder):
 
     def add_optional_params_to_payload(self, **kwargs):
         quantity, quote_order_qty, \
-            new_client_order_id = kwargs.values()
+        new_client_order_id = kwargs.values()
 
         if quantity is not None:
             self.payload['quantity'] = quantity
@@ -178,7 +226,7 @@ class TakeProfitLimitBuilder(Builder):
 
     def add_optional_params_to_payload(self, **kwargs):
         new_client_order_id, \
-            iceberg_qty = kwargs.values()
+        iceberg_qty = kwargs.values()
 
         if new_client_order_id is not None:
             self.payload['newClientOrderId'] = new_client_order_id
@@ -193,7 +241,7 @@ class LimitMakerBuilder(Builder):
 
     def add_optional_params_to_payload(self, **kwargs):
         new_client_order_id, \
-            iceberg_qty = kwargs.values()
+        iceberg_qty = kwargs.values()
 
         if new_client_order_id is not None:
             self.payload['newClientOrderId'] = new_client_order_id
@@ -289,9 +337,9 @@ class AllOrderBuilder(Builder):
 class NewOcoOrderBuilder(Builder):
     def add_optional_params_to_payload(self, **kwargs):
         list_client_order_id, limit_client_order_id, \
-            limit_iceberg_qty, stop_client_order_id, \
-            stop_limit_price, stop_iceberg_qty, \
-            stop_limit_time_in_force = kwargs.values()
+        limit_iceberg_qty, stop_client_order_id, \
+        stop_limit_price, stop_iceberg_qty, \
+        stop_limit_time_in_force = kwargs.values()
 
         if list_client_order_id is not None:
             self.payload['listClientOrderId'] = list_client_order_id
