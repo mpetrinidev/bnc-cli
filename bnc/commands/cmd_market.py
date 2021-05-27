@@ -36,6 +36,7 @@ async def test(ctx):
 @coro
 async def server_time(ctx):
     """Test connectivity to the Rest API and get the current server time."""
+    raise Exception("Booom")
     builder = Builder(endpoint='api/v3/time')
     await builder.send_http_req()
 

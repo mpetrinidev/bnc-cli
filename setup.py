@@ -55,7 +55,7 @@ setup(
     ],  # Optional
     entry_points="""
         [console_scripts]
-        {command}={module_prefix}.cli:cli
+        {command}={module_prefix}.cli:entry_point
     """.format(command=bnc_package_name, module_prefix=bnc_package_name),
     project_urls={  # Optional
         'Source': 'https://github.com/mpetrinidev/bnc-cli',

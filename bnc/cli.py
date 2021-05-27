@@ -5,7 +5,6 @@ from .environment import pass_environment
 from .utils.config import write_configuration_file
 from .validation.val_cli import validate_output_value
 
-
 cmd_folder = os.path.abspath(os.path.join(os.path.dirname(__file__), "commands"))
 
 
@@ -28,6 +27,23 @@ class BncCLI(click.MultiCommand):
             return
 
         return mod.cli
+
+
+def entry_point():
+    try:
+        cli()
+    except Exception as e:
+        msg = [
+            click.style(f'[exception]', **dict(fg='red')),
+            ' ',
+            str(e),
+            '\n',
+            click.style(f'[info]', **dict(fg='blue')),
+            ' ',
+            'Submit an issue with --verbose details in https://github.com/mpetrinidev/bnc-cli/issues for help'
+        ]
+
+        click.echo(''.join(msg))
 
 
 @click.command(cls=BncCLI)
