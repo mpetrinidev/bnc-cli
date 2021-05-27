@@ -1,9 +1,10 @@
+import datetime
 import os
 from unittest.mock import Mock
 
 from bnc.cli import cli
 from bnc.utils.utils import json_to_str
-from tests.commands.common import read_json_test_file
+from tests.commands.common import read_json_test_file, get_headers
 from tests.commands.common_fixtures import *
 
 
@@ -39,7 +40,7 @@ def test_new_order_market_missing_quantity_or_quote_order_id(runner, params, moc
      'custom_id'],
 ])
 def test_new_order_market_return_full_resp(runner, params, mock_default_deps, data):
-    mock_response = Mock(status_code=200, headers={})
+    mock_response = Mock(status_code=200, elapsed=datetime.datetime.now(), headers=get_headers())
     mock_response.json.return_value = data['market_full']
 
     mock_default_deps.patch('bnc.builder.requests.post', return_value=mock_response)
@@ -55,7 +56,7 @@ def test_new_order_market_return_full_resp(runner, params, mock_default_deps, da
      'RESULT']
 ])
 def test_new_order_market_return_result_resp(runner, params, mock_default_deps, data):
-    mock_response = Mock(status_code=200, headers={})
+    mock_response = Mock(status_code=200, elapsed=datetime.datetime.now(), headers=get_headers())
     mock_response.json.return_value = data['market_result']
 
     mock_default_deps.patch('bnc.builder.requests.post', return_value=mock_response)
@@ -71,7 +72,7 @@ def test_new_order_market_return_result_resp(runner, params, mock_default_deps, 
      'ACK']
 ])
 def test_new_order_market_return_ack_resp(runner, params, mock_default_deps, data):
-    mock_response = Mock(status_code=200, headers={})
+    mock_response = Mock(status_code=200, elapsed=datetime.datetime.now(), headers=get_headers())
     mock_response.json.return_value = data['market_ack']
 
     mock_default_deps.patch('bnc.builder.requests.post', return_value=mock_response)

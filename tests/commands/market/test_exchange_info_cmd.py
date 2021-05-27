@@ -1,8 +1,10 @@
+import datetime
 import os
+
 from unittest.mock import Mock
 
 from bnc.cli import cli
-from tests.commands.common import read_json_test_file
+from tests.commands.common import read_json_test_file, get_headers
 from tests.commands.common_fixtures import *
 from bnc.utils.utils import json_to_str
 
@@ -17,7 +19,7 @@ def data():
 
 
 def test_exchange_info_return_values(runner, mock_default_deps, data):
-    mock_response = Mock(status_code=200, headers={})
+    mock_response = Mock(status_code=200, elapsed=datetime.datetime.now(), headers=get_headers())
     mock_response.json.return_value = data['exchange_info']
 
     mock_default_deps.patch('bnc.builder.requests.get', return_value=mock_response)

@@ -1,6 +1,8 @@
+import datetime
 from unittest.mock import Mock
 
 import bnc.commands.cmd_market
+from tests.commands.common import get_headers
 from tests.commands.common_fixtures import *
 
 from bnc.cli import cli
@@ -19,7 +21,7 @@ def test_cli_root_is_ok(runner):
                                               (cli, ['market', 'ticker_24hr', '--symbol', 'LTCBTC']),
                                               (cli, ['market', 'ticker_price', '--symbol', 'LTCBTC'])])
 def test_market_http_get_commands_return_500(runner, mock_default_deps, commands, options):
-    mock_response = Mock(status_code=500, headers={})
+    mock_response = Mock(status_code=500, elapsed=datetime.datetime.now(), headers=get_headers())
     mock_response.json.return_value = None
     mock_default_deps.patch('bnc.builder.requests.get', return_value=mock_response)
 

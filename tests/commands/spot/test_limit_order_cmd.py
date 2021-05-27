@@ -1,9 +1,10 @@
+import datetime
 import os
 from unittest.mock import Mock
 
 from bnc.cli import cli
 from bnc.utils.utils import json_to_str
-from tests.commands.common import read_json_test_file
+from tests.commands.common import read_json_test_file, get_headers
 from tests.commands.common_fixtures import *
 
 
@@ -27,7 +28,7 @@ def data():
      '--iceberg_qty', 0.20]
 ])
 def test_new_order_limit_return_full_resp(runner, params, mock_default_deps, data):
-    mock_response = Mock(status_code=200, headers={})
+    mock_response = Mock(status_code=200, elapsed=datetime.datetime.now(), headers=get_headers())
     mock_response.json.return_value = data['limit_full']
 
     mock_default_deps.patch('bnc.builder.requests.post', return_value=mock_response)
@@ -43,7 +44,7 @@ def test_new_order_limit_return_full_resp(runner, params, mock_default_deps, dat
      '--new_order_resp_type', 'ACK']
 ])
 def test_new_order_limit_return_ack_resp(runner, params, mock_default_deps, data):
-    mock_response = Mock(status_code=200, headers={})
+    mock_response = Mock(status_code=200, elapsed=datetime.datetime.now(), headers=get_headers())
     mock_response.json.return_value = data['limit_ack']
 
     mock_default_deps.patch('bnc.builder.requests.post', return_value=mock_response)
@@ -59,7 +60,7 @@ def test_new_order_limit_return_ack_resp(runner, params, mock_default_deps, data
      '--new_order_resp_type', 'RESULT']
 ])
 def test_new_order_limit_return_ack_resp(runner, params, mock_default_deps, data):
-    mock_response = Mock(status_code=200, headers={})
+    mock_response = Mock(status_code=200, elapsed=datetime.datetime.now(), headers=get_headers())
     mock_response.json.return_value = data['limit_result']
 
     mock_default_deps.patch('bnc.builder.requests.post', return_value=mock_response)

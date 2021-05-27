@@ -1,9 +1,10 @@
+import datetime
 import os
 from unittest.mock import Mock
 
 from bnc.cli import cli
 from bnc.utils.utils import json_to_str
-from tests.commands.common import read_json_test_file
+from tests.commands.common import read_json_test_file, get_headers
 from tests.commands.common_fixtures import *
 
 
@@ -24,7 +25,7 @@ def data():
      '--stop_limit_price', 0.0075, '--stop_limit_time_in_force', "GTC"]
 ])
 def test_new_oco_order_return_full_response(runner, params, mock_default_deps, data):
-    mock_response = Mock(status_code=200, headers={})
+    mock_response = Mock(status_code=200, elapsed=datetime.datetime.now(), headers=get_headers())
     mock_response.json.return_value = data['new_oco_order_full']
 
     mock_default_deps.patch('bnc.builder.requests.post', return_value=mock_response)
@@ -43,7 +44,7 @@ def test_new_oco_order_return_full_response(runner, params, mock_default_deps, d
      '--stop_limit_price', 0.0075, '--stop_limit_time_in_force', "GTC", '--new_order_resp_type', "ACK"]
 ])
 def test_new_oco_order_return_ack_response(runner, params, mock_default_deps, data):
-    mock_response = Mock(status_code=200, headers={})
+    mock_response = Mock(status_code=200, elapsed=datetime.datetime.now(), headers=get_headers())
     mock_response.json.return_value = data['new_oco_order_ack']
 
     mock_default_deps.patch('bnc.builder.requests.post', return_value=mock_response)
@@ -62,7 +63,7 @@ def test_new_oco_order_return_ack_response(runner, params, mock_default_deps, da
      '--stop_limit_price', 0.0075, '--stop_limit_time_in_force', "GTC", '--new_order_resp_type', "RESULT"]
 ])
 def test_new_oco_order_return_result_response(runner, params, mock_default_deps, data):
-    mock_response = Mock(status_code=200, headers={})
+    mock_response = Mock(status_code=200, elapsed=datetime.datetime.now(), headers=get_headers())
     mock_response.json.return_value = data['new_oco_order_result']
 
     mock_default_deps.patch('bnc.builder.requests.post', return_value=mock_response)
@@ -86,7 +87,7 @@ def test_new_oco_order_return_result_response(runner, params, mock_default_deps,
      '--stop_client_order_id', "custom_stop_client_order_id"]
 ])
 def test_new_oco_order_set_multiple_custom_ids(runner, params, mock_default_deps, data):
-    mock_response = Mock(status_code=200, headers={})
+    mock_response = Mock(status_code=200, elapsed=datetime.datetime.now(), headers=get_headers())
     mock_response.json.return_value = data['new_oco_order_custom_ids']
 
     mock_default_deps.patch('bnc.builder.requests.post', return_value=mock_response)
@@ -107,7 +108,7 @@ def test_new_oco_order_set_multiple_custom_ids(runner, params, mock_default_deps
      '--limit_iceberg_qty', 0.5, '--stop_iceberg_qty', 0.5]
 ])
 def test_new_oco_order_set_iceberg_qty(runner, params, mock_default_deps, data):
-    mock_response = Mock(status_code=200, headers={})
+    mock_response = Mock(status_code=200, elapsed=datetime.datetime.now(), headers=get_headers())
     mock_response.json.return_value = data['new_oco_order_iceberg_qty']
 
     mock_default_deps.patch('bnc.builder.requests.post', return_value=mock_response)

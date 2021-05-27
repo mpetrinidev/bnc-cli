@@ -1,9 +1,10 @@
+import datetime
 import os
 from unittest.mock import Mock
 
 from bnc.cli import cli
 from bnc.utils.utils import json_to_str
-from tests.commands.common import read_json_test_file
+from tests.commands.common import read_json_test_file, get_headers
 from tests.commands.common_fixtures import *
 
 
@@ -42,7 +43,7 @@ def test_cancel_order_missing_order_id_or_orig_client_order_id(runner, params, m
      '--new_client_order_id', 'vmITMP7NPf3EfSmcyzX6JF'],
 ])
 def test_cancel_order_return_ok(runner, params, mock_default_deps, data):
-    mock_response = Mock(status_code=200, headers={})
+    mock_response = Mock(status_code=200, elapsed=datetime.datetime.now(), headers=get_headers())
     mock_response.json.return_value = data['cancel_order']
 
     mock_default_deps.patch('bnc.builder.requests.delete', return_value=mock_response)

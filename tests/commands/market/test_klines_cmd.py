@@ -1,10 +1,11 @@
+import datetime
 import os
 from unittest.mock import Mock
 
 from bnc.cli import cli
 from tests.commands.common_fixtures import *
 from bnc.utils.utils import json_to_str
-from tests.commands.common import read_json_test_file
+from tests.commands.common import read_json_test_file, get_headers
 
 
 def get_json_filename():
@@ -21,7 +22,7 @@ def data():
     ['market', 'klines', '--symbol', "LTCBTC", '--interval', '1m']
 ])
 def test_klines_return_values(runner, mock_default_deps, data, params):
-    mock_response = Mock(status_code=200, headers={})
+    mock_response = Mock(status_code=200, elapsed=datetime.datetime.now(), headers=get_headers())
     mock_response.json.return_value = data['klines']
 
     mock_default_deps.patch('bnc.builder.requests.get', return_value=mock_response)
@@ -37,7 +38,7 @@ def test_klines_return_values(runner, mock_default_deps, data, params):
      1618670579999]
 ])
 def test_klines_start_time_and_end_time(runner, mock_default_deps, data, params):
-    mock_response = Mock(status_code=200, headers={})
+    mock_response = Mock(status_code=200, elapsed=datetime.datetime.now(), headers=get_headers())
     mock_response.json.return_value = data['klines_st_et']
 
     mock_default_deps.patch('bnc.builder.requests.get', return_value=mock_response)
@@ -52,7 +53,7 @@ def test_klines_start_time_and_end_time(runner, mock_default_deps, data, params)
     ['market', 'klines', '--symbol', "LTCBTC", '--interval', '1m', '--limit', 1]
 ])
 def test_klines_limit_1(runner, mock_default_deps, data, params):
-    mock_response = Mock(status_code=200, headers={})
+    mock_response = Mock(status_code=200, elapsed=datetime.datetime.now(), headers=get_headers())
     mock_response.json.return_value = data['klines_limit_1']
 
     mock_default_deps.patch('bnc.builder.requests.get', return_value=mock_response)

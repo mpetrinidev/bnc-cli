@@ -1,4 +1,5 @@
-import sys
+import sys, time
+from datetime import datetime
 from logging import LogRecord
 
 import click
@@ -23,9 +24,14 @@ def record(msg):
 
 def test_logger_formatter_info_level_message_ok(msg, record):
     logger_formatter = BncLoggerColorFormatter()
+
+    c_time = time.time()
+    record.created = c_time
+    record.copy_extra = None
     result = logger_formatter.format(record)
 
-    expected_style = click.style('[{}] '.format('info'), **dict(fg='blue'))
+    expected_style = click.style(f'{datetime.fromtimestamp(record.created)} [info] ',
+                                 **dict(fg='blue'))
 
     assert result == f"{expected_style}{msg}"
 
@@ -58,7 +64,10 @@ def test_logger_handler_emit_msg(msg, record, capsys):
     assert captured.out == f"{msg}\n"
 
 
-def test_logger_all_components_with_verbose_enabled(msg, capsys):
+def test_logger_all_components_with_verbose_enabled(msg, capsys, mocker):
+    c_time = time.time()
+    mocker.patch('time.time', return_value=c_time)
+
     bnc_logger = logger
     logger.addFilter(BncLoggerFilter(True))
 
@@ -66,4 +75,4 @@ def test_logger_all_components_with_verbose_enabled(msg, capsys):
 
     captured = capsys.readouterr()
 
-    assert captured.out == f'[info] {msg}\n'
+    assert captured.out == f'{datetime.fromtimestamp(c_time)} [info] {msg}\n'
