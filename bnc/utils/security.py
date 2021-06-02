@@ -4,7 +4,7 @@ import os
 
 
 from ..exceptions import SecurityException, ConfigException
-from ..utils.config import read_credentials
+from ..utils.config import read_credentials, read_configuration
 
 
 def get_hmac_hash(total_params: str, secret: str) -> str:
@@ -31,7 +31,9 @@ def get_api_key():
 
     # Check config file variable
     if api_key is None or len(api_key) == 0:
-        raise SecurityException('Credentials are required. Run: bnc credentials add --api_key="your_api_key" '
+        config = read_configuration()
+        raise SecurityException(f'Credentials are required. Run: {"bnc" if config["is_testnet"] else "bnc_testnet"} '
+                                'credentials add --api_key="your_api_key" '
                                 '--secret="your_secret_key" to start using the CLI or add credentials using '
                                 'env variables')
 
