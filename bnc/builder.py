@@ -1,20 +1,17 @@
-import datetime
 from abc import abstractmethod
 
 import click
+import jmespath
 import requests_async as requests
 import yaml
-import jmespath
 
 from .environment import Environment
 from .utils.config import read_configuration
-
 from .utils.security import get_api_key_header
 from .utils.security import get_hmac_hash
 from .utils.security import get_secret_key
-
-from .utils.utils import to_query_string_parameters, mask_dic_values
 from .utils.utils import json_to_str
+from .utils.utils import to_query_string_parameters, mask_dic_values
 
 
 class Builder:
@@ -40,9 +37,6 @@ class Builder:
         self.config_values = read_configuration()
 
         self.endpoint = self.config_values['bnc_api_endpoint'] + endpoint
-
-        self.headers['User-Agent'] = f'bnc-cli {"" if not self.config_values["is_testnet"] else "- testnet"} ' \
-                                     f'(https://github.com/mpetrinidev/bnc-cli)'
 
         ctx = click.get_current_context(silent=True)
         self.env = None
@@ -194,7 +188,7 @@ class MarketOrderBuilder(Builder):
 
     def add_optional_params_to_payload(self, **kwargs):
         quantity, quote_order_qty, \
-        new_client_order_id = kwargs.values()
+            new_client_order_id = kwargs.values()
 
         if quantity is not None:
             self.payload['quantity'] = quantity
@@ -226,7 +220,7 @@ class TakeProfitLimitBuilder(Builder):
 
     def add_optional_params_to_payload(self, **kwargs):
         new_client_order_id, \
-        iceberg_qty = kwargs.values()
+            iceberg_qty = kwargs.values()
 
         if new_client_order_id is not None:
             self.payload['newClientOrderId'] = new_client_order_id
@@ -241,7 +235,7 @@ class LimitMakerBuilder(Builder):
 
     def add_optional_params_to_payload(self, **kwargs):
         new_client_order_id, \
-        iceberg_qty = kwargs.values()
+            iceberg_qty = kwargs.values()
 
         if new_client_order_id is not None:
             self.payload['newClientOrderId'] = new_client_order_id
@@ -337,9 +331,9 @@ class AllOrderBuilder(Builder):
 class NewOcoOrderBuilder(Builder):
     def add_optional_params_to_payload(self, **kwargs):
         list_client_order_id, limit_client_order_id, \
-        limit_iceberg_qty, stop_client_order_id, \
-        stop_limit_price, stop_iceberg_qty, \
-        stop_limit_time_in_force = kwargs.values()
+            limit_iceberg_qty, stop_client_order_id, \
+            stop_limit_price, stop_iceberg_qty, \
+            stop_limit_time_in_force = kwargs.values()
 
         if list_client_order_id is not None:
             self.payload['listClientOrderId'] = list_client_order_id
