@@ -25,7 +25,7 @@ def get_api_key():
         if config['is_testnet'] \
         else os.environ.get('BNC_CLI_API_KEY')
 
-    # Check env variabletest_get_api_key_from_env_ok
+    # Check env variable test_get_api_key_from_env_ok
     if api_key is None:
         try:
             config_values = read_credentials()
