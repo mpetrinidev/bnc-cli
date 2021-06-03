@@ -1,20 +1,112 @@
 # Binance CLI
 
-[![Run tests](https://github.com/mpetrinidev/bnc-cli/actions/workflows/python-app.yml/badge.svg)](https://github.com/mpetrinidev/bnc-cli/actions/workflows/python-app.yml) [![codecov](https://codecov.io/gh/mpetrinidev/bnc-cli/branch/main/graph/badge.svg?token=ION6F3XIA1)](https://codecov.io/gh/mpetrinidev/bnc-cli)
-
 This package provides a unified command-line interface to interact with Binance API ([https://binance-docs.github.io/apidocs](https://binance-docs.github.io/apidocs))
 
-> ℹ️ *This is an unofficial package, and this project is not related or affiliated with Binance. Use at your own risk.*
+ℹ️ **This is an unofficial package, and this project is not related or affiliated with Binance.**
+
+🚨 **Use the package at your own risk. We highly recommend using the testnet version at the beginning.**
+
+Jump to:
+- [Getting Started](#getting-started)
+    - [Requirements](#requirements)
+    - [Installation](#installation)
+    - [Generate API Key and Secret Key](#generate-api-key-and-secret-key)
+    - [Add Credentials](#add-credentials)
+- [Basic Commands](#basic-commands)
+- [Command Output](#command-output)
+    - [JSON Format](#json-default)
+    - [YAML Format](#yaml)
+- [Query with JMESPath](#jmespath---query)    
 
 # Getting started
 
+We have released a special version of the Binance CLI package for testing purposes. It is called `bnc_testnet` and it contains the same functionality as `bnc`.
+
+Both versions can co-exist on the same computer because they are independent and use different folders for configuration. 
+
+The complete documentation of the Binance CLI package will refer to `bnc`. When you want to use testnet version, you have to replace `bnc` with `bnc_testnet`.
+
+We highly recommend using `bnc_testnet` at the beginning to gain experience using the Binance CLI package and then switch to `bnc`. 
+
+Keep in mind that use a testnet version implies not using real money.  
+
+## Requirements
+
+The Binance CLI package works on Python versions:
+- 3.8.x and greater
+
+## Installation
+
+Installation of the Binance CLI and its dependencies use various packaging features provided by `pip` and `setuptools`.
+It's recommended to use:
+
+- `pip`: 21.1
+- `setuptools`: 56.0
+
+The safest way to install the Binance CLI is to use `pip` in a `virtualenv`:
+
+```shell
+$ python -m pip install bnc
+```
+
+*Testnet*
+
+```shell
+$ python -m pip install bnc_testnet
+```
+
+or, if you are not installing in a `virtualenv`, to install globally:
+
+```shell
+$ sudo python -m pip install bnc 
+```
+
+*Testnet*
+
+```shell
+$ sudo python -m pip install bnc_testnet
+```
+
+or for your user:
+
+```shell
+$ python -m pip install --user bnc 
+```
+
+*Testnet*
+
+```shell
+$ python -m pip install --user bnc_testnet
+```
+
+If you have the Binance CLI package installed and want to upgrade to the latest version, you can run:
+
+```shell
+$ python -m pip install --upgrade bnc 
+```
+
+*Testnet*
+
+```shell
+$ python -m pip install --upgrade bnc_testnet
+```
+
+**NOTE**
+
+At this moment, we only use `pip` to install the Binance CLI package.
+We are planning to add more options for the distribution and installation of the Binance CLI package.
+
 ## Generate API Key and Secret Key
 
-You should have an active binance account in order to create a valid API key and secret key.
+You should have an active Binance account to create a valid API key and secret key.
 
-You can follow this step by step guide provided by Binance:
+You can follow this step-by-step guide provided by Binance:
 
-[https://www.binance.com/en/support/faq/360002502072](https://www.binance.com/en/support/faq/360002502072)
+[Create an API Key](https://www.binance.com/en/support/faq/360002502072)
+
+For testnet you can follow:
+
+[Generate API key for Testnet](https://dev.binance.vision/t/binance-testnet-environments/99/2)
 
 ## Add credentials
 
@@ -28,7 +120,7 @@ The quickest way to get started is to run the `bnc credentials add` command:
 ```bash
 $ bnc credentials add --api_key="YOUR_API_KEY" --secret="YOUR_SECRET_KEY"
 
-Binance CLI's credentials added successfully
+Binance CLI's credentials added successfully.
 ```
 
 When you add your credentials using the previous command, it will create an INI formatted file called `credentials` under `~/.bnc` directory with the following structure:
@@ -46,9 +138,16 @@ $ export BNC_CLI_API_KEY=<YOUR_API_KEY>
 $ export BNC_CLI_SECRET_KEY=<YOUR_SECRET_KEY>
 ```
 
+The testnet version uses different environment variables:
+
+```bash
+$ export BNC_TESTNET_CLI_API_KEY=<YOUR_API_KEY>
+$ export BNC_TESTNET_CLI_SECRET_KEY=<YOUR_SECRET_KEY>
+```
+
 # Basic Commands
 
-An BNC CLI command has the following structure:
+A BNC CLI command has the following structure:
 
 ```bash
 $ bnc <command> [options and parameters]
@@ -81,7 +180,7 @@ $ bnc --verbose <group_commands> <command>
 
 The default output for commands is currently JSON. 
 
-**YAML** format is also available to format output. You can select either styles with the `--output` option at the root command `bnc`
+**YAML** format is also available to format output. You can select either style with the `--output` option at the root command `bnc.`
 
 ## Example
 
@@ -147,6 +246,6 @@ permissions:
 - SPOT
 ```
 
-For more information:
+# JMESPath (--query)
 
-[Binance CLI](https://github.com/mpetrinidev/bnc-cli/wiki)
+Some commands have an `--query` option that allows extracting and transforming elements from a JSON. It is very useful on occasions where you need to filter a very long response from Binance API. For more information on the expression language used for this option, you can read the [JMESPath Tutorial](https://jmespath.org/tutorial.html)
