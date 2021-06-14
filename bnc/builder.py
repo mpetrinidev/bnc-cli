@@ -121,8 +121,8 @@ class Builder:
 
         if 400 <= self.response.status_code <= 499:
             self.env.logger.error('HTTP Response error (400-499)', extra={
-                'code': result['results']['code'],
-                'msg': result['results']['msg']
+                'api_error_code': result['results']['code'],
+                'api_msg': result['results']['msg']
             })
 
             self.env.log(
